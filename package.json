@@ -1,0 +1,21 @@
+{
+  "name": "SLiMTAB",
+  "version": "1.0.0",
+  "description": "An innovative guitar tab editor",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/tim37021/SLiMTAB",
+  "keywords": [
+    "guitar",
+    "tab",
+    "editor",
+    "SLiMTAB"
+  ],
+  "author": "MISLAB",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "~1.6.2"
+  }
+}
