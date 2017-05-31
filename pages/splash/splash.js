@@ -4,5 +4,5 @@ setTimeout(
   function() {
     ipcRenderer.send('splash-timeout', 'ping');
   }
-  , 2000
+  , 1000
 );

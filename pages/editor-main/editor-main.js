@@ -10,4 +10,5 @@ function openDialog() {
 
 function saveDialog() {
   dialog.showSaveDialog()
+  alert("OK")
 }
