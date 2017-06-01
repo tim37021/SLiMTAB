@@ -124,6 +124,30 @@
         background-size: 100% 100%;
         background-repeat:no-repeat;
       }
+      .okbtn {
+        width: 100px; height: 25px;
+        margin: 0 auto;
+        color: #f2f2f2;
+        background-color: #5D5D5D;
+        text-align: center;
+        border: 1px solid #F39800;
+      }
+      .okbtn:Hover {
+        width: 100px; height: 25px;
+        margin: 0 auto;
+        color: #f2f2f2;
+        background-color: #999999;
+        text-align: center;
+        border: 1px solid #F39800;
+      }
+      .okbtn:active {
+        width: 100px; height: 25px;
+        margin: 0 auto;
+        color: #f2f2f2;
+        background-color: #1A1A1A;
+        text-align: center;
+        border: 1px solid #F39800;
+      }
       .footer {
         position: fixed; 
         background:#252525; 
@@ -134,6 +158,26 @@
       .slider {
         float: right;
         margin-right: 26px;
+      }
+      .msgbox {
+        position: absolute;
+        width: 360px;
+        margin: 100px auto;
+        background-color: #494949;
+        z-index: 100;
+        padding: 0px 0px 20px 0px;
+        border-radius: 10px;
+        cursor: default;
+        box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+      }
+      .msgboxtitle {
+        margin: 0;
+        height: 28px;
+        padding-top: 5px;
+        text-align: center;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        background: linear-gradient(to bottom, #E6E6E6 0%,#CCCCCC 100%);
       }
       input[type='range'] {
         -webkit-appearance: none;
@@ -234,6 +278,27 @@
                 }
             }
         });
+
+      interact('.draggable2')
+        .draggable({
+            // enable inertial throwing
+            inertia: false,
+            // keep the element within the area of it's parent
+            restrict: {
+                restriction: "parent",
+                endOnly: true,
+                elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
+            },
+            // enable autoScroll
+            autoScroll: true,
+            onstart: function (event) {
+            },
+            // call this function on every dragmove event
+            onmove: dragMoveListener,
+            // call this function on every dragend event
+            onend: function (event) {
+            }
+        });
     function dragMoveListener (event) {
         console.log('dragMoveListener');
         var target = event.target,
@@ -316,7 +381,11 @@
       <div class="tab tabediting draggable" onclick="changetab(this, event)" id="panel_tab1">TAB1</div>
       <div class="tab draggable" onclick="changetab(this, event)" id="panel_tab2">TAB2</div>
     </div>
-
+ <div class="msgbox draggable2" style="display: none;" id="msgbox">
+   <div class="msgboxtitle" id="msgtitle">標題</div>
+   <div style="margin: 20px 40px 15px 40px; height: 28px; color: #f2f2f2;" id="msgcontent">內文</div>
+  <div class="okbtn" onclick="this.parentElement.style.display='none'">確定</div>
+</div>
  <div style="padding: 0;"><webview src="fake_tab.html" id="tab1" style="width: 100%; height: 100%;" preload="./fake_tab.js"></webview></div>
  <div style="padding: 0;"><webview src="fake_tab2.html" class="inactivetab" id="tab2" style="width: 100%; height: 100%;" preload="./fake_tab.js"></webview></div>
     <div class="footer">

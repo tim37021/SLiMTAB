@@ -15,13 +15,20 @@ function saveDialog() {
   alert("OK")
 }
 
+function msgbox(title, msg) {
+  var msgbox = document.getElementById('msgbox')
+  document.getElementById('msgtitle').innerHTML = title;
+  document.getElementById('msgcontent').innerHTML = msg;
+  msgbox.style.display = null
+}
+
 function record() {
   var assert = require('assert');
   var pythonBridge = require('python-bridge')
   var python = pythonBridge({python: 'python3', env: {PYTHONPATH: './tools'}})
 
   python.ex`import slimtabdriver`
-  python`slimtabdriver.SliMTABDriver("/dev/ttyUSB0").check()`.then(x => {if(!x) alert("沒有權限存取裝置或者裝置不存在")})
+  python`slimtabdriver.SliMTABDriver("/dev/ttyUSB0").check()`.then(x => {if(!x) msgbox("錯誤", "沒有權限存取裝置或者裝置不存在")})
   python`slimtabdriver.list_com_ports()`.then(x => console.log(x))
   python.end()
 }
