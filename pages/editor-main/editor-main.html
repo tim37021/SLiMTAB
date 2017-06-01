@@ -2,7 +2,9 @@
   <head>
     <title>SLiMTAB</title>
     <link rel="stylesheet" type="text/css" href="ui/buttons/icon.css">
+    <script src="./ui/interact.min.js"></script>
     <style>
+
       body {
         margin: 0;
         padding: 0;
@@ -32,6 +34,7 @@
         border: 1px solid black;
         padding-top: 4px;
         background-color: #474747;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
       }
       ul {
         list-style-type: none; 
@@ -78,6 +81,29 @@
         border-top: 1px solid #474747;
         border-bottom: 1px solid #000;
         display: flex;
+      }
+      .tabstrip {
+        background-color: #252525;
+        border-top: 1px solid #474747;
+        border-bottom: 1px solid #000;
+        display: flex;
+        height: 28px;
+        border-top: 1px solid #666666;
+        padding: 0;
+      }
+      .tab {
+        background-color: #252525;
+        border: 1px solid #000;
+        color: #CCCCCC;
+        text-align: center;
+        padding-top: 5px;
+        width: 280px;
+      }
+      .inactivetab {
+        display: none;
+      }
+      .tabediting {
+        background-color: #474747;
       }
       .title {
         -webkit-app-region: drag;
@@ -157,13 +183,90 @@
         document.getElementById("file_menu").style.display = "none";
         document.getElementById("file_menu_root").style.color =  null;
       }
-
+      var webview = document.querySelector('webview')
       function zooming(scale) {
-              var webview = document.querySelector('webview');
-      var rangevalue = document.getElementById('rangevalue')
+        var rangevalue = document.getElementById('rangevalue')
         rangevalue.value = scale + "%"
         webview.setZoomFactor(scale/100)
       }
+      interact('.draggable')
+        .draggable({
+            // enable inertial throwing
+            inertia: true,
+            // keep the element within the area of it's parent
+            restrict: {
+                restriction: "parent",
+                endOnly: true,
+                elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
+            },
+            // enable autoScroll
+            autoScroll: true,
+            onstart: function (event) {
+            },
+            // call this function on every dragmove event
+            onmove: dragMoveListener,
+            // call this function on every dragend event
+            onend: function (event) {
+                // do the fucking sorting
+                if(event.target.parentElement.id=='tabstrip') {
+                  var tabstrip = document.getElementById('tabstrip')
+                  var p = tabstrip.children[0]
+                  list = []
+                  i = 0
+                  do {
+                    list.push({idx: i, obj: p.cloneNode(true)})
+                    i++
+                  } while(p = p.nextElementSibling)
+
+                  ll = list.sort(function(a, b) {
+                    var ax = (parseFloat(a.obj.getAttribute('data-x')) || 0)+280*a.idx
+                    var bx = (parseFloat(b.obj.getAttribute('data-x')) || 0)+280*b.idx
+                    return ax-bx
+                  })
+                  console.log(ll)
+                  tabstrip.innerHTML = ''
+                  ll.forEach(function (e) {
+                    e.obj.setAttribute('data-x', 0)
+                    e.obj.setAttribute('data-y', 0)
+                    e.obj.style.transform = null
+                    tabstrip.appendChild(e.obj)
+                  })
+                }
+            }
+        });
+    function dragMoveListener (event) {
+        console.log('dragMoveListener');
+        var target = event.target,
+            // keep the dragged position in the data-x/data-y attributes
+            x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
+            y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+        // translate the element
+        target.style.webkitTransform =
+            target.style.transform =
+                'translate(' + x + 'px, ' + y + 'px)';
+        // update the position attributes
+        target.setAttribute('data-x', x);
+        target.setAttribute('data-y', y);
+    }
+        function changetab(element, event) {
+          event.stopPropagation()
+          var tabstrip = document.getElementById('tabstrip')
+          var p = tabstrip.children[0]
+          do {
+            if(p == element)
+              p.classList.add('tabediting')
+            else
+              p.classList.remove('tabediting')
+
+          } while(p = p.nextElementSibling)
+          webviews = document.querySelectorAll('webview')
+          webviews.forEach(function(v) {
+            v.classList.add('inactivetab')
+          })
+          webview = document.getElementById(element.id.substring(6))
+          webview.classList.remove("inactivetab")
+          webview.setZoomFactor(document.getElementById('rangeinput').value/100)
+        }
     </script>
   </head>
   <body onclick="hideMenus(event)">
@@ -179,14 +282,15 @@
         <li id="openfile">開啟舊檔</li>
         <li id="savefile">儲存</li>
         <li id="saveas">另存新檔</li>
+        <li id='printbtn'>列印</li>
         <li>列印</li>
       </ul>
     </div>
     <div class="functionbar">
-      <div class="btn newicon" onclick="minimize()"></div>
+      <div class="btn newicon"></div>
       <div class="btn openicon"></div>
       <div class="btn saveicon"></div>
-      <div class="btn printicon"></div>
+      <div class="btn printicon" id="printbtn"></div>
       <div class="btn undoicon"></div>
       <div class="btn redoicon"></div>
       <img src="ui/line_vertical.png" style="margin: 7px 0px 4px 4px;">
@@ -197,18 +301,24 @@
       <div class="btn note_eighthicon"></div>
       <div class="btn note_sixteenthicon"></div>
       <div class="btn note_thirtysecondicon"></div>
-      <div class="btn rest_wholeicon"></div><div class="btn rest_thirtysecondicon"></div>
+      <div class="btn rest_wholeicon"></div>
       <div class="btn rest_halficon"></div>
       <div class="btn rest_quartericon"></div>
       <div class="btn rest_eighthicon"></div>
       <div class="btn rest_sixteenthicon"></div>
       <div class="btn rest_thirtysecondicon"></div>
       <img src="ui/line_vertical.png" style="margin: 7px 0px 4px 4px;">
-      <div class="btn recordicon" style="width: 62px;"></div>
+      <div class="btn recordicon" style="width: 62px;" id="recordbtn"></div>
       <div class="btn stopicon-disabled"></div>
       <div class="btn playicon"></div>
     </div>
-    <div style="padding: 0;"><webview src="fake_tab.html" style="width: 100%; height: 100%;"></webview></div>
+    <div class="tabstrip" id="tabstrip">
+      <div class="tab tabediting draggable" onclick="changetab(this, event)" id="panel_tab1">TAB1</div>
+      <div class="tab draggable" onclick="changetab(this, event)" id="panel_tab2">TAB2</div>
+    </div>
+
+ <div style="padding: 0;"><webview src="fake_tab.html" id="tab1" style="width: 100%; height: 100%;" preload="./fake_tab.js"></webview></div>
+ <div style="padding: 0;"><webview src="fake_tab2.html" class="inactivetab" id="tab2" style="width: 100%; height: 100%;" preload="./fake_tab.js"></webview></div>
     <div class="footer">
       <div class="slider">
       <img src="./ui/zoomout.png">
