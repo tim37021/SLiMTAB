@@ -94,6 +94,18 @@
 .rest_thirtysecondicon:active {
   background-image: url('./pressed/pressed_rest_thirtysecond.png');
 }
+.arrowicon {
+  background-image: url('./normal/normal_arrow.png');
+}
+.arrowicon-disabled {
+  background-image: url('./disable/disable_arrow.png');
+}
+.arrowicon:hover {
+  background-image: url('./hover/hover_arrow.png');
+}
+.arrowicon:active {
+  background-image: url('./pressed/pressed_arrow.png');
+}
 .newicon {
   background-image: url('./normal/normal_new.png');
 }

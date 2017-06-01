@@ -1,5 +1,8 @@
 const remote = require('electron').remote; 
 const dialog = remote.dialog;
+var assert = require('assert');
+var pythonBridge = require('python-bridge')
+
 
 document.querySelector('#openfile').addEventListener('click', openDialog)
 document.querySelector('#saveas').addEventListener('click', saveDialog)
@@ -23,13 +26,11 @@ function msgbox(title, msg) {
 }
 
 function record() {
-  var assert = require('assert');
-  var pythonBridge = require('python-bridge')
+  var device = document.getElementById('deviceSelection').parentElement.children[0].innerHTML
+  console.log(device)
   var python = pythonBridge({python: 'python3', env: {PYTHONPATH: './tools'}})
-
   python.ex`import slimtabdriver`
-  python`slimtabdriver.SliMTABDriver("/dev/ttyUSB0").check()`.then(x => {if(!x) msgbox("錯誤", "沒有權限存取裝置或者裝置不存在")})
-  python`slimtabdriver.list_com_ports()`.then(x => console.log(x))
+  python`slimtabdriver.SliMTABDriver(${device}).check()`.then(x => {if(!x) msgbox("錯誤", "沒有權限存取裝置或者裝置不存在")})
   python.end()
 }
 
@@ -37,3 +38,19 @@ function print() {
   webview.print()
 }
 
+setInterval(function() {
+  var selection = document.getElementById('deviceSelection')
+  if(selection.style.display == "none") {
+    var python = pythonBridge({python: 'python3', env: {PYTHONPATH: './tools'}})
+    selection.innerHTML = ''
+    python.ex`import slimtabdriver`
+    python`slimtabdriver.list_com_ports()`.then(x => {
+      x.forEach(function (name) {
+        e = document.createElement("a");
+        e.setAttribute('onclick', 'this.parentElement.parentElement.children[0].innerHTML=this.innerHTML')
+        e.innerHTML = name
+        selection.appendChild(e)
+      })
+    })
+  }
+}, 1000)

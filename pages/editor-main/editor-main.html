@@ -82,6 +82,51 @@
         border-bottom: 1px solid #000;
         display: flex;
       }
+      .dropdown {
+        background: url('./ui/buttons/normal/normal_arrow.png') no-repeat #808080;
+        background-position: right;
+        cursor: default;
+      }
+      .dropdown:hover {
+        background: url('./ui/buttons/normal/normal_arrow.png') no-repeat #808080;
+        background-position: right;
+        border: 1px solid #F39800;
+        cursor: default;
+      }
+      .dropdown:active {
+        background: url('./ui/buttons/pressed/pressed_arrow.png') no-repeat #808080;
+        background-position: right;
+        border: 1px solid #F39800;
+        cursor: default;
+      }
+      .dropdown-content {
+        position: absolute;
+        padding-top: 4px;
+      }
+      .dropdown-content a {
+          color: black;
+          padding-left: 8px;
+          font-size: 18px;
+          text-decoration: none;
+          display: block;
+          background-color: #1a1a1a;
+          color: #CCCCCC;
+          cursor: default;
+      }
+      .dropdown-content a:hover {
+          color: black;
+          padding-left: 8px;
+          font-size: 18px;
+          text-decoration: none;
+          display: block;
+          background-color: #CCCCCC;
+          color: #333333;
+          cursor: default;
+      }
+    /*  .dropdown:hover .dropdown-content {
+        display: block;
+      }*/
+
       .tabstrip {
         background-color: #252525;
         border-top: 1px solid #474747;
@@ -226,6 +271,9 @@
       function hideMenus() {
         document.getElementById("file_menu").style.display = "none";
         document.getElementById("file_menu_root").style.color =  null;
+        Array.from(document.getElementsByClassName("dropdown-content")).forEach(function (x) {
+          x.style.display = "none";
+        })
       }
       var webview = document.querySelector('webview')
       function zooming(scale) {
@@ -376,18 +424,30 @@
       <div class="btn recordicon" style="width: 62px;" id="recordbtn"></div>
       <div class="btn stopicon-disabled"></div>
       <div class="btn playicon"></div>
+      <div class="dropdown" style="width: 120px; height: 25px; margin: 13px 0px 10px 10px;">
+        <div style="width: 100px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">TAB</div>
+        <div class="dropdown-content" style="width: 120px; display: none;">
+          <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">TAB</a>
+          <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">SHEET</a>
+        </div>
+      </div>
+      <div class="dropdown" style="width: 120px; height: 25px; margin: 13px 0px 10px 10px;">
+        <div style="width: 100px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">cc</div>
+        <div class="dropdown-content" style="width: 120px; display: none;" id="deviceSelection">
+        </div>
+      </div>
     </div>
     <div class="tabstrip" id="tabstrip">
       <div class="tab tabediting draggable" onclick="changetab(this, event)" id="panel_tab1">TAB1</div>
       <div class="tab draggable" onclick="changetab(this, event)" id="panel_tab2">TAB2</div>
     </div>
- <div class="msgbox draggable2" style="display: none;" id="msgbox">
-   <div class="msgboxtitle" id="msgtitle">標題</div>
-   <div style="margin: 20px 40px 15px 40px; height: 28px; color: #f2f2f2;" id="msgcontent">內文</div>
-  <div class="okbtn" onclick="this.parentElement.style.display='none'">確定</div>
-</div>
- <div style="padding: 0;"><webview src="fake_tab.html" id="tab1" style="width: 100%; height: 100%;" preload="./fake_tab.js"></webview></div>
- <div style="padding: 0;"><webview src="fake_tab2.html" class="inactivetab" id="tab2" style="width: 100%; height: 100%;" preload="./fake_tab.js"></webview></div>
+    <div class="msgbox draggable2" style="display: none; left: 500px;" id="msgbox">
+      <div class="msgboxtitle" id="msgtitle">標題</div>
+      <div style="margin: 20px 40px 15px 40px; height: 28px; color: #f2f2f2;" id="msgcontent">內文</div>
+      <div class="okbtn" onclick="this.parentElement.style.display='none'">確定</div>
+    </div>
+    <div style="padding: 0;"><webview src="fake_tab.html" id="tab1" style="width: 100%; height: 100%;" preload="./fake_tab.js"></webview></div>
+    <div style="padding: 0;"><webview src="fake_tab2.html" class="inactivetab" id="tab2" style="width: 100%; height: 100%;" preload="./fake_tab.js"></webview></div>
     <div class="footer">
       <div class="slider">
       <img src="./ui/zoomout.png">
