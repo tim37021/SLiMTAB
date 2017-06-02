@@ -3,6 +3,7 @@
         padding: 0;
         -webkit-user-select: none;
         overflow: hidden;
+        font-family: 'Open Sans', sans-serif;
       }
       .header {
         background-color: #252525;
@@ -219,10 +220,10 @@
       }
       input[type='range'] {
         -webkit-appearance: none;
-        overflow:hidden;     /* ­­©w½d³ò */
+        overflow:hidden;     /* ï¿½ï¿½ï¿½wï¿½dï¿½ï¿½ */
         width:200px;
         height:20px;
-        outline : none;      /* Á×§KÂI¿ï·|¦³ÂÅ½u©Îµê½u */
+        outline : none;      /* ï¿½×§Kï¿½Iï¿½ï¿½|ï¿½ï¿½ï¿½Å½uï¿½Îµï¿½u */
         background:none;
       }
         input[type='range'],
