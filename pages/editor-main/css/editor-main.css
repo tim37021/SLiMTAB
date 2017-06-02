@@ -198,9 +198,8 @@ li:hover {
   float: right;
   margin-right: 26px;
 }
-.msgbox {
+.dialog {
   position: absolute;
-  width: 360px;
   margin: 100px auto;
   background-color: #494949;
   z-index: 100;
@@ -209,7 +208,7 @@ li:hover {
   cursor: default;
   box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
 }
-.msgboxtitle {
+.dialogtitle {
   margin: 0;
   height: 28px;
   padding-top: 5px;

@@ -6,6 +6,7 @@ var pythonBridge = require('python-bridge')
 document.querySelector('#openfile').addEventListener('click', openDialog)
 document.querySelector('#saveas').addEventListener('click', saveDialog)
 document.querySelector('#recordbtn').addEventListener('click', record)
+document.querySelector('#stopbtn').addEventListener('click', stop_record)
 document.querySelectorAll('#printbtn').forEach(function (x) {x.addEventListener('click', print)})
 
 function openDialog() {
@@ -24,35 +25,47 @@ function msgbox(title, msg) {
   msgbox.style.display = null
 }
 
-python_cmd = checkPythonVersion()
+python = checkPythonVersion()
 function checkPythonVersion() {
   try {
-    var python = pythonBridge({python: 'python3', env: {PYTHONPATH: './tools'}})
-    python.end()
-    return 'python3'
+    var python = pythonBridge({python: 'python3', env: {PYTHONPATH: './tools/SLiMTAB-backend'}})
+    python.ex`import SlimTabDriver`
+    python.ex`import SlimTabManager`
+    python.ex`manager=SlimTabManager.SlimTabManager()`
+    return python
   } catch (err) {
   }
   try {
-    var python = pythonBridge({python: 'python', env: {PYTHONPATH: './tools'}})
+    var python = pythonBridge({python: 'python', env: {PYTHONPATH: './tools/SLiMTAB-backend'}})
     python.ex`import sys`
     python`sys.version_info.major == 2`.then(x => {
     if(x)
       msgbox("錯誤", "Python版本不符，最低需求版本>=3.0.0")
     })
-    python.end()
-    return 'python'
+    python.ex`import SlimTabDriver`
+    python.ex`import SlimTabManager`
+    python.ex`manager=SlimTabManager.SlimTabManager()`
+    return python
   } catch (err) {
     msgbox("錯誤", "Python尚未安裝，最低需求版本>=3.0.0")
   }
-  return undefined
 }
 
 function record() {
   var device = document.getElementById('comDeviceSelection').parentElement.children[0].innerHTML
-  var python = pythonBridge({python: python_cmd, env: {PYTHONPATH: './tools/SLiMTAB-backend'}})
-  python.ex`import SlimTabDriver`
-  python`SlimTabDriver.SliMTABDriver(${device}).check()`.then(x => {if(!x) msgbox("錯誤", "沒有權限存取裝置或者裝置不存在")})
-  python.end()
+  python`SlimTabDriver.SliMTABDriver(${device}).check()`.then(x => {
+    if(x) {
+      python.ex`manager.setInputDevice(2)`
+      python.ex`manager.record()`
+    } else
+      msgbox("錯誤", "沒有權限存取裝置或者裝置不存在")
+  })
+}
+
+function stop_record() {
+  python.ex`manager.stopRecord()`
+  python.ex`manager.saveCurrentRecordData()`
+  alert("YO")
 }
 
 function print() {
@@ -61,7 +74,6 @@ function print() {
 
 setInterval(function() {
   var com = document.getElementById('comDeviceSelection')
-  var python = pythonBridge({python: python_cmd, env: {PYTHONPATH: './tools/SLiMTAB-backend'}})
   if(com.style.display == "none") {
     com.innerHTML = ''
     python.ex`import SlimTabDriver`
@@ -78,14 +90,14 @@ setInterval(function() {
   if(audio.style.display == "none") {
     audio.innerHTML = ''
     python.ex`import SlimTabManager`
-    python`SlimTabManager.SlimTabManager().getInputDevicesName()`.then(x => {
-      x.forEach(function (name) {
+    python`manager.getInputDevicesName()`.then(x => {
+      x.forEach(function (name, index) {
         e = document.createElement("a");
         e.setAttribute('onclick', 'this.parentElement.parentElement.children[0].innerHTML=this.innerHTML')
-        e.innerHTML = name
+        e.innerHTML = name + ':' + index
+        
         audio.appendChild(e)
       })
     })
   }
-  python.end()
 }, 1000)
