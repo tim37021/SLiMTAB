@@ -11,19 +11,10 @@ class TabPaper{
 		this.animatInfo=[0,0,0];//start time,elapsed time,frame
 		this.content=document.createElement('div');
 		this.content.style.outline="none";
-		this.content.style.textAlign='center';
 		this.content.onselectstart=function(){return false;}
 		this.content.setAttribute('tabindex','1');
 		this.content.addEventListener("click",this.ckEvent.bind(this));
 		this.content.addEventListener("keydown",this.kdEvent.bind(this));
-		this.content.addEventListener("mousedown",this.mdEvent.bind(this));
-		this.content.addEventListener("mouseup",()=>{
-			this.content.removeEventListener("mousemove",this.grabMove);
-		});
-		this.content.addEventListener("mouseout",()=>{
-			this.content.removeEventListener("mousemove",this.grabMove);
-		});
-		this.grabMove=this.grabMove.bind(this);
 		this.data=null;
 		this.sel=[];
 		this.check();
@@ -65,7 +56,7 @@ class TabPaper{
 				ix+=80;
 			}
 		}
-		this.vHTML=`<div><svg width="${this.width}" height="${this.height}" 
+		this.vHTML=`<div style="overflow:hidden;padding:3px;"><svg width="${this.width}" height="${this.height}" 
 			style="box-shadow:1px 1px 4px 2px #777;background:#FFFFFF";>`
 			+this.vHTML+"</svg></div>";
 		this.content.innerHTML=this.vHTML;
@@ -73,16 +64,15 @@ class TabPaper{
 	}
 	
 	zoom(){
-		this.content.style.width=100*this.scale+"%";
-		this.content.style.height=100*this.scale+"%";
-		this.content.children[0].style.width=this.width*this.scale+"px";
-		this.content.children[0].style.height=this.height*this.scale+"px";
+		this.content.children[0].style.width=this.width*this.scale+6+"px";
+		this.content.children[0].style.height=this.height*this.scale+6+"px";
 		this.content.children[0].style.margin="auto";
-		this.content.children[0].children[0].style.transformOrigin="50% 0%";
+		this.content.children[0].children[0].style.transformOrigin="0% 0%";
 		this.content.children[0].children[0].style.transform=`scale(${this.scale},${this.scale})`;
 	}
 	
 	animate(){
+		this.animatInfo=[0,0,0];
 		requestAnimationFrame(this.animateFrame.bind(this));
 	}
 	
@@ -104,19 +94,6 @@ class TabPaper{
 		else{console.log("animation end");}
 	}
 	
-	mdEvent(e){
-		this.my=e.screenY;
-		this.mx=e.screenX;
-		this.content.addEventListener('mousemove',this.grabMove);
-	}
-	
-	grabMove(e){
-		document.body.scrollTop-=e.screenY-this.my;
-		document.body.scrollLeft-=e.screenX-this.mx;
-		this.my=e.screenY;
-		this.mx=e.screenX;
-	}
-	
 	selNote(pos,id){
 		this.sel[0]=[pos,id];
 		this.render();
@@ -136,7 +113,7 @@ class TabPaper{
 				this.data[this.sel[0][0]][this.sel[0][1]*2+1+1]++;
 				this.render();
 			}
-			this.scale+=0.1;
+			if(this.scale<3)this.scale+=0.1;
 			this.render();
 		}
 		if(e.keyCode==109){
@@ -146,7 +123,7 @@ class TabPaper{
 				if(this.data[p][id*2+1+1]>0)this.data[p][id*2+1+1]--;
 				this.render();
 			}
-			this.scale-=0.1;
+			if(this.scale>0.5)this.scale-=0.1;
 			this.render();
 		}
 		if(e.keyCode==87){
