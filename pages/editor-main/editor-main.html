@@ -5,6 +5,37 @@
     <script src="./ui/interact.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/editor-main.css">
     <script type="text/javascript" src="script/editor-ui.js"></script>
+	<script type="text/javascript" src="script/content.js"></script>
+	<script>
+	var mytp;
+window.onload=function(){
+	mytp=new TabPaper();
+	document.getElementById("tabpaper1").appendChild(mytp.content);
+	mytp.load([
+		[4,2,4,6,3],//length,chord,block,chord,block.......
+		[8,1,2,2,6,3,5],
+		[8,1,2,2,6,3,5],
+		[4,2,4,6,3],
+		[4,2,4,6,3],
+		[8,1,2,2,6,3,5],
+		[8,3,2],
+		[4,2,4,6,3],
+		[8,1,2,2,6,3,5],
+		[16,3,2],
+		[4,2,4,6,3],
+		[8,1,2,2,6,3,5],
+		[4,2,4,6,3],
+		[8,1,2,2,6,3,5],
+		[16,3,2],
+		[16,3,3],
+		[16,4,2,5,3],
+		[16,3,4],
+		[4,5,6],
+		[8,3,4]
+	]);
+	mytp.render();
+}
+	</script>
   </head>
   <body onclick="hideMenus(event)">
     <div class="header">
@@ -47,7 +78,7 @@
       <img src="ui/line_vertical.png" style="margin: 7px 0px 4px 4px;">
       <div class="btn recordicon" style="width: 62px;" id="recordbtn"></div>
       <div class="btn stopicon-disabled"></div>
-      <div class="btn playicon"></div>
+      <div class="btn playicon" onclick="mytp.animate()"></div>
       <div class="dropdown" style="width: 120px; height: 25px; margin: 13px 0px 10px 10px;">
         <div style="width: 100px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">TAB</div>
         <div class="dropdown-content" style="width: 120px; display: none;">
@@ -70,8 +101,8 @@
       <div style="margin: 20px 40px 15px 40px; height: 28px; color: #f2f2f2;" id="msgcontent">內文</div>
       <div class="okbtn" onclick="this.parentElement.style.display='none'">確定</div>
     </div>
-    <div style="padding: 0;"><webview src="fake_tab.html" id="tab1" style="width: 100%; height: 100%;" preload="./script/fake_tab.js"></webview></div>
-    <div style="padding: 0;"><webview src="fake_tab2.html" class="inactivetab" id="tab2" style="width: 100%; height: 100%;" preload="./script/fake_tab.js"></webview></div>
+    <div style="padding: 0px;overflow:auto;width:100%;height:calc(100% - 158px)" id="tabpaper1"></div>
+    
     <div class="footer">
       <div class="slider">
       <img src="./ui/zoomout.png">
