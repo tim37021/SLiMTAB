@@ -15,9 +15,9 @@ function showFileMenu(element, event) {
       }
       var webview = document.querySelector('webview')
       function zooming(scale) {
-        var rangevalue = document.getElementById('rangevalue')
-        rangevalue.value = scale + "%"
-        webview.setZoomFactor(scale/100)
+        mytp.setScale(scale/100);
+		mytp.zoom();
+		document.getElementById("rangevalue").innerHTML=scale+"%";
       }
       interact('.draggable')
         .draggable({

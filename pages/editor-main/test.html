@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+<title>Tab Painter</title>
+</head>
+<script src='./script/content.js'></script>
+<script>
+window.onload=function(){
+	var mytp=new TabPaper();
+	document.body.appendChild(mytp.content);
+	mytp.load([
+		[4,2,4,6,3],//length,chord,block,chord,block.......
+		[8,1,2,2,6,3,5],
+		[8,1,2,2,6,3,5],
+		[4,2,4,6,3],
+		[4,2,4,6,3],
+		[8,1,2,2,6,3,5],
+		[8,3,2],
+		[4,2,4,6,3],
+		[8,1,2,2,6,3,5],
+		[16,3,2],
+		[4,2,4,6,3],
+		[8,1,2,2,6,3,5],
+		[4,2,4,6,3],
+		[8,1,2,2,6,3,5],
+		[16,3,2],
+		[16,3,3],
+		[16,4,2,5,3],
+		[16,3,4],
+		[4,5,6],
+		[8,3,4]
+	]);
+	mytp.render();
+}
+</script>
+<body>
+
+</body>
+</html>
