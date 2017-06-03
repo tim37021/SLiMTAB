@@ -3,10 +3,10 @@ const dialog = remote.dialog;
 var assert = require('assert');
 var pythonBridge = require('python-bridge')
 
-
 document.querySelector('#openfile').addEventListener('click', openDialog)
 document.querySelector('#saveas').addEventListener('click', saveDialog)
 document.querySelector('#recordbtn').addEventListener('click', record)
+document.querySelector('#stopbtn').addEventListener('click', stop_record)
 document.querySelectorAll('#printbtn').forEach(function (x) {x.addEventListener('click', print)})
 
 function openDialog() {
@@ -25,13 +25,47 @@ function msgbox(title, msg) {
   msgbox.style.display = null
 }
 
+python = checkPythonVersion()
+function checkPythonVersion() {
+  try {
+    var python = pythonBridge({python: 'python3', env: {PYTHONPATH: './tools/SLiMTAB-backend'}})
+    python.ex`import SlimTabDriver`
+    python.ex`import SlimTabManager`
+    python.ex`manager=SlimTabManager.SlimTabManager()`
+    return python
+  } catch (err) {
+  }
+  try {
+    var python = pythonBridge({python: 'python', env: {PYTHONPATH: './tools/SLiMTAB-backend'}})
+    python.ex`import sys`
+    python`sys.version_info.major == 2`.then(x => {
+    if(x)
+      msgbox("錯誤", "Python版本不符，最低需求版本>=3.0.0")
+    })
+    python.ex`import SlimTabDriver`
+    python.ex`import SlimTabManager`
+    python.ex`manager=SlimTabManager.SlimTabManager()`
+    return python
+  } catch (err) {
+    msgbox("錯誤", "Python尚未安裝，最低需求版本>=3.0.0")
+  }
+}
+
 function record() {
-  var device = document.getElementById('deviceSelection').parentElement.children[0].innerHTML
-  console.log(device)
-  var python = pythonBridge({python: 'python3', env: {PYTHONPATH: './tools'}})
-  python.ex`import slimtabdriver`
-  python`slimtabdriver.SliMTABDriver(${device}).check()`.then(x => {if(!x) msgbox("錯誤", "沒有權限存取裝置或者裝置不存在")})
-  python.end()
+  var device = document.getElementById('comDeviceSelection').parentElement.children[0].innerHTML
+  python`SlimTabDriver.SliMTABDriver(${device}).check()`.then(x => {
+    if(x) {
+      python.ex`manager.setInputDevice(2)`
+      python.ex`manager.record()`
+    } else
+      msgbox("錯誤", "沒有權限存取裝置或者裝置不存在")
+  })
+}
+
+function stop_record() {
+  python.ex`manager.stopRecord()`
+  python.ex`manager.saveCurrentRecordData()`
+  alert("YO")
 }
 
 function print() {
@@ -39,17 +73,30 @@ function print() {
 }
 
 setInterval(function() {
-  var selection = document.getElementById('deviceSelection')
-  if(selection.style.display == "none") {
-    var python = pythonBridge({python: 'python3', env: {PYTHONPATH: './tools'}})
-    selection.innerHTML = ''
-    python.ex`import slimtabdriver`
-    python`slimtabdriver.list_com_ports()`.then(x => {
+  var com = document.getElementById('comDeviceSelection')
+  if(com.style.display == "none") {
+    com.innerHTML = ''
+    python.ex`import SlimTabDriver`
+    python`SlimTabDriver.list_com_ports()`.then(x => {
       x.forEach(function (name) {
         e = document.createElement("a");
         e.setAttribute('onclick', 'this.parentElement.parentElement.children[0].innerHTML=this.innerHTML')
         e.innerHTML = name
-        selection.appendChild(e)
+        com.appendChild(e)
+      })
+    })
+  }
+  var audio = document.getElementById('audioDeviceSelection')
+  if(audio.style.display == "none") {
+    audio.innerHTML = ''
+    python.ex`import SlimTabManager`
+    python`manager.getInputDevicesName()`.then(x => {
+      x.forEach(function (name, index) {
+        e = document.createElement("a");
+        e.setAttribute('onclick', 'this.parentElement.parentElement.children[0].innerHTML=this.innerHTML')
+        e.innerHTML = name + ':' + index
+        
+        audio.appendChild(e)
       })
     })
   }

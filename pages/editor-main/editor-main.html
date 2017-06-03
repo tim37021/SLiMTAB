@@ -3,7 +3,8 @@
     <title>SLiMTAB</title>
     <link rel="stylesheet" type="text/css" href="ui/buttons/icon.css">
     <script src="./ui/interact.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="css/editor-main.css">
+    <link rel="stylesheet" type="text/css" href="fonts/fonts.css">
+	  <link rel="stylesheet" type="text/css" href="css/editor-main.css">
     <script type="text/javascript" src="script/editor-ui.js"></script>
 	<script type="text/javascript" src="script/content.js"></script>
 	<script>
@@ -77,8 +78,8 @@ window.onload=function(){
       <div class="btn rest_thirtysecondicon"></div>
       <img src="ui/line_vertical.png" style="margin: 7px 0px 4px 4px;">
       <div class="btn recordicon" style="width: 62px;" id="recordbtn"></div>
-      <div class="btn stopicon-disabled"></div>
-      <div class="btn playicon" onclick="mytp.animate()"></div>
+      <div class="btn stopicon" id="stopbtn"></div>
+      <div class="btn playicon"></div>
       <div class="dropdown" style="width: 120px; height: 25px; margin: 13px 0px 10px 10px;">
         <div style="width: 100px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">TAB</div>
         <div class="dropdown-content" style="width: 120px; display: none;">
@@ -88,7 +89,12 @@ window.onload=function(){
       </div>
       <div class="dropdown" style="width: 120px; height: 25px; margin: 13px 0px 10px 10px;">
         <div style="width: 100px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">cc</div>
-        <div class="dropdown-content" style="width: 120px; display: none;" id="deviceSelection">
+        <div class="dropdown-content" style="width: 120px; display: none;" id="comDeviceSelection">
+        </div>
+      </div>
+      <div class="dropdown" style="width: 200px; height: 25px; margin: 13px 0px 10px 10px;">
+        <div style="width: 100px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">cc</div>
+        <div class="dropdown-content" style="width: 120px; display: none;" id="audioDeviceSelection">
         </div>
       </div>
     </div>
@@ -96,13 +102,12 @@ window.onload=function(){
       <div class="tab tabediting draggable" onclick="changetab(this, event)" id="panel_tab1">TAB1</div>
       <div class="tab draggable" onclick="changetab(this, event)" id="panel_tab2">TAB2</div>
     </div>
-    <div class="msgbox draggable2" style="display: none; left: 500px;" id="msgbox">
-      <div class="msgboxtitle" id="msgtitle">標題</div>
+    <div class="dialog draggable2" style="width: 360px; display: none; left: 500px;" id="msgbox">
+      <div class="dialogtitle" id="msgtitle">標題</div>
       <div style="margin: 20px 40px 15px 40px; height: 28px; color: #f2f2f2;" id="msgcontent">內文</div>
       <div class="okbtn" onclick="this.parentElement.style.display='none'">確定</div>
     </div>
     <div style="padding: 0px;overflow:auto;width:100%;height:calc(100% - 158px)" id="tabpaper1"></div>
-    
     <div class="footer">
       <div class="slider">
       <img src="./ui/zoomout.png">
