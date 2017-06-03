@@ -107,14 +107,30 @@ class TabPaper{
 		}
 	}
 	
+	zoomIn(){
+		if(this.scale<1.5){
+			this.scale+=0.1;
+			this.zoom();
+		}
+	}
+	
+	zoomOut(){
+		if(this.scale>0.3){
+			this.scale-=0.1;
+			this.render();
+		}
+	}
+	
+	setScale(s){
+		if(s<1.5 && s>0.3)this.scale=s;
+	}
+	
 	kdEvent(e){
 		if(e.keyCode==107){
 			if(this.sel.length>0){
 				this.data[this.sel[0][0]][this.sel[0][1]*2+1+1]++;
 				this.render();
 			}
-			if(this.scale<3)this.scale+=0.1;
-			this.render();
 		}
 		if(e.keyCode==109){
 			if(this.sel.length>0){
@@ -123,8 +139,6 @@ class TabPaper{
 				if(this.data[p][id*2+1+1]>0)this.data[p][id*2+1+1]--;
 				this.render();
 			}
-			if(this.scale>0.5)this.scale-=0.1;
-			this.render();
 		}
 		if(e.keyCode==87){
 			if(this.sel.length>0){
