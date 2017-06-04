@@ -7,11 +7,15 @@
 	  <link rel="stylesheet" type="text/css" href="css/editor-main.css">
     <script type="text/javascript" src="script/editor-ui.js"></script>
 	<script type="text/javascript" src="script/content.js"></script>
+	<script type="text/javascript" src="script/tabStrip.js"></script>
 	<script>
-	var mytp;
+	let mytp,operTp=null,tabstrip;
 window.onload=function(){
 	mytp=new TabPaper();
+	tabstrip=new tabStrip();
+	operTp=mytp;
 	document.getElementById("tabpaper1").appendChild(mytp.content);
+	document.getElementById("tabstrip").appendChild(tabstrip.content);
 	mytp.load([
 		[4,2,4,6,3],//length,chord,block,chord,block.......
 		[8,1,2,2,6,3,5],
@@ -35,6 +39,10 @@ window.onload=function(){
 		[8,3,4]
 	]);
 	mytp.render();
+	tabstrip.addTag(new tabTag("test tab",mytp));
+	tabstrip.addTag(new tabTag());
+	tabstrip.addTag(new tabTag("123"));
+	tabstrip.render();
 }
 	</script>
   </head>
@@ -99,8 +107,7 @@ window.onload=function(){
       </div>
     </div>
     <div class="tabstrip" id="tabstrip">
-      <div class="tab tabediting draggable" onclick="changetab(this, event)" id="panel_tab1">TAB1</div>
-      <div class="tab draggable" onclick="changetab(this, event)" id="panel_tab2">TAB2</div>
+      
     </div>
     <div class="dialog draggable2" style="width: 360px; display: none; left: 500px;" id="msgbox">
       <div class="dialogtitle" id="msgtitle">標題</div>
