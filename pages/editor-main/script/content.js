@@ -108,14 +108,14 @@ class TabPaper{
 	}
 	
 	zoomIn(){
-		if(this.scale<=2.0){
+		if(this.scale<2.0){
 			this.scale+=0.1;
 			this.zoom();
 		}
 	}
 	
 	zoomOut(){
-		if(this.scale>=0.3){
+		if(this.scale>0.3){
 			this.scale-=0.1;
 			this.render();
 		}
