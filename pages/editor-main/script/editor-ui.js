@@ -1,11 +1,11 @@
 function showFileMenu(element, event) {
-        if(document.getElementById("file_menu").style.display == "none")
-          document.getElementById("file_menu").style.display = null;
-        else
-          document.getElementById("file_menu").style.display = "none";
+    if(document.getElementById("file_menu").style.display == "none")
+		document.getElementById("file_menu").style.display = null;
+    else
+		document.getElementById("file_menu").style.display = "none";
         element.style.color = "#F39800";
-        event.stopPropagation();
-      }
+    event.stopPropagation();
+}
       function hideMenus() {
         document.getElementById("file_menu").style.display = "none";
         document.getElementById("file_menu_root").style.color =  null;
@@ -15,8 +15,8 @@ function showFileMenu(element, event) {
       }
       var webview = document.querySelector('webview')
       function zooming(scale) {
-        mytp.setScale(scale/100);
-		mytp.zoom();
+        operTp.setScale(scale/100);
+		operTp.zoom();
 		document.getElementById("rangevalue").innerHTML=scale+"%";
       }
       interact('.draggable')

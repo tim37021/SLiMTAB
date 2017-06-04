@@ -27,14 +27,21 @@ class TabPaper{
 	}
 	
 	render(){
+		this.vHTML="";
+		let nx=(this.width-this.lineWidth)/2,ix=nx,iy=60,time=0;
 		if(!this.data){
-			this.vHTML='pleas load data first';
+			this.drawLine(ix,iy);
+			this.vHTML=`<div style="overflow:hidden;padding:3px;position:relative;z-index:-1">
+			<svg width="${this.width}" height="${this.height}" 
+			style="box-shadow:1px 1px 4px 2px #777;background:#FFFFFF";>`
+			+this.vHTML+"</svg></div>";
+			this.content.innerHTML=this.vHTML;
+			this.zoom();
 			return;
 		}
-		this.vHTML="";
-		var nx=(this.width-this.lineWidth)/2,ix=nx,iy=60,time=0;
 		this.drawLine(ix,iy);
 		ix+=80;
+		
 		for(let i=0;i<this.data.length;i++){
 			this.drawNote(ix,iy,i,this.data[i][0],this.data[i].slice(1));
 			time+=this.beatLength/this.data[i][0];
@@ -56,7 +63,8 @@ class TabPaper{
 				ix+=80;
 			}
 		}
-		this.vHTML=`<div style="overflow:hidden;padding:3px;"><svg width="${this.width}" height="${this.height}" 
+		this.vHTML=`<div style="overflow:hidden;padding:3px;position:relative;z-index:-1">
+				<svg width="${this.width}" height="${this.height}" 
 			style="box-shadow:1px 1px 4px 2px #777;background:#FFFFFF";>`
 			+this.vHTML+"</svg></div>";
 		this.content.innerHTML=this.vHTML;
@@ -64,11 +72,13 @@ class TabPaper{
 	}
 	
 	zoom(){
-		this.content.children[0].style.width=this.width*this.scale+6+"px";
-		this.content.children[0].style.height=this.height*this.scale+6+"px";
-		this.content.children[0].style.margin="auto";
-		this.content.children[0].children[0].style.transformOrigin="0% 0%";
-		this.content.children[0].children[0].style.transform=`scale(${this.scale},${this.scale})`;
+		for(let i=0;i<this.content.children.length;i++){
+			this.content.children[0].style.width=this.width*this.scale+6+"px";
+			this.content.children[0].style.height=this.height*this.scale+6+"px";
+			this.content.children[0].style.margin="auto";
+			this.content.children[0].children[0].style.transformOrigin="0% 0%";
+			this.content.children[0].children[0].style.transform=`scale(${this.scale},${this.scale})`;
+		}
 	}
 	
 	animate(){
@@ -108,7 +118,7 @@ class TabPaper{
 	}
 	
 	zoomIn(){
-		if(this.scale<1.5){
+		if(this.scale<2.0){
 			this.scale+=0.1;
 			this.zoom();
 		}
@@ -122,7 +132,7 @@ class TabPaper{
 	}
 	
 	setScale(s){
-		if(s<1.5 && s>0.3)this.scale=s;
+		if(s<=2.0 && s>=0.3)this.scale=s;
 	}
 	
 	kdEvent(e){
