@@ -45,7 +45,7 @@ window.onload=function(){
       <div class="menuroot" id="edit_menu_root">編輯</div>
       <div class="menuroot">說明</div>
     </div>
-    <div class="menu" style="left: 155px; top: 45px; display: none;" id="file_menu">
+    <div class="menu" style="left: 155px; top: 45px; display: none;z-index:999" id="file_menu">
       <ul>
         <li id="newfile">開新檔案</li>
         <li id="openfile">開啟舊檔</li>
@@ -111,7 +111,7 @@ window.onload=function(){
     <div class="footer">
       <div class="slider">
       <img src="./ui/zoomout.png">
-      <input class="bar" max=150 min=30 width="150" type="range" id="rangeinput" value="100" oninput="zooming(this.value)"/>
+      <input class="bar" max=200 min=30 width="150" type="range" id="rangeinput" value="100" oninput="zooming(this.value)"/>
       <img src="./ui/zoomin.png">
       <div class="rangevalue"><output id="rangevalue">100%</output></div>
       </div>

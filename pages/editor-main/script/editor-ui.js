@@ -1,11 +1,11 @@
 function showFileMenu(element, event) {
-        if(document.getElementById("file_menu").style.display == "none")
-          document.getElementById("file_menu").style.display = null;
-        else
-          document.getElementById("file_menu").style.display = "none";
+    if(document.getElementById("file_menu").style.display == "none")
+		document.getElementById("file_menu").style.display = null;
+    else
+		document.getElementById("file_menu").style.display = "none";
         element.style.color = "#F39800";
-        event.stopPropagation();
-      }
+    event.stopPropagation();
+}
       function hideMenus() {
         document.getElementById("file_menu").style.display = "none";
         document.getElementById("file_menu_root").style.color =  null;

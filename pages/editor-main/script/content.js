@@ -108,21 +108,21 @@ class TabPaper{
 	}
 	
 	zoomIn(){
-		if(this.scale<1.5){
+		if(this.scale<=2.0){
 			this.scale+=0.1;
 			this.zoom();
 		}
 	}
 	
 	zoomOut(){
-		if(this.scale>0.3){
+		if(this.scale>=0.3){
 			this.scale-=0.1;
 			this.render();
 		}
 	}
 	
 	setScale(s){
-		if(s<1.5 && s>0.3)this.scale=s;
+		if(s<=2.0 && s>=0.3)this.scale=s;
 	}
 	
 	kdEvent(e){
