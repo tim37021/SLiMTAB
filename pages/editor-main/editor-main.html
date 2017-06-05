@@ -39,10 +39,12 @@ window.onload=function(){
 		[8,3,4]
 	]);
 	mytp.render();
-	tabstrip.addTag(new tabTag("test tab",mytp));
+	var st=new tabTag("test tab",mytp);
+	tabstrip.addTag(st);
 	tabstrip.addTag(new tabTag());
 	tabstrip.addTag(new tabTag("123"));
 	tabstrip.render();
+	st.content.dispatchEvent(new Event("click"));//pretend the tab to be clicked
 }
 	</script>
   </head>
