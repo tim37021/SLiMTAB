@@ -4,7 +4,7 @@ class tabStrip{
 		this.content=document.createElement("div");
 		this.content.style.position="relative";
 		this.content.style.width="100%";
-		this.content.style.height="22px";
+		this.content.style.height="28px";
 		this.content.addEventListener("click",()=>{
 			for(let i=0;i<this.container.length;i++){
 				if(this.container[i].paper)this.container[i].paper.content.style.display="none";
@@ -14,14 +14,29 @@ class tabStrip{
 			}
 		},true);
 		this.tagWidth=290;
-		document.addEventListener("mouseup",this.render.bind(this));
+		document.addEventListener("mouseup",this.alignTag.bind(this));
 	}
 	addTag(tag){
+		for(let i=0;i<this.container.length;i++){
+			this.container[i].paper.content.style.display="none";
+			this.container[i].content.style.backgroundColor="#252525";
+			this.container[i].content.style.color="#808080";
+			this.container[i].content.style.borderTop="1px solid #474747";
+		}
 		tag.setX(this.tagWidth*(this.container.length));
 		this.container.push(tag);
 		this.content.appendChild(tag.content);
+		this.paperDisplayer.appendChild(tag.paper.content);
+		tag.content.dispatchEvent(new Event("click"));
 	}
-	render(){
+	setPaperDisplayer(pd){
+		this.paperDisplayer=pd;
+	}
+	setTagDisplayer(pd){
+		this.tagDisplayer=pd;
+		pd.appendChild(this.content);
+	}
+	alignTag(){
 		for(let i=0;i<this.container.length;i++){
 			if(this.container[i].x+this.tagWidth/2>(i+1)*this.tagWidth || 
 			this.container[i].x+this.tagWidth/2<i*this.tagWidth){
@@ -49,22 +64,21 @@ class tabStrip{
 class tabTag{
 	constructor(tabname="New Tab",paper=null){
 		this.paper=paper;
+		if(!paper)this.paper=new TabPaper();
 		this.x=0;
 		this.content=document.createElement('div');
 		this.content.onselectstart=function(){return false;}
 		this.content.innerHTML=tabname;
 		this.content.setAttribute("style",`
-			background:#252525;
-			border:1px solid #000;
-			border-top:1px solid #474747;
-			color:#CCCCCC;
-			padding-top:2px;
 			padding-left:8px;
+			line-height:27px;
+			height:26px;
 			width:280px;
 			position:absolute;
 		`);
 		this.content.addEventListener("click",()=>{
-			if(this.paper)this.paper.content.style.display="inline";
+			this.paper.content.style.display="inline";
+			this.paper.render();
 			this.content.style.backgroundColor="#474747";
 			this.content.style.color="cccccc";
 			this.content.style.borderTop="1px solid #666666";
@@ -75,12 +89,12 @@ class tabTag{
 			this.mx=e.screenX;
 		}
 	}
+	load(data){
+		this.paper.load(data);
+	}
 	setX(x){
 		this.content.style.left=x+"px";
 		this.x=x;
-	}
-	bindPaper(paper){
-		this.paper=paper;
 	}
 	startDrag(e){
 		this.mx=e.screenX;
