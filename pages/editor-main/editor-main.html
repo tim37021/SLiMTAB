@@ -9,14 +9,13 @@
 	<script type="text/javascript" src="script/content.js"></script>
 	<script type="text/javascript" src="script/tabStrip.js"></script>
 	<script>
-	let mytp,operTp=null,tabstrip;
+	let tabstrip;
 window.onload=function(){
-	mytp=new TabPaper();
 	tabstrip=new tabStrip();
-	operTp=mytp;
-	document.getElementById("tabpaper1").appendChild(mytp.content);
-	document.getElementById("tabstrip").appendChild(tabstrip.content);
-	mytp.load([
+	tabstrip.setPaperDisplayer(document.getElementById("tabpaper1"));//must do this before addTag
+	tabstrip.setTagDisplayer(document.getElementById("tabstrip"));
+	let nt=new tabTag("test tag");
+	nt.load([
 		[4,2,4,6,3],//length,chord,block,chord,block.......
 		[8,1,2,2,6,3,5],
 		[8,1,2,2,6,3,5],
@@ -29,22 +28,11 @@ window.onload=function(){
 		[16,3,2],
 		[4,2,4,6,3],
 		[8,1,2,2,6,3,5],
-		[4,2,4,6,3],
-		[8,1,2,2,6,3,5],
-		[16,3,2],
-		[16,3,3],
-		[16,4,2,5,3],
-		[16,3,4],
-		[4,5,6],
-		[8,3,4]
+		
 	]);
-	mytp.render();
-	var st=new tabTag("test tab",mytp);
-	tabstrip.addTag(st);
 	tabstrip.addTag(new tabTag());
 	tabstrip.addTag(new tabTag("123"));
-	tabstrip.render();
-	st.content.dispatchEvent(new Event("click"));//pretend the tab to be clicked
+	tabstrip.addTag(nt);//the last tag you add will be set as active tag
 }
 	</script>
   </head>
