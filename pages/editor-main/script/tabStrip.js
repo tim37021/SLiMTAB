@@ -4,7 +4,7 @@ class tabStrip{
 		this.content=document.createElement("div");
 		this.content.style.position="relative";
 		this.content.style.width="100%";
-		this.content.style.height="22px";
+		this.content.style.height="28px";
 		this.content.addEventListener("click",()=>{
 			for(let i=0;i<this.container.length;i++){
 				if(this.container[i].paper)this.container[i].paper.content.style.display="none";
@@ -70,12 +70,9 @@ class tabTag{
 		this.content.onselectstart=function(){return false;}
 		this.content.innerHTML=tabname;
 		this.content.setAttribute("style",`
-			background:#252525;
-			border:1px solid #000;
-			border-top:1px solid #474747;
-			color:#CCCCCC;
-			padding-top:2px;
 			padding-left:8px;
+			line-height:27px;
+			height:26px;
 			width:280px;
 			position:absolute;
 		`);
