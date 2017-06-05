@@ -1,5 +1,6 @@
 const remote = require('electron').remote; 
 const dialog = remote.dialog;
+const fs = require('fs')
 var assert = require('assert');
 var pythonBridge = require('python-bridge')
 
@@ -10,7 +11,16 @@ document.querySelector('#stopbtn').addEventListener('click', stop_record)
 document.querySelectorAll('#printbtn').forEach(function (x) {x.addEventListener('click', print)})
 
 function openDialog() {
-  dialog.showOpenDialog()
+  var filename = dialog.showOpenDialog()
+  fs.readFile(filename[0], (err, data) => {
+    tp = new TabPaper()
+    document.getElementById("tabpaper1").appendChild(tp.content);
+    tp.load(JSON.parse(data))
+    tp.render()
+    tabstrip.addTag(new tabTag(filename[0].split(/(\\|\/)/g).pop(), tp))
+    tabstrip.render()
+    tp.content.dispatchEvent(new Event("click"));//pretend the tab to be clicked
+  })
 }
 
 function saveDialog() {
