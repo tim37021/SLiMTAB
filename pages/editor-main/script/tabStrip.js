@@ -47,14 +47,16 @@ class tabTag{
 		this.content=document.createElement('div');
 		this.content.onselectstart=function(){return false;}
 		this.content.innerHTML=tabname;
-		this.content.style.backgroundColor="#252525";
-		this.content.style.border="1px solid #000";
-		this.content.style.borderTop="1px solid #474747";
-		this.content.style.color="#CCCCCC";
-		this.content.style.paddingTop="2px";
-		this.content.style.paddingLeft="8px";
-		this.content.style.width="280px";
-		this.content.style.position="absolute";
+		this.content.setAttribute("style",`
+			background:#252525;
+			border:1px solid #000;
+			border-top:1px solid #474747;
+			color:#CCCCCC;
+			padding-top:2px;
+			padding-left:8px;
+			width:280px;
+			position:absolute;
+		`);
 		this.content.addEventListener("click",()=>{
 			if(this.paper)this.paper.content.style.display="inline";
 		},true);
