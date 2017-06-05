@@ -28,9 +28,14 @@ class tabStrip{
 				let x=Math.floor((this.container[i].x+this.tagWidth/2)/this.tagWidth);
 				if(x<0)x=0;
 				if(x>=this.container.length)x=this.container.length-1;
-				let temp=this.container[x];
-				this.container[x]=this.container[i];
-				this.container[i]=temp;
+				if(x>i){
+					this.container.splice(x+1,0,this.container[i]);
+					this.container.splice(i,1);
+				}
+				else{
+					this.container.splice(x,0,this.container[i]);
+					this.container.splice(i+1,1);
+				}
 				break;
 			}
 		}
