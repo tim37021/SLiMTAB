@@ -8,6 +8,9 @@ class tabStrip{
 		this.content.addEventListener("click",()=>{
 			for(let i=0;i<this.container.length;i++){
 				if(this.container[i].paper)this.container[i].paper.content.style.display="none";
+				this.container[i].content.style.backgroundColor="#252525";
+				this.container[i].content.style.color="#808080";
+				this.container[i].content.style.borderTop="1px solid #474747";
 			}
 		},true);
 		this.tagWidth=290;
@@ -19,19 +22,22 @@ class tabStrip{
 		this.content.appendChild(tag.content);
 	}
 	render(){
-		for(let i=0;i<this.container.length-1;i++){
-			for(let j=0;j<this.container.length-i-1;j++){
-				if(this.container[j].x+this.tagWidth/2>this.container[j+1].x){
-					let temp=this.container[j];
-					this.container[j]=this.container[j+1];
-					this.container[j+1]=temp;
+		for(let i=0;i<this.container.length;i++){
+			if(this.container[i].x+this.tagWidth/2>(i+1)*this.tagWidth || 
+			this.container[i].x+this.tagWidth/2<i*this.tagWidth){
+				let x=Math.floor((this.container[i].x+this.tagWidth/2)/this.tagWidth);
+				if(x<0)x=0;
+				if(x>=this.container.length)x=this.container.length-1;
+				if(x>i){
+					this.container.splice(x+1,0,this.container[i]);
+					this.container.splice(i,1);
 				}
+				else{
+					this.container.splice(x,0,this.container[i]);
+					this.container.splice(i+1,1);
+				}
+				break;
 			}
-		}
-		if(this.container[0].x+this.tagWidth/2>this.container[0+1].x){
-			let temp=this.container[0];
-			this.container[0]=this.container[0+1];
-			this.container[0+1]=temp;
 		}
 		for(let i=0;i<this.container.length;i++){
 			this.container[i].content.style.transition="left 200ms linear";
@@ -47,16 +53,21 @@ class tabTag{
 		this.content=document.createElement('div');
 		this.content.onselectstart=function(){return false;}
 		this.content.innerHTML=tabname;
-		this.content.style.backgroundColor="#252525";
-		this.content.style.border="1px solid #000";
-		this.content.style.borderTop="1px solid #474747";
-		this.content.style.color="#CCCCCC";
-		this.content.style.paddingTop="2px";
-		this.content.style.paddingLeft="8px";
-		this.content.style.width="280px";
-		this.content.style.position="absolute";
+		this.content.setAttribute("style",`
+			background:#252525;
+			border:1px solid #000;
+			border-top:1px solid #474747;
+			color:#CCCCCC;
+			padding-top:2px;
+			padding-left:8px;
+			width:280px;
+			position:absolute;
+		`);
 		this.content.addEventListener("click",()=>{
 			if(this.paper)this.paper.content.style.display="inline";
+			this.content.style.backgroundColor="#474747";
+			this.content.style.color="cccccc";
+			this.content.style.borderTop="1px solid #666666";
 		},true);
 		this.content.addEventListener("mousedown",this.startDrag.bind(this));
 		this.moveTag=(e)=>{
