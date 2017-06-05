@@ -31,7 +31,7 @@ class TabPaper{
 		let nx=(this.width-this.lineWidth)/2,ix=nx,iy=60,time=0;
 		if(!this.data){
 			this.drawLine(ix,iy);
-			this.vHTML=`<div style="overflow:hidden;padding:3px;position:relative;z-index:-1">
+			this.vHTML=`<div style="overflow:hidden;padding:3px;">
 			<svg width="${this.width}" height="${this.height}" 
 			style="box-shadow:1px 1px 4px 2px #777;background:#FFFFFF";>`
 			+this.vHTML+"</svg></div>";
@@ -63,7 +63,7 @@ class TabPaper{
 				ix+=80;
 			}
 		}
-		this.vHTML=`<div style="overflow:hidden;padding:3px;position:relative;z-index:-1">
+		this.vHTML=`<div style="overflow:hidden;padding:3px;">
 				<svg width="${this.width}" height="${this.height}" 
 			style="box-shadow:1px 1px 4px 2px #777;background:#FFFFFF";>`
 			+this.vHTML+"</svg></div>";
