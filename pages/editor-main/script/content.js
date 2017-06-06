@@ -14,23 +14,6 @@ class TabPaper{
 		this.content.style.outline="none";
 		this.content.onselectstart=function(){return false;}
 		this.content.setAttribute('tabindex','1');
-		this.grab=(function(e){
-			this.displayer.scrollTop+=this.my-e.screenY;
-			this.displayer.scrollLeft+=this.mx-e.screenX;
-			this.my=e.screenY;
-			this.mx=e.screenX;
-			this.st=this.displayer.scrollTop;
-			this.sl=this.displayer.scrollLeft;
-		}).bind(this);
-		this.content.addEventListener("mousedown",(e)=>{
-			this.my=e.screenY;
-			this.mx=e.screenX;
-			console.log("fuck");
-			this.content.addEventListener("mousemove",this.grab);
-		});
-		document.addEventListener("mouseup",()=>{
-			this.content.removeEventListener("mousemove",this.grab);
-		});
 		this.content.addEventListener("click",this.ckEvent.bind(this));
 		this.content.addEventListener("keydown",this.kdEvent.bind(this));
 		this.data=null;
