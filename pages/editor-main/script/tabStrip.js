@@ -12,7 +12,8 @@ class tabStrip{
 				this.container[i].content.style.color="#808080";
 				this.container[i].content.style.borderTop="1px solid #474747";
 			}
-		},true);
+			this.operTb.active();
+		});
 		this.tagWidth=290;
 		document.addEventListener("mouseup",this.alignTag.bind(this));
 	}
@@ -26,11 +27,11 @@ class tabStrip{
 		tag.setX(this.tagWidth*(this.container.length));
 		tag.paper.setDisplayer(this.paperDisplayer);
 		tag.manager=this;
-		this.operTp=tag.paper;
+		this.operTb=tag;
 		this.container.push(tag);
 		this.content.appendChild(tag.content);
 		this.paperDisplayer.appendChild(tag.paper.content);
-		tag.content.dispatchEvent(new Event("click"));
+		tag.active();
 	}
 	setPaperDisplayer(pd){
 		this.paperDisplayer=pd;
@@ -81,20 +82,23 @@ class tabTag{
 			position:absolute;
 		`);
 		this.content.addEventListener("click",()=>{
-			this.paper.content.style.display="inline";
-			this.paper.render();
-			this.content.style.backgroundColor="#474747";
-			this.content.style.color="cccccc";
-			this.content.style.borderTop="1px solid #666666";
-			this.paper.displayer.scrollTop=this.paper.st;
-			this.paper.displayer.scrollLeft=this.paper.sl;
-			this.manager.operTp=this.paper;
-		},true);
+			this.manager.operTb=this;
+		});
 		this.content.addEventListener("mousedown",this.startDrag.bind(this));
 		this.moveTag=(e)=>{
 			this.setX(this.x+e.screenX-this.mx);
 			this.mx=e.screenX;
 		}
+	}
+	active(){
+		this.paper.content.style.display="inline";
+		this.paper.render();
+		this.content.style.backgroundColor="#474747";
+		this.content.style.color="cccccc";
+		this.content.style.borderTop="1px solid #666666";
+		this.paper.displayer.scrollTop=this.paper.st;
+		this.paper.displayer.scrollLeft=this.paper.sl;
+		this.manager.operTb=this;
 	}
 	load(data){
 		this.paper.load(data);

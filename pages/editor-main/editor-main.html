@@ -112,11 +112,11 @@ window.onload=function(){
       <div style="margin: 20px 40px 15px 40px; height: 28px; color: #f2f2f2;" id="msgcontent">內文</div>
       <div class="okbtn" onclick="this.parentElement.style.display='none'">確定</div>
     </div>
-    <div style="padding: 0px;overflow:auto;width:100%;height:calc(100% - 158px)" id="tabpaper1"></div>
+    <div style="padding: 0px;overflow:auto;width:100%;height:calc(100% - 158px);background:#474747" id="tabpaper1"></div>
     <div class="footer">
       <div class="slider">
       <img src="./ui/zoomout.png">
-      <input class="bar" max=200 min=30 width="150" type="range" id="rangeinput" value="100" oninput="zooming(this.value,tabstrip.operTp)"/>
+      <input class="bar" max=200 min=30 width="150" type="range" id="rangeinput" value="100" oninput="zooming(this.value,tabstrip.operTb.paper)"/>
       <img src="./ui/zoomin.png">
       <div class="rangevalue"><output id="rangevalue">100%</output></div>
       </div>
