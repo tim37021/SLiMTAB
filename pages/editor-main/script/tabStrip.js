@@ -95,6 +95,7 @@ class tabTag{
 			this.paper.displayer.scrollTop=this.paper.st;
 			this.paper.displayer.scrollLeft=this.paper.sl;
 			this.manager.operTp=this.paper;
+			this.manager.setZooming(this.manager.zooming)
 		},true);
 		this.content.addEventListener("mousedown",this.startDrag.bind(this));
 		this.moveTag=(e)=>{
