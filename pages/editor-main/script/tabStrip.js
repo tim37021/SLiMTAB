@@ -85,6 +85,8 @@ class tabTag{
 			this.content.style.color="cccccc";
 			this.content.style.borderTop="1px solid #666666";
 			this.paper.displayer.scrollTop=this.paper.st;
+			this.paper.displayer.scrollLeft=this.paper.sl;
+			operTp=this.paper;
 		},true);
 		this.content.addEventListener("mousedown",this.startDrag.bind(this));
 		this.moveTag=(e)=>{
