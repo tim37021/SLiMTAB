@@ -1,5 +1,5 @@
 class TabPaper{
-	constructor(w=900,h=900*1.41,bps=4,bl=4,lw=840,lh=140){
+	constructor(title='Untitled',w=900,h=900*1.41,bps=4,bl=4,lw=840,lh=140){
 		this.width=w;
 		this.height=h;
 		this.lineHeight=lh;
@@ -16,6 +16,7 @@ class TabPaper{
 		this.content.addEventListener("click",this.ckEvent.bind(this));
 		this.content.addEventListener("keydown",this.kdEvent.bind(this));
 		this.data=null;
+		this.title=title;
 		this.sel=[];
 		this.check();
 	}
@@ -27,7 +28,9 @@ class TabPaper{
 	}	
 	render(){
 		this.vHTML="";
-		let nx=(this.width-this.lineWidth)/2,ix=nx,iy=60;
+		let nx=(this.width-this.lineWidth)/2,ix=nx,iy=0;
+		this.drawTitle(ix, 70);
+		iy=120;
 		if(!this.data){
 			this.drawLine(ix,iy);
 			this.vHTML=`<div style="overflow:hidden;padding:3px;padding-top:20px;">
@@ -160,6 +163,10 @@ class TabPaper{
 		this.data=data;
 	}
 	
+	drawTitle(x, y) {
+		this.vHTML+=`<text x="${this.width/2}" y="${y}" fill="black" text-anchor="middle" font-size="28">${this.title}</text>`;
+	}
+
 	drawBar(x,y){
 		this.vHTML+=`<path d='M${x} ${y} l0 70' 
 		style='stroke:black;stroke-width:1'></path>`;
