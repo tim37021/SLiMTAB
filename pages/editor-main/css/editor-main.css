@@ -1,5 +1,6 @@
 ::-webkit-scrollbar{
 	width:17px;
+	height:17px;
 	background-color:#1a1a1a;
 }
 ::-webkit-scrollbar-thumb{
@@ -14,6 +15,13 @@
 ::-webkit-scrollbar-button:vertical:increment{
 	background:url("../img/normal_arrowdown.png") -2px -6px;
 }
+::-webkit-scrollbar-button:horizontal:increment{
+	background:url("../img/normal_arrowright.png") -6px -2px;
+}
+::-webkit-scrollbar-button:horizontal:decrement{
+	background:url("../img/normal_arrowleft.png") -2px -2px;
+}
+::-webkit-scrollbar-corner{background:#1a1a1a}
 body {
   margin: 0;
   padding: 0;
