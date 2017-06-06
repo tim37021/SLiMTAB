@@ -14,10 +14,9 @@ function showFileMenu(element, event) {
         })
       }
       var webview = document.querySelector('webview')
-      function zooming(scale,ele) {
-        ele.setScale(scale/100);
-		ele.zoom();
-		document.getElementById("rangevalue").innerHTML=scale+"%";
+      function zooming(scale) {
+        tabstrip.setZooming(scale/100);
+		    document.getElementById("rangevalue").innerHTML=scale+"%";
       }
       interact('.draggable')
         .draggable({

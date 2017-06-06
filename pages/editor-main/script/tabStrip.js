@@ -14,6 +14,7 @@ class tabStrip{
 			}
 		},true);
 		this.tagWidth=290;
+		this.zooming = 1.0;
 		document.addEventListener("mouseup",this.alignTag.bind(this));
 	}
 	addTag(tag){
@@ -61,6 +62,11 @@ class tabStrip{
 			this.container[i].content.style.transition="left 200ms linear";
 			this.container[i].setX(i*this.tagWidth);
 		}
+	}
+	setZooming(val){
+		this.operTp.setScale(val)
+		this.operTp.zoom(val)
+		this.zooming = val;
 	}
 }
 
