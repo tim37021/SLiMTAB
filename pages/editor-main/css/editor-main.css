@@ -4,6 +4,7 @@ body {
   -webkit-user-select: none;
   overflow: hidden;
   font-family: 'Open Sans', sans-serif;
+  cursor:default;
 }
 .header {
   background-color: #252525;

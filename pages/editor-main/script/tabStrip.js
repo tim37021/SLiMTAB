@@ -24,6 +24,7 @@ class tabStrip{
 			this.container[i].content.style.borderTop="1px solid #474747";
 		}
 		tag.setX(this.tagWidth*(this.container.length));
+		tag.paper.setDisplayer(this.paperDisplayer);
 		this.container.push(tag);
 		this.content.appendChild(tag.content);
 		this.paperDisplayer.appendChild(tag.paper.content);
@@ -70,7 +71,8 @@ class tabTag{
 		this.content.onselectstart=function(){return false;}
 		this.content.innerHTML=tabname;
 		this.content.setAttribute("style",`
-			padding-left:8px;
+			border-right:1px solid black;
+			padding-left:9px;
 			line-height:27px;
 			height:26px;
 			width:280px;
@@ -82,6 +84,7 @@ class tabTag{
 			this.content.style.backgroundColor="#474747";
 			this.content.style.color="cccccc";
 			this.content.style.borderTop="1px solid #666666";
+			this.paper.displayer.scrollTop=this.paper.st;
 		},true);
 		this.content.addEventListener("mousedown",this.startDrag.bind(this));
 		this.moveTag=(e)=>{
