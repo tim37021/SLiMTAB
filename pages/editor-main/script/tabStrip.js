@@ -25,6 +25,8 @@ class tabStrip{
 		}
 		tag.setX(this.tagWidth*(this.container.length));
 		tag.paper.setDisplayer(this.paperDisplayer);
+		tag.manager=this;
+		this.operTp=tag.paper;
 		this.container.push(tag);
 		this.content.appendChild(tag.content);
 		this.paperDisplayer.appendChild(tag.paper.content);
@@ -86,7 +88,7 @@ class tabTag{
 			this.content.style.borderTop="1px solid #666666";
 			this.paper.displayer.scrollTop=this.paper.st;
 			this.paper.displayer.scrollLeft=this.paper.sl;
-			operTp=this.paper;
+			this.manager.operTp=this.paper;
 		},true);
 		this.content.addEventListener("mousedown",this.startDrag.bind(this));
 		this.moveTag=(e)=>{
