@@ -14,9 +14,12 @@ function showFileMenu(element, event) {
         })
       }
       var webview = document.querySelector('webview')
-      function zooming(scale) {
-        tabstrip.setZooming(scale/100);
-		    document.getElementById("rangevalue").innerHTML=scale+"%";
+      function zooming(scale,tags) {
+			for(let i=0;i<tags.length;i++){
+				tags[i].paper.setScale(scale/100);
+				tags[i].paper.zoom();
+			}
+		document.getElementById("rangevalue").innerHTML=scale+"%";
       }
       interact('.draggable')
         .draggable({

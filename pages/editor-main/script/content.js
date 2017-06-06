@@ -50,7 +50,7 @@ class TabPaper{
 			this.drawLine(ix,iy);
 			this.vHTML=`<div style="overflow:hidden;padding:3px;">
 			<svg width="${this.width}" height="${this.height}" 
-			style="box-shadow:1px 1px 4px 2px #777;background:#FFFFFF";>`
+			style="background:#FFFFFF";>`
 			+this.vHTML+"</svg></div>";
 			this.content.innerHTML=this.vHTML;
 			this.zoom();
@@ -82,7 +82,7 @@ class TabPaper{
 		}
 		this.vHTML=`<div style="overflow:hidden;padding:3px;">
 				<svg width="${this.width}" height="${this.height}" 
-			style="box-shadow:1px 1px 4px 2px #777;background:#FFFFFF";>`
+			style="background:#FFFFFF";>`
 			+this.vHTML+"</svg></div>";
 		this.content.innerHTML=this.vHTML;
 		this.zoom();
