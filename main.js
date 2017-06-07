@@ -39,7 +39,8 @@ function createEditor() {
     slashes: true
   }))
 
-  editorWindow.webContents.openDevTools()
+  if (process.env.NODE_ENV === 'dev')
+    editorWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   editorWindow.on('closed', function () {
