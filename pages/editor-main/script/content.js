@@ -9,7 +9,6 @@ class TabPaper{
 		this.vHTML="";
 		this.st=0;
 		this.scale=1;
-		this.animatInfo=[0,0,0];//start time,elapsed time,frame
 		this.content=document.createElement('div');
 		this.content.style.outline="none";
 		this.content.onselectstart=function(){return false;}
@@ -28,10 +27,10 @@ class TabPaper{
 	}	
 	render(){
 		this.vHTML="";
-		let nx=(this.width-this.lineWidth)/2,ix=nx,iy=60,time=0;
+		let nx=(this.width-this.lineWidth)/2,ix=nx,iy=60;
 		if(!this.data){
 			this.drawLine(ix,iy);
-			this.vHTML=`<div style="overflow:hidden;padding:3px;">
+			this.vHTML=`<div style="overflow:hidden;padding:3px;padding-top:20px;">
 			<svg width="${this.width}" height="${this.height}" 
 			style="background:#FFFFFF";>`
 			+this.vHTML+"</svg></div>";
@@ -43,27 +42,37 @@ class TabPaper{
 		ix+=80;
 		
 		for(let i=0;i<this.data.length;i++){
-			this.drawNote(ix,iy,i,this.data[i][0],this.data[i].slice(1));
-			time+=this.beatLength/this.data[i][0];
-			if(time>this.beatPerSection){
-				this.drawAlert(ix,iy);
-				time=this.beatPerSection;
+			let totaltime=0;
+			for(let j=0;j<this.data[i].length;j++){
+				this.drawNote(ix,iy,i,j,this.data[i][j][0],this.data[i][j].slice(1));
+				ix+=80*this.beatLength/this.data[i][j][0];
+				if(ix>=nx+this.lineWidth){
+					ix=nx,iy+=this.lineHeight;
+					this.drawLine(ix,iy);
+					ix+=80;
+				}
+				totaltime+=1/this.data[i][j][0]*this.beatLength;
 			}
-			if(time==this.beatPerSection){
+			if(i!=this.data.length-1){
+				if(totaltime!=this.beatPerSection)this.drawAlert(ix,iy);
 				ix+=20;
-				if(ix<nx+this.lineWidth)this.drawBar(ix,iy);
+				if(ix<nx+this.lineWidth){
+					this.drawBar(ix,iy);
+				}else{
+					ix=nx,iy+=this.lineHeight;
+					this.drawLine(ix,iy);
+					ix+=80;
+					this.drawBar(ix,iy);
+				}
 				ix+=20;
-				time=0;
-			}else{
-				ix+=80*this.beatLength/this.data[i][0];
-			}
-			if(ix>=nx+this.lineWidth){
-				ix=nx,iy+=this.lineHeight;
-				this.drawLine(ix,iy);
-				ix+=80;
+				if(ix>=nx+this.lineWidth){
+					ix=nx,iy+=this.lineHeight;
+					this.drawLine(ix,iy);
+					ix+=80;
+				}
 			}
 		}
-		this.vHTML=`<div style="overflow:hidden;padding:3px;">
+		this.vHTML=`<div style="overflow:hidden;padding:3px;padding-top:20px;">
 				<svg width="${this.width}" height="${this.height}" 
 			style="background:#FFFFFF";>`
 			+this.vHTML+"</svg></div>";
@@ -85,39 +94,17 @@ class TabPaper{
 		}
 	}
 	
-	animate(){
-		this.animatInfo=[0,0,0];
-		requestAnimationFrame(this.animateFrame.bind(this));
-	}
-	
-	animateFrame(t){
-		var frametime=500;
-		if(this.animatInfo[0]==0){
-			this.animatInfo[0]=t;
-			this.aData=this.data;
-			this.data=[];
-		}
-		this.animatInfo[1]=t-this.animatInfo[0]-this.animatInfo[2]*frametime;
-		if(this.animatInfo[1]>=frametime){
-			this.animatInfo[1]=0;
-			this.animatInfo[2]++;
-			this.data=this.aData.slice(0,this.animatInfo[2]);
-			this.render();
-		}
-		if(this.data.length!=this.aData.length){requestAnimationFrame(this.animateFrame.bind(this));}
-		else{console.log("animation end");}
-	}
-	
-	selNote(pos,id){
-		this.sel[0]=[pos,id];
+	selNote(section,pos,id){
+		this.sel[0]=[section,pos,id];
 		this.render();
 	}
 	
 	ckEvent(e){
 		if(e.target.getAttribute('data-type')=='nt'){
+			var section=e.target.getAttribute('data-section');
 			var pos=e.target.getAttribute('data-pos');
 			var id=e.target.getAttribute('data-i');
-			this.selNote(pos,id);
+			this.selNote(section,pos,id);
 		}
 	}
 	
@@ -142,31 +129,28 @@ class TabPaper{
 	kdEvent(e){
 		if(e.keyCode==107){
 			if(this.sel.length>0){
-				this.data[this.sel[0][0]][this.sel[0][1]*2+1+1]++;
+				this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2]*2+1+1]++;
 				this.render();
 			}
 		}
 		if(e.keyCode==109){
 			if(this.sel.length>0){
-				var p=this.sel[0][0];
-				var id=this.sel[0][1];
-				if(this.data[p][id*2+1+1]>0)this.data[p][id*2+1+1]--;
+				if(this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2]*2+1+1]>0)
+					this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2]*2+1+1]--;
 				this.render();
 			}
 		}
 		if(e.keyCode==87){
 			if(this.sel.length>0){
-				var p=this.sel[0][0];
-				var id=this.sel[0][1];
-				if(this.data[p][id*2+1]>1)this.data[p][id*2+1]--;
+				if(this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2]*2+1]>1)
+					this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2]*2+1]--;
 				this.render();
 			}
 		}
 		if(e.keyCode==83){
 			if(this.sel.length>0){
-				var p=this.sel[0][0];
-				var id=this.sel[0][1];
-				if(this.data[p][id*2+1]<6)this.data[p][id*2+1]++;
+				if(this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2]*2+1]<6)
+					this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2]*2+1]++;
 				this.render();
 			}
 		}
@@ -207,12 +191,12 @@ class TabPaper{
 		this.vHTML=this.vHTML+'</svg>';
 	}
 	
-	drawNote(x,y,pos,length,data){//data=[chord,block,chord,block.....]
+	drawNote(x,y,section,pos,length,data){//data=[chord,block,chord,block.....]
 		this.vHTML+='<svg>';
 		for(let i=0;i<data.length/2;i++){
-			this.vHTML+=`<circle cx='${x}' cy='${y+14*(data[i*2]-1)}' r='5' data-type="nt" data-pos="${pos}" data-i="${i}"
+			this.vHTML+=`<circle cx='${x}' cy='${y+14*(data[i*2]-1)}' r='5' data-type="nt" data-section="${section}" data-pos="${pos}" data-i="${i}"
 			fill='white' stroke-width='0' stroke='black' style='cursor:pointer;'></circle>`;
-			this.vHTML+=`<text data-type="nt" data-pos="${pos}" data-i="${i}" x='${x-4}' y='${y+14*(data[i*2]-1)+5}'
+			this.vHTML+=`<text data-type="nt" data-section="${section}" data-pos="${pos}" data-i="${i}" x='${x-4}' y='${y+14*(data[i*2]-1)+5}'
 			fill='black' style='font-size:14px;cursor:pointer;'>${data[i*2+1]}</text>`;
 		}
 		
@@ -228,11 +212,10 @@ class TabPaper{
 			}
 		}
 		for(let i=0;i<this.sel.length;i++){
-			if(this.sel[i][0]==pos){
-				this.vHTML+=`<circle cx='${x}' cy='${y+14*(data[(this.sel[i][1])*2]-1)}' r='7' fill='rgb(80,255,80)' stroke-width='0' stroke='black'></circle>`;
-				this.vHTML+=`<text data-type="nt" data-pos="${pos}" data-i="${i}" x='${x-4}'
-					y='${y+14*(data[(this.sel[i][1])*2]-1)+5}' fill='black' style='font-size:14px'>
-					${data[(this.sel[i][1])*2+1]}</text>`;
+			if(this.sel[i][0]==section && this.sel[i][1]==pos){
+				this.vHTML+=`<circle cx='${x}' cy='${y+14*(data[(this.sel[i][2])*2]-1)}' r='7' fill='rgb(80,255,80)' stroke-width='0' stroke='black'></circle>`;
+				this.vHTML+=`<text  x='${x-4}' y='${y+14*(data[(this.sel[i][2])*2]-1)+5}'
+				fill='black' style='font-size:14px'>${data[(this.sel[i][2])*2+1]}</text>`;
 			}
 		}
 		this.vHTML+='</svg>';
