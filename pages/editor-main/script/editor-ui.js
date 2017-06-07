@@ -21,72 +21,7 @@ function showFileMenu(element, event) {
 			}
 		document.getElementById("rangevalue").innerHTML=scale+"%";
       }
-      interact('.draggable')
-        .draggable({
-            // enable inertial throwing
-            inertia: true,
-            // keep the element within the area of it's parent
-            restrict: {
-                restriction: "parent",
-                endOnly: true,
-                elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
-            },
-            // enable autoScroll
-            autoScroll: true,
-            onstart: function (event) {
-            },
-            // call this function on every dragmove event
-            onmove: dragMoveListener,
-            // call this function on every dragend event
-            onend: function (event) {
-                // do the fucking sorting
-                if(event.target.parentElement.id=='tabstrip') {
-                  var tabstrip = document.getElementById('tabstrip')
-                  var p = tabstrip.children[0]
-                  list = []
-                  i = 0
-                  do {
-                    list.push({idx: i, obj: p.cloneNode(true)})
-                    i++
-                  } while(p = p.nextElementSibling)
-
-                  ll = list.sort(function(a, b) {
-                    var ax = (parseFloat(a.obj.getAttribute('data-x')) || 0)+280*a.idx
-                    var bx = (parseFloat(b.obj.getAttribute('data-x')) || 0)+280*b.idx
-                    return ax-bx
-                  })
-                  console.log(ll)
-                  tabstrip.innerHTML = ''
-                  ll.forEach(function (e) {
-                    e.obj.setAttribute('data-x', 0)
-                    e.obj.setAttribute('data-y', 0)
-                    e.obj.style.transform = null
-                    tabstrip.appendChild(e.obj)
-                  })
-                }
-            }
-        });
-
-      interact('.draggable2')
-        .draggable({
-            // enable inertial throwing
-            inertia: false,
-            // keep the element within the area of it's parent
-            restrict: {
-                restriction: "parent",
-                endOnly: true,
-                elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
-            },
-            // enable autoScroll
-            autoScroll: true,
-            onstart: function (event) {
-            },
-            // call this function on every dragmove event
-            onmove: dragMoveListener,
-            // call this function on every dragend event
-            onend: function (event) {
-            }
-        });
+      
     function dragMoveListener (event) {
         console.log('dragMoveListener');
         var target = event.target,
