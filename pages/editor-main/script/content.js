@@ -35,7 +35,7 @@ class TabPaper{
 				style="background:#FFFFFF";>`;
 			}
 		}).bind(this);
-		let nx=(this.width-this.lineWidth)/2,ix=nx,iy=220;
+		let nx=(this.width-this.lineWidth)/2,ix=nx,iy=80;
 		if(!this.data){
 			this.drawLine(ix,iy);
 			this.vHTML=`<div style="overflow:hidden;padding:3px;padding-top:20px;">
@@ -50,6 +50,8 @@ class TabPaper{
 		this.vHTML=`<div style="overflow:hidden;padding:3px;padding-top:20px;">
 		<svg width="${this.width}" height="${this.height}" 
 		style="background:#FFFFFF";>`;
+		this.drawTitle(ix, iy);
+		iy+=40;
 		this.drawLine(ix,iy);
 		ix+=80;
 		for(let i=0;i<this.data.length;i++){
