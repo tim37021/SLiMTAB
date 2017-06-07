@@ -20,8 +20,7 @@ function showFileMenu(element, event) {
 				tags[i].paper.zoom();
 			}
 		document.getElementById("rangevalue").innerHTML=scale+"%";
-      }
-      
+    }
     function dragMoveListener (event) {
         console.log('dragMoveListener');
         var target = event.target,

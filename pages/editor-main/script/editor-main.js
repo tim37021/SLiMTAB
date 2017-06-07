@@ -13,13 +13,9 @@ document.querySelectorAll('#printbtn').forEach(function (x) {x.addEventListener(
 function openDialog() {
   var filename = dialog.showOpenDialog()
   fs.readFile(filename[0], (err, data) => {
-    tp = new TabPaper()
-    document.getElementById("tabpaper1").appendChild(tp.content);
-    tp.load(JSON.parse(data))
-    tp.render()
-    tabstrip.addTag(new tabTag(filename[0].split(/(\\|\/)/g).pop(), tp))
-    tabstrip.render()
-    tp.content.dispatchEvent(new Event("click"));//pretend the tab to be clicked
+    tag = new tabTag(filename[0].split(/(\\|\/)/g).pop())
+    tag.load(JSON.parse(data))
+    tabstrip.addTag(tag)
   })
 }
 
