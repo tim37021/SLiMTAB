@@ -36,10 +36,15 @@ function checkPythonVersion() {
   var commandExistsSync = require('command-exists').sync
   var path = require('path')
   var python_cmd
-  if(commandExistsSync('python3www'))
+  if(commandExistsSync('python3'))
    python_cmd = 'python3'
-  else
+  else if(commandExistsSync('python'))
     python_cmd = 'python'
+  else {
+    msgbox("錯誤", "需要安裝Python3才能啟用錄製功能")
+    python = null
+    return
+  }
   try {
     var python = pythonBridge({python: python_cmd})
     python.ex`
@@ -51,13 +56,14 @@ function checkPythonVersion() {
       python=null
     })
     python.ex`
-    sys.path.append(${process.env.PWD}+"/tools/SLiMTAB-backend")
+    sys.path.append(${process.cwd()}+"/tools/SLiMTAB-backend")
     import SlimTabDriver
     import SlimTabManager
     manager=SlimTabManager.SlimTabManager()`
     return python
   } catch (err) {
-    msgbox("錯誤", "Python尚未安裝，最低需求版本>=3.0.0")
+    msgbox("錯誤", "未知異常而無法啟動錄製功能")
+    python=null
   }
 }
 
