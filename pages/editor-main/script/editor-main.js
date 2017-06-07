@@ -33,24 +33,28 @@ function msgbox(title, msg) {
 
 python = checkPythonVersion()
 function checkPythonVersion() {
+  var commandExistsSync = require('command-exists').sync
+  var path = require('path')
+  var python_cmd
+  if(commandExistsSync('python3www'))
+   python_cmd = 'python3'
+  else
+    python_cmd = 'python'
   try {
-    var python = pythonBridge({python: 'python3', env: {PYTHONPATH: './tools/SLiMTAB-backend'}})
-    python.ex`import SlimTabDriver`
-    python.ex`import SlimTabManager`
-    python.ex`manager=SlimTabManager.SlimTabManager()`
-    return python
-  } catch (err) {
-  }
-  try {
-    var python = pythonBridge({python: 'python', env: {PYTHONPATH: './tools/SLiMTAB-backend'}})
-    python.ex`import sys`
+    var python = pythonBridge({python: python_cmd})
+    python.ex`
+    import sys
+    import os`
     python`sys.version_info.major == 2`.then(x => {
     if(x)
       msgbox("錯誤", "Python版本不符，最低需求版本>=3.0.0")
+      python=null
     })
-    python.ex`import SlimTabDriver`
-    python.ex`import SlimTabManager`
-    python.ex`manager=SlimTabManager.SlimTabManager()`
+    python.ex`
+    sys.path.append(${process.env.PWD}+"/tools/SLiMTAB-backend")
+    import SlimTabDriver
+    import SlimTabManager
+    manager=SlimTabManager.SlimTabManager()`
     return python
   } catch (err) {
     msgbox("錯誤", "Python尚未安裝，最低需求版本>=3.0.0")
@@ -78,32 +82,35 @@ function print() {
   webview.print()
 }
 
-setInterval(function() {
-  var com = document.getElementById('comDeviceSelection')
-  if(com.style.display == "none") {
-    com.innerHTML = ''
-    python.ex`import SlimTabDriver`
-    python`SlimTabDriver.list_com_ports()`.then(x => {
-      x.forEach(function (name) {
-        e = document.createElement("a");
-        e.setAttribute('onclick', 'this.parentElement.parentElement.children[0].innerHTML=this.innerHTML')
-        e.innerHTML = name
-        com.appendChild(e)
+var checkDevices = setInterval(function() {
+  if(python!=null) {
+    var com = document.getElementById('comDeviceSelection')
+    if(com.style.display == "none") {
+      com.innerHTML = ''
+      python.ex`import SlimTabDriver`
+      python`SlimTabDriver.list_com_ports()`.then(x => {
+        x.forEach(function (name) {
+          e = document.createElement("a");
+          e.setAttribute('onclick', 'this.parentElement.parentElement.children[0].innerHTML=this.innerHTML')
+          e.innerHTML = name
+          com.appendChild(e)
+        })
       })
-    })
-  }
-  var audio = document.getElementById('audioDeviceSelection')
-  if(audio.style.display == "none") {
-    audio.innerHTML = ''
-    python.ex`import SlimTabManager`
-    python`manager.getInputDevicesName()`.then(x => {
-      x.forEach(function (name, index) {
-        e = document.createElement("a");
-        e.setAttribute('onclick', 'this.parentElement.parentElement.children[0].innerHTML=this.innerHTML')
-        e.innerHTML = name + ':' + index
-        
-        audio.appendChild(e)
+    }
+    var audio = document.getElementById('audioDeviceSelection')
+    if(audio.style.display == "none") {
+      audio.innerHTML = ''
+      python.ex`import SlimTabManager`
+      python`manager.getInputDevicesName()`.then(x => {
+        x.forEach(function (name, index) {
+          e = document.createElement("a");
+          e.setAttribute('onclick', 'this.parentElement.parentElement.children[0].innerHTML=this.innerHTML')
+          e.innerHTML = name + ':' + index
+          
+          audio.appendChild(e)
+        })
       })
-    })
+    } else
+      clearInterval(checkDevices);
   }
 }, 1000)
