@@ -26,8 +26,15 @@ class TabPaper{
 		if(this.lineWidth>this.width)this.lineWidth=this.width-60;
 	}	
 	render(){
-		this.vHTML="";
-		let nx=(this.width-this.lineWidth)/2,ix=nx,iy=60;
+		var checkY=(function(){
+			if(iy+130>this.height){
+				iy=60;
+				this.vHTML+=`</svg></div><div style="overflow:hidden;padding:3px;padding-top:20px;">
+				<svg width="${this.width}" height="${this.height}" 
+				style="background:#FFFFFF";>`;
+			}
+		}).bind(this);
+		let nx=(this.width-this.lineWidth)/2,ix=nx,iy=220;
 		if(!this.data){
 			this.drawLine(ix,iy);
 			this.vHTML=`<div style="overflow:hidden;padding:3px;padding-top:20px;">
@@ -38,9 +45,12 @@ class TabPaper{
 			this.zoom();
 			return;
 		}
+		
+		this.vHTML=`<div style="overflow:hidden;padding:3px;padding-top:20px;">
+		<svg width="${this.width}" height="${this.height}" 
+		style="background:#FFFFFF";>`;
 		this.drawLine(ix,iy);
 		ix+=80;
-		
 		for(let i=0;i<this.data.length;i++){
 			let totaltime=0;
 			for(let j=0;j<this.data[i].length;j++){
@@ -48,6 +58,7 @@ class TabPaper{
 				ix+=80*this.beatLength/this.data[i][j][0];
 				if(ix>=nx+this.lineWidth){
 					ix=nx,iy+=this.lineHeight;
+					checkY();
 					this.drawLine(ix,iy);
 					ix+=80;
 				}
@@ -60,6 +71,7 @@ class TabPaper{
 					this.drawBar(ix,iy);
 				}else{
 					ix=nx,iy+=this.lineHeight;
+					checkY();
 					this.drawLine(ix,iy);
 					ix+=80;
 					this.drawBar(ix,iy);
@@ -67,15 +79,13 @@ class TabPaper{
 				ix+=20;
 				if(ix>=nx+this.lineWidth){
 					ix=nx,iy+=this.lineHeight;
+					checkY();
 					this.drawLine(ix,iy);
 					ix+=80;
 				}
 			}
 		}
-		this.vHTML=`<div style="overflow:hidden;padding:3px;padding-top:20px;">
-				<svg width="${this.width}" height="${this.height}" 
-			style="background:#FFFFFF";>`
-			+this.vHTML+"</svg></div>";
+		this.vHTML+="</svg></div>";
 		this.content.innerHTML=this.vHTML;
 		this.zoom();
 	}
@@ -86,11 +96,11 @@ class TabPaper{
 	
 	zoom(){
 		for(let i=0;i<this.content.children.length;i++){
-			this.content.children[0].style.width=this.width*this.scale+6+"px";
-			this.content.children[0].style.height=this.height*this.scale+6+"px";
-			this.content.children[0].style.margin="auto";
-			this.content.children[0].children[0].style.transformOrigin="0% 0%";
-			this.content.children[0].children[0].style.transform=`scale(${this.scale},${this.scale})`;
+			this.content.children[i].style.width=this.width*this.scale+6+"px";
+			this.content.children[i].style.height=this.height*this.scale+6+"px";
+			this.content.children[i].style.margin="auto";
+			this.content.children[i].children[0].style.transformOrigin="0% 0%";
+			this.content.children[i].children[0].style.transform=`scale(${this.scale},${this.scale})`;
 		}
 	}
 	
