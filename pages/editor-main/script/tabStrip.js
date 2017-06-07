@@ -74,7 +74,10 @@ class tabStrip{
 class tabTag{
 	constructor(tabname="New Tab",paper=null){
 		this.paper=paper;
-		if(!paper)this.paper=new TabPaper(tabname);
+		if(!paper) {
+			this.paper=new TabPaper(tabname);
+			this.paper.load([]);
+		}
 		this.x=0;
 		this.content=document.createElement('div');
 		this.content.onselectstart=function(){return false;}
