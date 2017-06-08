@@ -14,9 +14,11 @@ function showFileMenu(element, event) {
         })
       }
       var webview = document.querySelector('webview')
-      function zooming(scale) {
-        operTp.setScale(scale/100);
-		operTp.zoom();
+      function zooming(scale,tags) {
+			for(let i=0;i<tags.length;i++){
+				tags[i].paper.setScale(scale/100);
+				tags[i].paper.zoom();
+			}
 		document.getElementById("rangevalue").innerHTML=scale+"%";
       }
       interact('.draggable')
@@ -147,19 +149,16 @@ var btn = document.getElementById("myBtn");
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];
 
-// When the user clicks the button, open the modal 
-btn.onclick = function() {
-    modal.style.display = "block";
-}
-
 // When the user clicks on <span> (x), close the modal
 span.onclick = function() {
-    modal.style.display = "none";
+    document.getElementById("myModal").style.display = "none";
 }
 
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
+
+function setting() {
+    document.getElementById("myModal").style.display = "block";
+}
+
+function cancel_setting() {
+     document.getElementById("myModal").style.display = "none";
 }
