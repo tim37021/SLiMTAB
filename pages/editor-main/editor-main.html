@@ -1,155 +1,163 @@
 <html>
-  <head>
-    <title>SLiMTAB</title>
-    <link rel="stylesheet" type="text/css" href="ui/buttons/icon.css">
-    <link rel="stylesheet" type="text/css" href="fonts/fonts.css">
-	  <link rel="stylesheet" type="text/css" href="css/editor-main.css">
-    <script type="text/javascript" src="script/interact.min.js"></script>
-    <script type="text/javascript" src="script/editor-ui.js"></script>
-	  <script type="text/javascript" src="script/content.js"></script>
-	  <script type="text/javascript" src="script/tabStrip.js"></script>
-	<script>
-	let tabstrip;
-window.onload=function(){
-	tabstrip=new tabStrip();
-	tabstrip.setPaperDisplayer(document.getElementById("tabpaper1"));//must do this before addTag
-	tabstrip.setTagDisplayer(document.getElementById("tabstrip"));
-	let nt=new tabTag("test tag");
-	nt.load([
-		[[4,2,4,6,3],//length,chord,block,chord,block.......
-		[8,1,2,2,6,3,5],
-		[8,1,2,2,6,3,5],
-		[4,2,4,6,3],
-		[4,2,4,6,3]],
-		
-		[[4,2,4,6,3],
-		[8,1,2,2,6,3,5],
-		[16,3,2],
-		[4,2,4,6,3],
-		[8,1,2,2,6,3,5],
-		[8,1,2,2,6,3,5],
-		[8,3,2]],
-		
-		[[4,2,4,6,3],
-		[8,1,2,2,6,3,5],
-		[16,3,2],
-		[4,2,4,6,3],
-		[8,1,2,2,6,3,5],
-		[16,3,2],
-		[4,2,4,6,3],
-		[8,1,2,2,6,3,5]],
-		
-		[[4,2,4,6,3],
-		[8,1,2,2,6,3,5],
-		[8,1,2,2,6,3,5],
-		[4,2,4,6,3],
-		[4,2,4,6,3]],
-		
-		[[16,3,2],
-		[4,2,4,6,3],
-		[8,1,2,2,6,3,5]]
-	]);
-	tabstrip.addTag(new tabTag());
-	tabstrip.addTag(new tabTag("123"));
-	tabstrip.addTag(nt);//the last tag you add will be set as active tag
-	tabstrip.container[0].load([
-		[[4,2,4,6,3],
-		[8,1,2,2,6,3,5],
-		[16,3,2],
-		[4,2,4,6,3],
-		[8,1,2,2,6,3,5],
-		[8,1,2,2,6,3,5],
-		[8,3,2]],
-		
-		[[4,2,4,6,3],
-		[8,1,2,2,6,3,5],
-		[16,3,2],
-		[4,2,4,6,3],
-		[8,1,2,2,6,3,5],
-		[16,3,2],
-		[4,2,4,6,3],
-		[8,1,2,2,6,3,5]]
-	]);
-}
-	</script>
-  </head>
-  <body onclick="hideMenus(event)">
-    <div class="header">
-      <div class="title"></div>
-      <div class="menuroot" id="file_menu_root" onclick="showFileMenu(this, event)">檔案</div>
-      <div class="menuroot" id="edit_menu_root">編輯</div>
-      <div class="menuroot">說明</div>
-    </div>
-    <div class="menu" style="left: 155px; top: 45px; display: none;z-index:999" id="file_menu">
-      <ul>
-        <li id="newfile">開新檔案</li>
-        <li id="openfile">開啟舊檔</li>
-        <li id="savefile">儲存</li>
-        <li id="saveas">另存新檔</li>
-        <li id='printbtn'>列印</li>
-        <li>列印</li>
-      </ul>
-    </div>
-    <div class="functionbar">
-      <div class="btn newicon"></div>
-      <div class="btn openicon"></div>
-      <div class="btn saveicon"></div>
-      <div class="btn printicon" id="printbtn"></div>
-      <div class="btn undoicon"></div>
-      <div class="btn redoicon"></div>
-      <img src="ui/line_vertical.png" style="margin: 7px 0px 4px 4px;">
-      <div class="btn doticon"></div>
-      <div class="btn note_wholeicon"></div>
-      <div class="btn note_halficon"></div>
-      <div class="btn note_quartericon"></div>
-      <div class="btn note_eighthicon"></div>
-      <div class="btn note_sixteenthicon"></div>
-      <div class="btn note_thirtysecondicon"></div>
-      <div class="btn rest_wholeicon"></div>
-      <div class="btn rest_halficon"></div>
-      <div class="btn rest_quartericon"></div>
-      <div class="btn rest_eighthicon"></div>
-      <div class="btn rest_sixteenthicon"></div>
-      <div class="btn rest_thirtysecondicon"></div>
-      <img src="ui/line_vertical.png" style="margin: 7px 0px 4px 4px;">
-      <div class="btn recordicon" style="width: 62px;" id="recordbtn"></div>
-      <div class="btn stopicon" id="stopbtn"></div>
-      <div class="btn playicon"></div>
-      <div class="dropdown" style="width: 120px; height: 25px; margin: 13px 0px 10px 10px;">
-        <div style="width: 100px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">TAB</div>
-        <div class="dropdown-content" style="width: 120px; display: none;">
-          <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">TAB</a>
-          <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">SHEET</a>
-        </div>
-      </div>
-      <div class="dropdown" style="width: 120px; height: 25px; margin: 13px 0px 10px 10px;">
-        <div style="width: 100px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">cc</div>
-        <div class="dropdown-content" style="width: 120px; display: none;" id="comDeviceSelection">
-        </div>
-      </div>
-      <div class="dropdown" style="width: 200px; height: 25px; margin: 13px 0px 10px 10px;">
-        <div style="width: 100px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">cc</div>
-        <div class="dropdown-content" style="width: 120px; display: none;" id="audioDeviceSelection">
-        </div>
+
+<head>
+  <title>SLiMTAB</title>
+  <link rel="stylesheet" type="text/css" href="ui/buttons/icon.css">
+  <link rel="stylesheet" type="text/css" href="fonts/fonts.css">
+  <link rel="stylesheet" type="text/css" href="css/editor-main.css">
+  <script type="text/javascript" src="script/interact.min.js"></script>
+  <script type="text/javascript" src="script/editor-ui.js"></script>
+  <script type="text/javascript" src="script/content.js"></script>
+  <script type="text/javascript" src="script/tabStrip.js"></script>
+  <script>
+    let tabstrip;
+    window.onload = function () {
+      tabstrip = new tabStrip();
+      tabstrip.setPaperDisplayer(document.getElementById("tabpaper1"));//must do this before addTag
+      tabstrip.setTagDisplayer(document.getElementById("tabstrip"));
+      let nt = new tabTag("test tag");
+      nt.load([
+        [[4, 2, 4, 6, 3],//length,chord,block,chord,block.......
+        [8, 1, 2, 2, 6, 3, 5],
+        [8, 1, 2, 2, 6, 3, 5],
+        [4, 2, 4, 6, 3],
+        [4, 2, 4, 6, 3]],
+
+        [[4, 2, 4, 6, 3],
+        [8, 1, 2, 2, 6, 3, 5],
+        [16, 3, 2],
+        [4, 2, 4, 6, 3],
+        [8, 1, 2, 2, 6, 3, 5],
+        [8, 1, 2, 2, 6, 3, 5],
+        [8, 3, 2]],
+
+        [[4, 2, 4, 6, 3],
+        [8, 1, 2, 2, 6, 3, 5],
+        [16, 3, 2],
+        [4, 2, 4, 6, 3],
+        [8, 1, 2, 2, 6, 3, 5],
+        [16, 3, 2],
+        [4, 2, 4, 6, 3],
+        [8, 1, 2, 2, 6, 3, 5]],
+
+        [[4, 2, 4, 6, 3],
+        [8, 1, 2, 2, 6, 3, 5],
+        [8, 1, 2, 2, 6, 3, 5],
+        [4, 2, 4, 6, 3],
+        [4, 2, 4, 6, 3]],
+
+        [[16, 3, 2],
+        [4, 2, 4, 6, 3],
+        [8, 1, 2, 2, 6, 3, 5]]
+      ]);
+      tabstrip.addTag(new tabTag());
+      tabstrip.addTag(new tabTag("123"));
+      tabstrip.addTag(nt);//the last tag you add will be set as active tag
+      tabstrip.container[0].load([
+        [[4, 2, 4, 6, 3],
+        [8, 1, 2, 2, 6, 3, 5],
+        [16, 3, 2],
+        [4, 2, 4, 6, 3],
+        [8, 1, 2, 2, 6, 3, 5],
+        [8, 1, 2, 2, 6, 3, 5],
+        [8, 3, 2]],
+
+        [[4, 2, 4, 6, 3],
+        [8, 1, 2, 2, 6, 3, 5],
+        [16, 3, 2],
+        [4, 2, 4, 6, 3],
+        [8, 1, 2, 2, 6, 3, 5],
+        [16, 3, 2],
+        [4, 2, 4, 6, 3],
+        [8, 1, 2, 2, 6, 3, 5]]
+      ]);
+    }
+  </script>
+</head>
+
+<body onclick="hideMenus(event)">
+  <div class="header">
+    <div class="title"></div>
+    <div class="menuroot" id="file_menu_root" onclick="showFileMenu(this, event)">檔案</div>
+    <div class="menuroot" id="edit_menu_root">編輯</div>
+    <div class="menuroot">說明</div>
+  </div>
+  <div class="menu" style="left: 155px; top: 45px; display: none;z-index:999" id="file_menu">
+    <ul>
+      <li id="newfile">開新檔案</li>
+      <li id="openfile">開啟舊檔</li>
+      <li id="savefile">儲存</li>
+      <li id="saveas">另存新檔</li>
+      <li id='printbtn'>列印</li>
+      <li>列印</li>
+    </ul>
+  </div>
+  <div class="functionbar">
+    <div class="btn newicon"></div>
+    <div class="btn openicon"></div>
+    <div class="btn saveicon"></div>
+    <div class="btn printicon" id="printbtn"></div>
+    <div class="btn undoicon"></div>
+    <div class="btn redoicon"></div>
+    <img src="ui/line_vertical.png" style="margin: 7px 0px 4px 4px;">
+    <div class="btn doticon"></div>
+    <div class="btn note_wholeicon"></div>
+    <div class="btn note_halficon"></div>
+    <div class="btn note_quartericon"></div>
+    <div class="btn note_eighthicon"></div>
+    <div class="btn note_sixteenthicon"></div>
+    <div class="btn note_thirtysecondicon"></div>
+    <div class="btn rest_wholeicon"></div>
+    <div class="btn rest_halficon"></div>
+    <div class="btn rest_quartericon"></div>
+    <div class="btn rest_eighthicon"></div>
+    <div class="btn rest_sixteenthicon"></div>
+    <div class="btn rest_thirtysecondicon"></div>
+    <img src="ui/line_vertical.png" style="margin: 7px 0px 4px 4px;">
+    <div class="btn recordicon" style="width: 62px;" id="recordbtn"></div>
+    <div class="btn stopicon" id="stopbtn"></div>
+    <div class="btn playicon"></div>
+    <div class="dropdown" style="width: 120px; height: 25px; margin: 13px 0px 10px 10px;">
+      <div style="width: 100px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">TAB</div>
+      <div class="dropdown-content" style="width: 120px; display: none;">
+        <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">TAB</a>
+        <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">SHEET</a>
       </div>
     </div>
-    <div class="tabstrip" id="tabstrip">
-      
+    <div class="dropdown" style="width: 120px; height: 25px; margin: 13px 0px 10px 10px;">
+      <div style="width: 100px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">cc</div>
+      <div class="dropdown-content" style="width: 120px; display: none;" id="comDeviceSelection">
+      </div>
     </div>
-    <div class="dialog draggable2" style="width: 360px; display: none; left: 500px;" id="msgbox">
-      <div class="dialogtitle" id="msgtitle">標題</div>
-      <div style="margin: 20px 40px 15px 40px; height: 28px; color: #f2f2f2;" id="msgcontent">內文</div>
-      <div class="okbtn" onclick="this.parentElement.style.display='none'">確定</div>
+    <div class="dropdown" style="width: 200px; height: 25px; margin: 13px 0px 10px 10px;">
+      <div style="width: 100px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">cc</div>
+      <div class="dropdown-content" style="width: 120px; display: none;" id="audioDeviceSelection">
+      </div>
     </div>
-    <div style="padding: 0px;overflow:auto;width:100%;height:calc(100% - 158px);background:#474747" id="tabpaper1"></div>
-    <div class="footer">
-      <div class="slider">
+  </div>
+  <div class="tabstrip" id="tabstrip">
+
+  </div>
+  <div class="dialog draggable2" style="width: 360px; display: none; left: 500px;" id="msgbox">
+    <div class="dialogtitle" id="msgtitle">標題</div>
+    <div style="margin: 20px 40px 15px 40px; height: 28px; color: #f2f2f2;" id="msgcontent">內文</div>
+    <div class="okbtn" onclick="this.parentElement.style.display='none'">確定</div>
+  </div>
+  <div style="padding: 0px;overflow:auto;width:100%;height:calc(100% - 158px);background:#474747" id="tabpaper1"></div>
+  <div class="footer">
+    <div class="slider">
       <img src="./ui/zoomout.png">
-      <input class="bar" max=200 min=30 width="150" type="range" id="rangeinput" value="100" oninput="zooming(this.value,tabstrip.container)"/>
+      <input class="bar" max=200 min=30 width="150" type="range" id="rangeinput" value="100" oninput="zooming(this.value,tabstrip.container)"
+      />
       <img src="./ui/zoomin.png">
-      <div class="rangevalue"><output id="rangevalue">100%</output></div>
+      <div class="rangevalue">
+        <output id="rangevalue">100%</output>
       </div>
     </div>
-  </body>
-  <script>require('./script/editor-main.js')</script>
+  </div>
+</body>
+<script>
+  require('./script/editor-main.js')
+</script>
+
 </html>
