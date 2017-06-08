@@ -54,6 +54,7 @@ class TabPaper{
 		iy+=40;
 		this.drawLine(ix,iy);
 		ix+=80;
+		this.counter=0;
 		for(let i=0;i<this.data.length;i++){
 			let totaltime=0;
 			for(let j=0;j<this.data[i].length;j++){
@@ -91,6 +92,9 @@ class TabPaper{
 		this.vHTML+="</svg></div>";
 		this.content.innerHTML=this.vHTML;
 		this.zoom();
+		this.noteTextList=this.content.getElementsByClassName("notetext");
+		this.noteCircleList=this.content.getElementsByClassName("notecircle");
+		this.vHTML="";
 	}
 	
 	setDisplayer(e){
@@ -107,31 +111,18 @@ class TabPaper{
 		}
 	}
 	
-	selNote(section,pos,id){
-		this.sel[0]=[section,pos,id];
-		this.render();
+	selNote(section,pos,id,ln){
+		this.sel[0]=[section,pos,id,ln];
+		for(let i=0;i<this.noteCircleList.length;i++)this.noteCircleList[i].setAttribute('fill','rgb(255,255,255)');
+		this.noteCircleList[ln].setAttribute('fill','rgb(80,255,80)');
 	}
 	
 	ckEvent(e){
 		if(e.target.getAttribute('data-type')=='nt'){
-			var section=e.target.getAttribute('data-section');
-			var pos=e.target.getAttribute('data-pos');
-			var id=e.target.getAttribute('data-i');
-			this.selNote(section,pos,id);
-		}
-	}
-	
-	zoomIn(){
-		if(this.scale<2.0){
-			this.scale+=0.1;
-			this.zoom();
-		}
-	}
-	
-	zoomOut(){
-		if(this.scale>0.3){
-			this.scale-=0.1;
-			this.render();
+			var section=e.target.getAttribute('section');
+			var pos=e.target.getAttribute('pos');
+			var id=e.target.getAttribute('i');
+			this.selNote(section,pos,id,e.target.getAttribute("ln"));
 		}
 	}
 	
@@ -143,28 +134,39 @@ class TabPaper{
 		if(e.keyCode==107){
 			if(this.sel.length>0){
 				this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2]*2+1+1]++;
-				this.render();
+				this.noteTextList[this.sel[0][3]].innerHTML=this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2]*2+1+1];
 			}
 		}
 		if(e.keyCode==109){
 			if(this.sel.length>0){
-				if(this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2]*2+1+1]>0)
+				if(this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2]*2+1+1]>0){
 					this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2]*2+1+1]--;
-				this.render();
+					this.noteTextList[this.sel[0][3]].innerHTML=this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2]*2+1+1];
+				}
 			}
 		}
 		if(e.keyCode==87){
 			if(this.sel.length>0){
-				if(this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2]*2+1]>1)
+				let temp=this.sel[0];
+				if(this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2]*2+1]>1){
 					this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2]*2+1]--;
-				this.render();
+					let ory=this.noteTextList[temp[3]].getAttribute('y');
+					let orcy=this.noteCircleList[temp[3]].getAttribute('cy');
+					this.noteTextList[temp[3]].setAttribute('y',`${Number(ory)-14}`);
+					this.noteCircleList[temp[3]].setAttribute('cy',`${Number(orcy)-14}`);
+				}
 			}
 		}
 		if(e.keyCode==83){
 			if(this.sel.length>0){
-				if(this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2]*2+1]<6)
+				let temp=this.sel[0];
+				if(this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2]*2+1]<6){
 					this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2]*2+1]++;
-				this.render();
+					let ory=this.noteTextList[temp[3]].getAttribute('y');
+					let orcy=this.noteCircleList[temp[3]].getAttribute('cy');
+					this.noteTextList[temp[3]].setAttribute('y',`${Number(ory)+14}`);
+					this.noteCircleList[temp[3]].setAttribute('cy',`${Number(orcy)+14}`);;
+				}
 			}
 		}
 	}
@@ -208,13 +210,14 @@ class TabPaper{
 		this.vHTML=this.vHTML+'</svg>';
 	}
 	
-	drawNote(x,y,section,pos,length,data){//data=[chord,block,chord,block.....]
+	drawNote(x,y,section,pos,length,data){
 		this.vHTML+='<svg>';
 		for(let i=0;i<data.length/2;i++){
-			this.vHTML+=`<circle cx='${x}' cy='${y+14*(data[i*2]-1)}' r='5' data-type="nt" data-section="${section}" data-pos="${pos}" data-i="${i}"
+			this.vHTML+=`<circle class="notecircle" cx='${x}' cy='${y+14*(data[i*2]-1)}' r='5'
 			fill='white' stroke-width='0' stroke='black' style='cursor:pointer;'></circle>`;
-			this.vHTML+=`<text data-type="nt" data-section="${section}" data-pos="${pos}" data-i="${i}" x='${x-4}' y='${y+14*(data[i*2]-1)+5}'
+			this.vHTML+=`<text class="notetext" ln=${this.counter} data-type="nt" section="${section}" pos="${pos}" i="${i}" x='${x-4}' y='${y+14*(data[i*2]-1)+5}'
 			fill='black' style='font-size:14px;cursor:pointer;'>${data[i*2+1]}</text>`;
+			this.counter++;
 		}
 		
 		this.vHTML+=`<path d='M${x} ${y+78} l0 25' stroke-width='1' stroke='black'></path>`;
@@ -226,13 +229,6 @@ class TabPaper{
 			for(let i=this.beatLength*2;i<length;i*=2){
 				this.vHTML+=`<path d='M${x} ${y+102-4*j} l6 1' stroke-width='1' stroke='black'></path>`;
 				j++;
-			}
-		}
-		for(let i=0;i<this.sel.length;i++){
-			if(this.sel[i][0]==section && this.sel[i][1]==pos){
-				this.vHTML+=`<circle cx='${x}' cy='${y+14*(data[(this.sel[i][2])*2]-1)}' r='7' fill='rgb(80,255,80)' stroke-width='0' stroke='black'></circle>`;
-				this.vHTML+=`<text  x='${x-4}' y='${y+14*(data[(this.sel[i][2])*2]-1)+5}'
-				fill='black' style='font-size:14px'>${data[(this.sel[i][2])*2+1]}</text>`;
 			}
 		}
 		this.vHTML+='</svg>';
