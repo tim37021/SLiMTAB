@@ -71,17 +71,55 @@
         [4, 2, 4, 6, 3],
         [8, 1, 2, 2, 6, 3, 5]]
       ]);
-
     }
   </script>
 </head>
 
 <body onclick="hideMenus(event)">
+    <!-- The Modal-->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>裝置設定</h2>
+    </div>
+    <div class="modal-body">
+      <div class="modal_content">
+      音訊輸出:<div class="dropdown" style="width: 250px; height: 25px; margin: 13px 0px 10px 10px;">
+        <div style="width: 220px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">Built-in Output</div>
+        <div class="dropdown-content" style="width: 250px; display: none;">
+          <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Built-in Output</a>
+          <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Built-in Output2</a>
+        </div>
+      </div>
+      <p>音訊輸入:</p>
+      <div class="dropdown" style="width: 250px; height: 25px; margin: 13px 0px 10px 10px;">
+        <div style="width: 220px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">Steinberg UR12</div>
+        <div class="dropdown-content" style="width: 250px; display: none;">
+          <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Steinberg UR12</a>
+          <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Steinberg UR12</a>
+        </div>
+      </div>
+      <p>取樣頻率: 44100HZ</p>
+      </div>
+    </div>
+    <div class="cancel_btn" onclick="cancel_setting();" >  取消</div>
+    <div class="done_btn" onclick="cancel_setting();">  確定</div>
+  </div>
+
+</div>  
+
   <div class="header">
     <div class="title"></div>
     <div class="menuroot" id="file_menu_root" onclick="showFileMenu(this, event)">檔案</div>
     <div class="menuroot" id="edit_menu_root">編輯</div>
     <div class="menuroot">說明</div>
+    <div class="btn_setting" title="設定" onclick="setting();"></div>   
+    <img src="ui/line_vertical.png" style="margin: 7px 0px 4px 4px;  position: absolute;right: 11%;">
+    <div class="btn_shrink" title="最小化"  onclick="Minimize();"></div>
+    <div class="btn_full" title="全視窗" onclick="setwin('all');"></div>
+    <div class="btn_esc" title="關閉" onclick="window.close();"></div>
   </div>
   <div class="menu" style="left: 155px; top: 45px; display: none;z-index:999" id="file_menu">
     <ul>

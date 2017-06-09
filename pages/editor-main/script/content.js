@@ -216,10 +216,11 @@ class TabPaper {
         } else {
           this.data[this.cursor[0]].splice(this.data[this.cursor[0]].length - 1, 1);
           this.cursor[1] = this.data[this.cursor[0]].length - 1;
+
         }
       }
     }
-    
+   
     this.render();
   }
 
@@ -248,6 +249,7 @@ class TabPaper {
       this.render()
 
     }
+
   }
 
   load(data) {
@@ -280,7 +282,9 @@ class TabPaper {
 		<tspan x='${x + 10}' y='${y + 21 + 21}'>A</tspan>
 		<tspan x='${x + 10}' y='${y + 42 + 21}'>B</tspan>
 		</text>`;
+
     if (first) {
+
       this.vHTML += `<text style='fill:black;font:bold 24px serif'>
 		  <tspan x='${x + 33}' y='${y + 28}'>${this.beatPerSection}</tspan>
 		  <tspan x='${x + 33}' y='${y + 23 + 28}'>${this.beatLength}</tspan>
@@ -292,13 +296,14 @@ class TabPaper {
   }
 
   drawCursor(x, y) {
+
     this.vHTML += `<circle class="notecircle" cx='${x}' cy='${y + 14 * (this.cursor[2] - 1)}' r='5'
 			fill='#F39800' stroke-width='0' stroke='black' style='cursor:pointer;'></circle>`;
+
   }
 
   drawNote(x, y, section, pos, length, data) {
     this.vHTML += "<svg>";
-
     var is_blank = false;
     if (data.length == 1) {
       // pass

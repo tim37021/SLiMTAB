@@ -76,3 +76,50 @@ function dragMoveListener(event) {
   target.setAttribute("data-x", x);
   target.setAttribute("data-y", y);
 }
+
+function setwin(flag){
+if (flag=="all") { //以螢幕大小縮放範圍
+resizeTo(screen.availWidth,screen.availHeight);
+moveTo(0,0);
+} else { //預設大小
+resizeTo(930,720);
+moveTo(50,10);
+}
+}
+
+const remote = require('electron').remote;
+
+function Minimize() 
+{
+var window = remote.getCurrentWindow();
+    window.minimize(); 
+}
+
+
+
+function setting() {
+    document.getElementById("myModal").style.display = "block";
+}
+
+function cancel_setting() {
+     document.getElementById("myModal").style.display = "none";
+}
+
+
+function addclose(){
+		var node = document.createElement('div');
+		node.setAttribute("style",`
+			height:20px;
+			width:20px;
+            line-height: 15px;
+			position:absolute;
+			right: 5px;
+            top: 2px;
+            color:white;
+            font-size:15px;
+		`);
+        node.setAttribute("class","close")
+    var textnode = document.createTextNode("x");
+    node.appendChild(textnode);
+	document.querySelector(".page").appendChild(node);
+}

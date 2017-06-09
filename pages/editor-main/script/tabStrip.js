@@ -82,6 +82,7 @@ class tabTag {
       return false;
     };
     this.content.innerHTML = tabname;
+    this.content.setAttribute("class","page")
     this.content.setAttribute(
       "style",
       `
