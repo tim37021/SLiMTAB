@@ -89,22 +89,6 @@ function print() {
 
 var checkDevices = setInterval(function() {
   if (python != null) {
-    var com = document.getElementById("comDeviceSelection");
-    if (com.style.display == "none") {
-      com.innerHTML = "";
-      python.ex`import SlimTabDriver`;
-      python`SlimTabDriver.list_com_ports()`.then(x => {
-        x.forEach(function(name) {
-          e = document.createElement("a");
-          e.setAttribute(
-            "onclick",
-            "this.parentElement.parentElement.children[0].innerHTML=this.innerHTML"
-          );
-          e.innerHTML = name;
-          com.appendChild(e);
-        });
-      });
-    }
     var audio = document.getElementById("audioDeviceSelection");
     if (audio.style.display == "none") {
       audio.innerHTML = "";
