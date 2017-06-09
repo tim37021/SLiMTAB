@@ -1,240 +1,293 @@
-class TabPaper{
-	constructor(w=900,h=900*1.41,bps=4,bl=4,lw=840,lh=140){
-		this.width=w;
-		this.height=h;
-		this.lineHeight=lh;
-		this.lineWidth=lw;
-		this.beatLength=bl;
-		this.beatPerSection=bps;
-		this.vHTML="";
-		this.st=0;
-		this.scale=1;
-		this.animatInfo=[0,0,0];//start time,elapsed time,frame
-		this.content=document.createElement('div');
-		this.content.style.outline="none";
-		this.content.onselectstart=function(){return false;}
-		this.content.setAttribute('tabindex','1');
-		this.content.addEventListener("click",this.ckEvent.bind(this));
-		this.content.addEventListener("keydown",this.kdEvent.bind(this));
-		this.data=null;
-		this.sel=[];
-		this.check();
-	}
-	check(){
-		if(this.width<500)this.width=500;
-		if(this.height<500)this.height=500;
-		if(this.lineHeight>300)this.lineHeight=120;
-		if(this.lineWidth>this.width)this.lineWidth=this.width-60;
-	}	
-	render(){
-		this.vHTML="";
-		let nx=(this.width-this.lineWidth)/2,ix=nx,iy=60,time=0;
-		if(!this.data){
-			this.drawLine(ix,iy);
-			this.vHTML=`<div style="overflow:hidden;padding:3px;">
-			<svg width="${this.width}" height="${this.height}" 
-			style="background:#FFFFFF";>`
-			+this.vHTML+"</svg></div>";
-			this.content.innerHTML=this.vHTML;
-			this.zoom();
-			return;
-		}
-		this.drawLine(ix,iy);
-		ix+=80;
-		
-		for(let i=0;i<this.data.length;i++){
-			this.drawNote(ix,iy,i,this.data[i][0],this.data[i].slice(1));
-			time+=this.beatLength/this.data[i][0];
-			if(time>this.beatPerSection){
-				this.drawAlert(ix,iy);
-				time=this.beatPerSection;
-			}
-			if(time==this.beatPerSection){
-				ix+=20;
-				if(ix<nx+this.lineWidth)this.drawBar(ix,iy);
-				ix+=20;
-				time=0;
-			}else{
-				ix+=80*this.beatLength/this.data[i][0];
-			}
-			if(ix>=nx+this.lineWidth){
-				ix=nx,iy+=this.lineHeight;
-				this.drawLine(ix,iy);
-				ix+=80;
-			}
-		}
-		this.vHTML=`<div style="overflow:hidden;padding:3px;">
+class TabPaper {
+  constructor(title = "Untitled", w = 900, h = 900 * 1.41, bps = 4, bl = 4, lw = 840, lh = 140) {
+    this.width = w;
+    this.height = h;
+    this.lineHeight = lh;
+    this.lineWidth = lw;
+    this.beatLength = bl;
+    this.beatPerSection = bps;
+    this.vHTML = "";
+    this.st = 0;
+    this.scale = 1;
+    this.content = document.createElement("div");
+    this.content.style.outline = "none";
+    this.content.onselectstart = function() {
+      return false;
+    };
+    this.content.setAttribute("tabindex", "1");
+    this.content.addEventListener("click", this.ckEvent.bind(this));
+    this.content.addEventListener("keydown", this.kdEvent.bind(this));
+    this.data = null;
+    this.title = title;
+    this.sel = [];
+    this.cursor = [0, 0, 1];
+    this.check();
+  }
+  check() {
+    if (this.width < 500) this.width = 500;
+    if (this.height < 500) this.height = 500;
+    if (this.lineHeight > 300) this.lineHeight = 120;
+    if (this.lineWidth > this.width) this.lineWidth = this.width - 60;
+  }
+  render() {
+    var checkY = function() {
+      if (iy + 130 > this.height) {
+        iy = 60;
+        this.vHTML += `</svg></div><div style="overflow:hidden;padding:3px;padding-top:20px;">
 				<svg width="${this.width}" height="${this.height}" 
-			style="background:#FFFFFF";>`
-			+this.vHTML+"</svg></div>";
-		this.content.innerHTML=this.vHTML;
-		this.zoom();
-	}
-	
-	setDisplayer(e){
-		this.displayer=e;
-	}
-	
-	zoom(){
-		for(let i=0;i<this.content.children.length;i++){
-			this.content.children[0].style.width=this.width*this.scale+6+"px";
-			this.content.children[0].style.height=this.height*this.scale+6+"px";
-			this.content.children[0].style.margin="auto";
-			this.content.children[0].children[0].style.transformOrigin="0% 0%";
-			this.content.children[0].children[0].style.transform=`scale(${this.scale},${this.scale})`;
-		}
-	}
-	
-	animate(){
-		this.animatInfo=[0,0,0];
-		requestAnimationFrame(this.animateFrame.bind(this));
-	}
-	
-	animateFrame(t){
-		var frametime=500;
-		if(this.animatInfo[0]==0){
-			this.animatInfo[0]=t;
-			this.aData=this.data;
-			this.data=[];
-		}
-		this.animatInfo[1]=t-this.animatInfo[0]-this.animatInfo[2]*frametime;
-		if(this.animatInfo[1]>=frametime){
-			this.animatInfo[1]=0;
-			this.animatInfo[2]++;
-			this.data=this.aData.slice(0,this.animatInfo[2]);
-			this.render();
-		}
-		if(this.data.length!=this.aData.length){requestAnimationFrame(this.animateFrame.bind(this));}
-		else{console.log("animation end");}
-	}
-	
-	selNote(pos,id){
-		this.sel[0]=[pos,id];
-		this.render();
-	}
-	
-	ckEvent(e){
-		if(e.target.getAttribute('data-type')=='nt'){
-			var pos=e.target.getAttribute('data-pos');
-			var id=e.target.getAttribute('data-i');
-			this.selNote(pos,id);
-		}
-	}
-	
-	zoomIn(){
-		if(this.scale<2.0){
-			this.scale+=0.1;
-			this.zoom();
-		}
-	}
-	
-	zoomOut(){
-		if(this.scale>0.3){
-			this.scale-=0.1;
-			this.render();
-		}
-	}
-	
-	setScale(s){
-		if(s<=2.0 && s>=0.3)this.scale=s;
-	}
-	
-	kdEvent(e){
-		if(e.keyCode==107){
-			if(this.sel.length>0){
-				this.data[this.sel[0][0]][this.sel[0][1]*2+1+1]++;
-				this.render();
-			}
-		}
-		if(e.keyCode==109){
-			if(this.sel.length>0){
-				var p=this.sel[0][0];
-				var id=this.sel[0][1];
-				if(this.data[p][id*2+1+1]>0)this.data[p][id*2+1+1]--;
-				this.render();
-			}
-		}
-		if(e.keyCode==87){
-			if(this.sel.length>0){
-				var p=this.sel[0][0];
-				var id=this.sel[0][1];
-				if(this.data[p][id*2+1]>1)this.data[p][id*2+1]--;
-				this.render();
-			}
-		}
-		if(e.keyCode==83){
-			if(this.sel.length>0){
-				var p=this.sel[0][0];
-				var id=this.sel[0][1];
-				if(this.data[p][id*2+1]<6)this.data[p][id*2+1]++;
-				this.render();
-			}
-		}
-	}
-	
-	load(data){
-		this.data=data;
-	}
-	
-	drawBar(x,y){
-		this.vHTML+=`<path d='M${x} ${y} l0 70' 
+				style="background:#FFFFFF";>`;
+      }
+    }.bind(this);
+    let nx = (this.width - this.lineWidth) / 2,
+      ix = nx,
+      iy = 80;
+    if (!this.data) {
+      this.drawLine(ix, iy);
+      this.vHTML =
+        `<div style="overflow:hidden;padding:3px;padding-top:20px;">
+			<svg width="${this.width}" height="${this.height}" 
+			style="background:#FFFFFF";>` +
+        this.vHTML +
+        "</svg></div>";
+      this.content.innerHTML = this.vHTML;
+      this.zoom();
+      return;
+    }
+
+    this.vHTML = `<div style="overflow:hidden;padding:3px;padding-top:20px;">
+		<svg width="${this.width}" height="${this.height}" 
+		style="background:#FFFFFF";>`;
+    this.drawTitle(ix, iy);
+    iy += 40;
+    this.drawLine(ix, iy, true);
+    ix += 80;
+    this.counter = 0;
+
+    var note_distance = 80;
+    var distance_ratio = 1.0;
+    var notes_four_sections = 0;
+    var calc_beats = function(beatLength, arr) {
+      var ret = 0;
+      for(let i=0; i<arr.length; i++)
+        ret += beatLength / arr[i][0];
+      return ret;
+    };
+    for (let i = 0; i < this.data.length; i++) {
+      let totaltime = 0;
+      // estimate note  section
+
+      if (i % 4 == 0) {
+        for (let j = i; j < i + 4 && j < this.data.length; j++) {
+            notes_four_sections += this.data[j].length;
+        }
+      }
+
+      var section_width = (this.lineWidth-80) * (this.data[i].length / notes_four_sections)
+      var beat_width = section_width / calc_beats(this.beatLength, this.data[i]);
+
+      for (let j = 0; j < this.data[i].length; j++) {
+        if(i%4!=0 || j!=0)
+          ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
+        if(i==this.cursor[0]&&j==this.cursor[1])
+          this.drawCursor(ix, iy)
+        this.drawNote(ix, iy, i, j, this.data[i][j][0], this.data[i][j].slice(1));
+        ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
+        totaltime += 1 / this.data[i][j][0] * this.beatLength;
+      }
+      if (totaltime != this.beatPerSection) this.drawAlert(ix, iy);
+      
+      if (i % 4 == 3) {
+        (ix = nx), (iy += this.lineHeight);
+        this.drawBar(nx+this.lineWidth, iy);
+        checkY();
+        this.drawLine(ix, iy);
+        ix += 80;
+      } else
+        this.drawBar(ix, iy);
+      
+    }
+    this.vHTML += "</svg></div>";
+    this.content.innerHTML = this.vHTML;
+    this.zoom();
+    this.noteTextList = this.content.getElementsByClassName("notetext");
+    this.noteCircleList = this.content.getElementsByClassName("notecircle");
+    this.vHTML = "";
+  }
+
+  setDisplayer(e) {
+    this.displayer = e;
+  }
+
+  zoom() {
+    for (let i = 0; i < this.content.children.length; i++) {
+      this.content.children[i].style.width = this.width * this.scale + 6 + "px";
+      this.content.children[i].style.height = this.height * this.scale + 6 + "px";
+      this.content.children[i].style.margin = "auto";
+      this.content.children[i].children[0].style.transformOrigin = "0% 0%";
+      this.content.children[i].children[0].style.transform = `scale(${this.scale},${this.scale})`;
+    }
+  }
+
+  selNote(section, pos, id, ln) {
+    this.sel[0] = [section, pos, id, ln];
+    for (let i = 0; i < this.noteCircleList.length; i++) this.noteCircleList[i].setAttribute("fill", "rgb(255,255,255)");
+    this.noteCircleList[ln].setAttribute("fill", "rgb(80,255,80)");
+  }
+
+  ckEvent(e) {
+    if (e.target.getAttribute("data-type") == "nt") {
+      var section = parseInt(e.target.getAttribute("section"));
+      var pos = parseInt(e.target.getAttribute("pos"));
+      var id = parseInt(e.target.getAttribute("i"));
+      //this.selNote(section, pos, id, e.target.getAttribute("ln"));
+      this.cursor = [section, pos, this.data[section][pos][1+2*id]];
+      this.render()
+    }
+  }
+
+  setScale(s) {
+    if (s <= 2.0 && s >= 0.3) this.scale = s;
+  }
+
+  kdEvent(e) {
+    Math.clamp = function(number, min, max) {
+      return Math.max(min, Math.min(number, max));
+    }
+    var is_key_event = false;
+    switch(e.keyCode) {
+      case 87:
+        this.cursor[2] -= 1; is_key_event = true; break; 
+      case 83:
+        this.cursor[2] += 1; is_key_event = true; break;
+      case 65:
+        this.cursor[1] -= 1; is_key_event = true; break;
+      case 68:
+        this.cursor[1] += 1; is_key_event = true; break;
+    }
+    this.cursor[2] = Math.clamp(this.cursor[2], 1, 6);
+    if(this.cursor[1]<0 && this.cursor[0]>0) {
+      this.cursor[0]--;
+      this.cursor[1]=this.data[this.cursor[0]].length-1;
+    }
+    if(this.cursor[1]>=this.data[this.cursor[0]].length) {
+      this.cursor[0]++;
+      this.cursor[1]=0;
+    }
+    if(this.cursor[0]==this.data.length) {
+      this.cursor[0] = this.data.length-1;
+      this.cursor[1]=this.data[this.cursor[0]].length-1;
+    }
+    this.cursor[1] = Math.clamp(this.cursor[1], 0, this.data[this.cursor[0]].length-1);
+    console.log(this.cursor)
+    this.render()
+    /*if (e.keyCode == 107) {
+      if (this.sel.length > 0) {
+        this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1 + 1]++;
+        this.noteTextList[this.sel[0][3]].innerHTML = this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1 + 1];
+      }
+    }
+    if (e.keyCode == 109) {
+      if (this.sel.length > 0) {
+        if (this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1 + 1] > 0) {
+          this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1 + 1]--;
+          this.noteTextList[this.sel[0][3]].innerHTML = this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1 + 1];
+        }
+      }
+    }
+    
+    if (e.keyCode == 87) {
+      if (this.sel.length > 0) {
+        let temp = this.sel[0];
+        if (this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1] > 1) {
+          this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1]--;
+          let ory = this.noteTextList[temp[3]].getAttribute("y");
+          let orcy = this.noteCircleList[temp[3]].getAttribute("cy");
+          this.noteTextList[temp[3]].setAttribute("y", `${Number(ory) - 14}`);
+          this.noteCircleList[temp[3]].setAttribute("cy", `${Number(orcy) - 14}`);
+        }
+      }
+    }
+    if (e.keyCode == 83) {
+      if (this.sel.length > 0) {
+        let temp = this.sel[0];
+        if (this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1] < 6) {
+          this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1]++;
+          let ory = this.noteTextList[temp[3]].getAttribute("y");
+          let orcy = this.noteCircleList[temp[3]].getAttribute("cy");
+          this.noteTextList[temp[3]].setAttribute("y", `${Number(ory) + 14}`);
+          this.noteCircleList[temp[3]].setAttribute("cy", `${Number(orcy) + 14}`);
+        }
+      }
+    }*/
+  }
+
+  load(data) {
+    this.data = data;
+  }
+
+  drawTitle(x, y) {
+    this.vHTML += `<text x="${this.width / 2}" y="${y}" fill="black" text-anchor="middle" font-size="28">${this.title}</text>`;
+  }
+
+  drawBar(x, y) {
+    this.vHTML += `<path d='M${x} ${y} l0 70' 
 		style='stroke:black;stroke-width:1'></path>`;
-	}
-	
-	drawAlert(x,y){
-		this.vHTML+=`<circle cx='${x}' cy='${y-14}' r='5' 
+  }
+
+  drawAlert(x, y) {
+    this.vHTML += `<circle cx='${x}' cy='${y - 14}' r='5' 
 		fill='red' stroke-width='0' stroke='red'></circle>`;
-	};
-	
-	drawLine(x,y){
-		this.vHTML+='<svg  stroke-linecap="square" >'
-		for(let i=0;i<6;i++){
-			this.vHTML+=`<line x1='${x}' y1='${y+i*14}' x2='${x+this.lineWidth}' y2='${y+i*14}'
+  }
+
+  drawLine(x, y, first=false) {
+    this.vHTML += '<svg  stroke-linecap="square" >';
+    for (let i = 0; i < 6; i++) {
+      this.vHTML += `<line x1='${x}' y1='${y + i * 14}' x2='${x + this.lineWidth}' y2='${y + i * 14}'
 				style="stroke:black;stroke-width:1"
 			></line>`;
-		}
-		this.vHTML+=`<text style='fill:black;font:bold 22px Sans-serif'>
-		<tspan x='${x+10}' y='${y+21}'>T</tspan>
-		<tspan x='${x+10}' y='${y+21+21}'>A</tspan>
-		<tspan x='${x+10}' y='${y+42+21}'>B</tspan>
+    }
+    this.vHTML += `<text style='fill:black;font:bold 22px Sans-serif'>
+		<tspan x='${x + 10}' y='${y + 21}'>T</tspan>
+		<tspan x='${x + 10}' y='${y + 21 + 21}'>A</tspan>
+		<tspan x='${x + 10}' y='${y + 42 + 21}'>B</tspan>
 		</text>`;
-		this.vHTML+=`<text style='fill:black;font:bold 24px serif'>
-		<tspan x='${x+33}' y='${y+28}'>${this.beatPerSection}</tspan>
-		<tspan x='${x+33}' y='${y+23+28}'>${this.beatLength}</tspan>
-		</text>`;
-		this.vHTML+=`<path d='M${x} ${y} l0 70 M${x+this.lineWidth} ${y} l0 70' 
+    if(first) {
+      this.vHTML += `<text style='fill:black;font:bold 24px serif'>
+		  <tspan x='${x + 33}' y='${y + 28}'>${this.beatPerSection}</tspan>
+		  <tspan x='${x + 33}' y='${y + 23 + 28}'>${this.beatLength}</tspan>
+		  </text>`;
+    }
+    this.vHTML += `<path d='M${x} ${y} l0 70 M${x + this.lineWidth} ${y} l0 70' 
 		style='stroke:black;stroke-width:1'></path>`;
-		this.vHTML=this.vHTML+'</svg>';
-	}
-	
-	drawNote(x,y,pos,length,data){//data=[chord,block,chord,block.....]
-		this.vHTML+='<svg>';
-		for(let i=0;i<data.length/2;i++){
-			this.vHTML+=`<circle cx='${x}' cy='${y+14*(data[i*2]-1)}' r='5' data-type="nt" data-pos="${pos}" data-i="${i}"
-			fill='white' stroke-width='0' stroke='black' style='cursor:pointer;'></circle>`;
-			this.vHTML+=`<text data-type="nt" data-pos="${pos}" data-i="${i}" x='${x-4}' y='${y+14*(data[i*2]-1)+5}'
-			fill='black' style='font-size:14px;cursor:pointer;'>${data[i*2+1]}</text>`;
-		}
-		
-		this.vHTML+=`<path d='M${x} ${y+78} l0 25' stroke-width='1' stroke='black'></path>`;
-		if(length>this.beatLength){
-			this.vHTML+=`<path d='M${x} ${y+102} l6 1' stroke-width='2' stroke='black'></path>`;
-		}
-		if(length>this.beatLength*2){
-			var j=1;
-			for(let i=this.beatLength*2;i<length;i*=2){
-				this.vHTML+=`<path d='M${x} ${y+102-4*j} l6 1' stroke-width='1' stroke='black'></path>`;
-				j++;
-			}
-		}
-		for(let i=0;i<this.sel.length;i++){
-			if(this.sel[i][0]==pos){
-				this.vHTML+=`<circle cx='${x}' cy='${y+14*(data[(this.sel[i][1])*2]-1)}' r='7' fill='rgb(80,255,80)' stroke-width='0' stroke='black'></circle>`;
-				this.vHTML+=`<text data-type="nt" data-pos="${pos}" data-i="${i}" x='${x-4}'
-					y='${y+14*(data[(this.sel[i][1])*2]-1)+5}' fill='black' style='font-size:14px'>
-					${data[(this.sel[i][1])*2+1]}</text>`;
-			}
-		}
-		this.vHTML+='</svg>';
-	}
+    this.vHTML = this.vHTML + "</svg>";
+  }
+
+  drawCursor(x, y) {
+    this.vHTML += `<circle class="notecircle" cx='${x}' cy='${y+14 * (this.cursor[2] - 1)}' r='5'
+			fill='green' stroke-width='0' stroke='black' style='cursor:pointer;'></circle>`;
+  }
+
+  drawNote(x, y, section, pos, length, data) {
+    this.vHTML += "<svg>";
+    for (let i = 0; i < data.length / 2; i++) {
+      this.vHTML += `<text class="notetext" ln=${this.counter} data-type="nt" section="${section}" pos="${pos}" i="${i}" x='${x - 4}' y='${y +
+        14 * (data[i * 2] - 1) +
+        5}'
+			fill='black' style='font-size:14px;cursor:pointer;'>${data[i * 2 + 1]}</text>`;
+      this.counter++;
+    }
+
+    this.vHTML += `<path d='M${x} ${y + 78} l0 25' stroke-width='1' stroke='black'></path>`;
+    if (length > this.beatLength) {
+      this.vHTML += `<path d='M${x} ${y + 102} l6 1' stroke-width='2' stroke='black'></path>`;
+    }
+    if (length > this.beatLength * 2) {
+      var j = 1;
+      for (let i = this.beatLength * 2; i < length; i *= 2) {
+        this.vHTML += `<path d='M${x} ${y + 102 - 4 * j} l6 1' stroke-width='1' stroke='black'></path>`;
+        j++;
+      }
+    }
+    this.vHTML += "</svg>";
+  }
 }

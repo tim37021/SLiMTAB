@@ -1,113 +1,116 @@
-const remote = require('electron').remote; 
+const remote = require("electron").remote;
 const dialog = remote.dialog;
-const fs = require('fs')
-var assert = require('assert');
-var pythonBridge = require('python-bridge')
+const fs = require("fs");
+var assert = require("assert");
+var pythonBridge = require("python-bridge");
+const { ipcRenderer } = require("electron");
 
-document.querySelector('#openfile').addEventListener('click', openDialog)
-document.querySelector('#saveas').addEventListener('click', saveDialog)
-document.querySelector('#recordbtn').addEventListener('click', record)
-document.querySelector('#stopbtn').addEventListener('click', stop_record)
-document.querySelectorAll('#printbtn').forEach(function (x) {x.addEventListener('click', print)})
+document.querySelector("#openfile").addEventListener("click", openDialog);
+document.querySelector("#saveas").addEventListener("click", saveDialog);
+document.querySelector("#recordbtn").addEventListener("click", record);
+document.querySelector("#stopbtn").addEventListener("click", stop_record);
+document.querySelectorAll("#printbtn").forEach(function(x) {
+  x.addEventListener("click", print);
+});
 
 function openDialog() {
-  var filename = dialog.showOpenDialog()
+  var filename = dialog.showOpenDialog();
   fs.readFile(filename[0], (err, data) => {
-    tp = new TabPaper()
-    document.getElementById("tabpaper1").appendChild(tp.content);
-    tp.load(JSON.parse(data))
-    tp.render()
-    tabstrip.addTag(new tabTag(filename[0].split(/(\\|\/)/g).pop(), tp))
-    tabstrip.render()
-    tp.content.dispatchEvent(new Event("click"));//pretend the tab to be clicked
-  })
+    tag = new tabTag(filename[0].split(/(\\|\/)/g).pop());
+    tag.load(JSON.parse(data));
+    tabstrip.addTag(tag);
+  });
 }
 
 function saveDialog() {
-  dialog.showSaveDialog()
-  alert("OK")
+  dialog.showSaveDialog();
+  alert("OK");
 }
 
 function msgbox(title, msg) {
-  var msgbox = document.getElementById('msgbox')
-  document.getElementById('msgtitle').innerHTML = title;
-  document.getElementById('msgcontent').innerHTML = msg;
-  msgbox.style.display = null
+  var msgbox = document.getElementById("msgbox");
+  document.getElementById("msgtitle").innerHTML = title;
+  document.getElementById("msgcontent").innerHTML = msg;
+  msgbox.style.display = null;
 }
 
-python = checkPythonVersion()
+python = checkPythonVersion();
 function checkPythonVersion() {
-  try {
-    var python = pythonBridge({python: 'python3', env: {PYTHONPATH: './tools/SLiMTAB-backend'}})
-    python.ex`import SlimTabDriver`
-    python.ex`import SlimTabManager`
-    python.ex`manager=SlimTabManager.SlimTabManager()`
-    return python
-  } catch (err) {
+  var commandExistsSync = require("command-exists").sync;
+  var path = require("path");
+  var python_cmd;
+  if (commandExistsSync("python3")) python_cmd = "python3";
+  else if (commandExistsSync("python")) python_cmd = "python";
+  else {
+    msgbox("錯誤", "需要安裝Python3才能啟用錄製功能");
+    python = null;
+    return;
   }
   try {
-    var python = pythonBridge({python: 'python', env: {PYTHONPATH: './tools/SLiMTAB-backend'}})
-    python.ex`import sys`
+    var python = pythonBridge({ python: python_cmd });
+    python.ex`
+    import sys
+    import os`;
     python`sys.version_info.major == 2`.then(x => {
-    if(x)
-      msgbox("錯誤", "Python版本不符，最低需求版本>=3.0.0")
-    })
-    python.ex`import SlimTabDriver`
-    python.ex`import SlimTabManager`
-    python.ex`manager=SlimTabManager.SlimTabManager()`
-    return python
+      if (x) msgbox("錯誤", "Python版本不符，最低需求版本>=3.0.0");
+      python = null;
+    });
+    python.ex`
+    sys.path.append(${process.cwd()}+"/tools/SLiMTAB-backend")
+    import SlimTabDriver
+    import SlimTabManager
+    manager=SlimTabManager.SlimTabManager()`;
+    return python;
   } catch (err) {
-    msgbox("錯誤", "Python尚未安裝，最低需求版本>=3.0.0")
+    msgbox("錯誤", "未知異常而無法啟動錄製功能");
+    python = null;
   }
 }
 
 function record() {
-  var device = document.getElementById('comDeviceSelection').parentElement.children[0].innerHTML
+  var device = document.getElementById("comDeviceSelection").parentElement.children[0].innerHTML;
   python`SlimTabDriver.SliMTABDriver(${device}).check()`.then(x => {
-    if(x) {
-      python.ex`manager.setInputDevice(2)`
-      python.ex`manager.record()`
-    } else
-      msgbox("錯誤", "沒有權限存取裝置或者裝置不存在")
-  })
+    if (x) {
+      python.ex`manager.setInputDevice(2)`;
+      python.ex`manager.record()`;
+    } else msgbox("錯誤", "沒有權限存取裝置或者裝置不存在");
+  });
 }
 
 function stop_record() {
-  python.ex`manager.stopRecord()`
-  python.ex`manager.saveCurrentRecordData()`
-  alert("YO")
+  python.ex`manager.stopRecord()`;
+  python.ex`manager.saveCurrentRecordData()`;
+  alert("YO");
 }
 
 function print() {
-  webview.print()
+  cont = tabstrip.operTb.paper.content.cloneNode(true);
+  cont.children[0].style.padding = "0px 3px 3px";
+  ipcRenderer.send("print-document", cont.innerHTML);
+  cont = null;
 }
 
-setInterval(function() {
-  var com = document.getElementById('comDeviceSelection')
-  if(com.style.display == "none") {
-    com.innerHTML = ''
-    python.ex`import SlimTabDriver`
-    python`SlimTabDriver.list_com_ports()`.then(x => {
-      x.forEach(function (name) {
-        e = document.createElement("a");
-        e.setAttribute('onclick', 'this.parentElement.parentElement.children[0].innerHTML=this.innerHTML')
-        e.innerHTML = name
-        com.appendChild(e)
-      })
-    })
+var checkDevices = setInterval(function() {
+  if (python != null) {
+    var audio = document.getElementById("audioDeviceSelection");
+    if (audio.style.display == "none") {
+      audio.innerHTML = "";
+      python.ex`import SlimTabManager`;
+      python`manager.getInputDevicesName()`.then(x => {
+        x.forEach(function(name, index) {
+          e = document.createElement("a");
+          e.setAttribute("onclick", "this.parentElement.parentElement.children[0].innerHTML=this.innerHTML");
+          e.innerHTML = name + ":" + index;
+
+          audio.appendChild(e);
+        });
+        python`manager.getDefaultDevice()`.then(x => {
+          if (audio.parentElement.children[0].innerHTML == "") {
+            if (x["input"] != -1) audio.parentElement.children[0].innerHTML = audio.children[x["input"]].innerHTML;
+            else audio.parentElement.children[0].innerHTML = "No input device";
+          }
+        });
+      });
+    } else clearInterval(checkDevices);
   }
-  var audio = document.getElementById('audioDeviceSelection')
-  if(audio.style.display == "none") {
-    audio.innerHTML = ''
-    python.ex`import SlimTabManager`
-    python`manager.getInputDevicesName()`.then(x => {
-      x.forEach(function (name, index) {
-        e = document.createElement("a");
-        e.setAttribute('onclick', 'this.parentElement.parentElement.children[0].innerHTML=this.innerHTML')
-        e.innerHTML = name + ':' + index
-        
-        audio.appendChild(e)
-      })
-    })
-  }
-}, 1000)
+}, 1000);

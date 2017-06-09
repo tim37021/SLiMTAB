@@ -36,6 +36,153 @@ body {
   padding: 0px;
   display: flex;
 }
+.btn_esc {
+  position: absolute;
+  right: 1%;
+  top: 12px;
+  width: 16px;
+  height: 16px;
+  background: url("../img/normal_esc.png");
+}
+  .btn_esc:hover {
+    background: url("../img/hover_esc.png");
+  }
+.btn_full {
+  position: absolute;
+  right: 4.3%;
+  top: 12px;
+  width: 16px;
+  height: 16px;
+  background: url("../img/normal_full.png");
+}
+  .btn_full:hover {
+    background: url("../img/hover_full.png");
+  }
+.btn_shrink {
+  position: absolute;
+  right: 8%;
+  top: 12px;
+  width: 16px;
+  height: 16px;
+  background: url("../img/normal_shrink.png");
+}
+  .btn_shrink:hover {
+    background: url("../img/hover_shrink.png");
+  }
+.btn_setting {
+  position: absolute;
+  right: 12%;
+  top: 12px;
+  width: 17px;
+  height: 17px;
+  background: url("../img/normal_setting.png");
+}
+  .btn_setting:hover {
+    background: url("../img/hover_setting.png");
+  }
+/*setting*/  
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    -webkit-animation-name: fadeIn; /* Fade in the background */
+    -webkit-animation-duration: 0.4s;
+    animation-name: fadeIn;
+    animation-duration: 0.4s
+}
+/* Modal Content */
+.modal-content {
+    position: fixed;
+    top: 30%;
+    left: 25%;
+    background-color: #565656;
+    width: 50%;
+    -webkit-animation-name: slideIn;
+    -webkit-animation-duration: 0.4s;
+    animation-name: slideIn;
+    animation-duration: 0.4s;
+    border-radius: 30px;
+}
+
+/* The Close Button */
+.cancel_btn {
+  position: absolute;
+  right: 28%;
+  top: 85%;
+  width:15%;
+  height: 8%;
+  background-color: #808080;
+  color: #f2f2f2;
+  border: 2px solid #333333;
+  font-size: 22px;
+  font-family:Microsoft JhengHei; 
+}
+.done_btn {
+  position: absolute;
+  right: 8%;
+  top: 85%;
+  width:15%;
+  height: 8%;
+  background-color: #808080;
+  color: #f2f2f2;
+  border: 2px solid #333333;
+  font-size: 22px;
+  font-family:Microsoft JhengHei; 
+}
+.modal-header {
+    padding: 10px 70px;
+    background-color: #f2f2f2;
+    color: black;
+    border-top-left-radius:30px;
+    border-top-right-radius:30px;
+}
+
+.modal-body {
+    padding: 200px 65px;
+    color :#f2f2f2;
+}
+.modal_content {
+  position: absolute;
+  top: 25%;
+  left: 20%;
+  border: 2px solid #333333;
+  padding: 10px 20px;
+  margin-left: 8%;
+  font-size: 22px;
+  font-family:Microsoft JhengHei; 
+}
+
+
+/* Add Animation */
+@-webkit-keyframes slideIn {
+    from {bottom: -300px; opacity: 0} 
+    to {bottom: 0; opacity: 1}
+}
+
+
+@-webkit-keyframes fadeIn {
+    from {opacity: 0} 
+    to {opacity: 1}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0} 
+    to {opacity: 1}
+}
+@keyframes slideIn {
+    from {bottom: -300px; opacity: 0}
+    to {bottom: 0; opacity: 1}
+}
+
+/*End of setting*/
+
 .menuroot {
   margin-left: 24px;
   margin-top: 10px;
