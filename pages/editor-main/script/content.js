@@ -92,13 +92,15 @@ class TabPaper {
         totaltime += 1 / this.data[i][j][0] * this.beatLength;
       }
       if (totaltime != this.beatPerSection) this.drawAlert(ix, iy);
-      if (i % 4 < 3) this.drawBar(ix, iy);
+      
       if (i % 4 == 3) {
         (ix = nx), (iy += this.lineHeight);
+        this.drawBar(nx+this.lineWidth, iy);
         checkY();
         this.drawLine(ix, iy);
         ix += 80;
-      }
+      } else
+        this.drawBar(ix, iy);
       
     }
     this.vHTML += "</svg></div>";
