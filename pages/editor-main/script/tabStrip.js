@@ -7,8 +7,7 @@ class tabStrip {
     this.content.style.height = "28px";
     this.content.addEventListener("click", () => {
       for (let i = 0; i < this.container.length; i++) {
-        if (this.container[i].paper)
-          this.container[i].paper.content.style.display = "none";
+        if (this.container[i].paper) this.container[i].paper.content.style.display = "none";
         this.container[i].content.style.backgroundColor = "#252525";
         this.container[i].content.style.color = "#808080";
         this.container[i].content.style.borderTop = "1px solid #474747";
@@ -44,13 +43,8 @@ class tabStrip {
   }
   alignTag() {
     for (let i = 0; i < this.container.length; i++) {
-      if (
-        this.container[i].x + this.tagWidth / 2 > (i + 1) * this.tagWidth ||
-        this.container[i].x + this.tagWidth / 2 < i * this.tagWidth
-      ) {
-        let x = Math.floor(
-          (this.container[i].x + this.tagWidth / 2) / this.tagWidth
-        );
+      if (this.container[i].x + this.tagWidth / 2 > (i + 1) * this.tagWidth || this.container[i].x + this.tagWidth / 2 < i * this.tagWidth) {
+        let x = Math.floor((this.container[i].x + this.tagWidth / 2) / this.tagWidth);
         if (x < 0) x = 0;
         if (x >= this.container.length) x = this.container.length - 1;
         if (x > i) {

@@ -1,13 +1,5 @@
 class TabPaper {
-  constructor(
-    title = "Untitled",
-    w = 900,
-    h = 900 * 1.41,
-    bps = 4,
-    bl = 4,
-    lw = 840,
-    lh = 140
-  ) {
+  constructor(title = "Untitled", w = 900, h = 900 * 1.41, bps = 4, bl = 4, lw = 840, lh = 140) {
     this.width = w;
     this.height = h;
     this.lineHeight = lh;
@@ -81,25 +73,15 @@ class TabPaper {
         var cursor = ix;
         var orig_cursor = ix;
         for (let j = i; j < i + 4 && j < this.data.length; j++) {
-          for (let k = 0; k < this.data[j].length; k++)
-            cursor += note_distance * this.beatLength / this.data[j][k][0];
+          for (let k = 0; k < this.data[j].length; k++) cursor += note_distance * this.beatLength / this.data[j][k][0];
         }
         if (cursor > nx + this.lineWidth) {
-          distance_ratio =
-            (nx + this.lineWidth - orig_cursor) / (cursor + 60 - orig_cursor);
+          distance_ratio = (nx + this.lineWidth - orig_cursor) / (cursor + 60 - orig_cursor);
         }
       }
       for (let j = 0; j < this.data[i].length; j++) {
-        this.drawNote(
-          ix,
-          iy,
-          i,
-          j,
-          this.data[i][j][0],
-          this.data[i][j].slice(1)
-        );
-        ix +=
-          distance_ratio * note_distance * this.beatLength / this.data[i][j][0];
+        this.drawNote(ix, iy, i, j, this.data[i][j][0], this.data[i][j].slice(1));
+        ix += distance_ratio * note_distance * this.beatLength / this.data[i][j][0];
         totaltime += 1 / this.data[i][j][0] * this.beatLength;
       }
       if (i != this.data.length - 1) {
@@ -132,19 +114,16 @@ class TabPaper {
   zoom() {
     for (let i = 0; i < this.content.children.length; i++) {
       this.content.children[i].style.width = this.width * this.scale + 6 + "px";
-      this.content.children[i].style.height =
-        this.height * this.scale + 6 + "px";
+      this.content.children[i].style.height = this.height * this.scale + 6 + "px";
       this.content.children[i].style.margin = "auto";
       this.content.children[i].children[0].style.transformOrigin = "0% 0%";
-      this.content.children[i].children[0].style.transform = `scale(${this
-        .scale},${this.scale})`;
+      this.content.children[i].children[0].style.transform = `scale(${this.scale},${this.scale})`;
     }
   }
 
   selNote(section, pos, id, ln) {
     this.sel[0] = [section, pos, id, ln];
-    for (let i = 0; i < this.noteCircleList.length; i++)
-      this.noteCircleList[i].setAttribute("fill", "rgb(255,255,255)");
+    for (let i = 0; i < this.noteCircleList.length; i++) this.noteCircleList[i].setAttribute("fill", "rgb(255,255,255)");
     this.noteCircleList[ln].setAttribute("fill", "rgb(80,255,80)");
   }
 
@@ -165,58 +144,38 @@ class TabPaper {
     if (e.keyCode == 107) {
       if (this.sel.length > 0) {
         this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1 + 1]++;
-        this.noteTextList[this.sel[0][3]].innerHTML = this.data[this.sel[0][0]][
-          this.sel[0][1]
-        ][this.sel[0][2] * 2 + 1 + 1];
+        this.noteTextList[this.sel[0][3]].innerHTML = this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1 + 1];
       }
     }
     if (e.keyCode == 109) {
       if (this.sel.length > 0) {
-        if (
-          this.data[this.sel[0][0]][this.sel[0][1]][
-            this.sel[0][2] * 2 + 1 + 1
-          ] > 0
-        ) {
-          this.data[this.sel[0][0]][this.sel[0][1]][
-            this.sel[0][2] * 2 + 1 + 1
-          ]--;
-          this.noteTextList[this.sel[0][3]].innerHTML = this.data[
-            this.sel[0][0]
-          ][this.sel[0][1]][this.sel[0][2] * 2 + 1 + 1];
+        if (this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1 + 1] > 0) {
+          this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1 + 1]--;
+          this.noteTextList[this.sel[0][3]].innerHTML = this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1 + 1];
         }
       }
     }
     if (e.keyCode == 87) {
       if (this.sel.length > 0) {
         let temp = this.sel[0];
-        if (
-          this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1] > 1
-        ) {
+        if (this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1] > 1) {
           this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1]--;
           let ory = this.noteTextList[temp[3]].getAttribute("y");
           let orcy = this.noteCircleList[temp[3]].getAttribute("cy");
           this.noteTextList[temp[3]].setAttribute("y", `${Number(ory) - 14}`);
-          this.noteCircleList[temp[3]].setAttribute(
-            "cy",
-            `${Number(orcy) - 14}`
-          );
+          this.noteCircleList[temp[3]].setAttribute("cy", `${Number(orcy) - 14}`);
         }
       }
     }
     if (e.keyCode == 83) {
       if (this.sel.length > 0) {
         let temp = this.sel[0];
-        if (
-          this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1] < 6
-        ) {
+        if (this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1] < 6) {
           this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1]++;
           let ory = this.noteTextList[temp[3]].getAttribute("y");
           let orcy = this.noteCircleList[temp[3]].getAttribute("cy");
           this.noteTextList[temp[3]].setAttribute("y", `${Number(ory) + 14}`);
-          this.noteCircleList[temp[3]].setAttribute(
-            "cy",
-            `${Number(orcy) + 14}`
-          );
+          this.noteCircleList[temp[3]].setAttribute("cy", `${Number(orcy) + 14}`);
         }
       }
     }
@@ -227,9 +186,7 @@ class TabPaper {
   }
 
   drawTitle(x, y) {
-    this.vHTML += `<text x="${this.width /
-      2}" y="${y}" fill="black" text-anchor="middle" font-size="28">${this
-      .title}</text>`;
+    this.vHTML += `<text x="${this.width / 2}" y="${y}" fill="black" text-anchor="middle" font-size="28">${this.title}</text>`;
   }
 
   drawBar(x, y) {
@@ -245,8 +202,7 @@ class TabPaper {
   drawLine(x, y) {
     this.vHTML += '<svg  stroke-linecap="square" >';
     for (let i = 0; i < 6; i++) {
-      this.vHTML += `<line x1='${x}' y1='${y + i * 14}' x2='${x +
-        this.lineWidth}' y2='${y + i * 14}'
+      this.vHTML += `<line x1='${x}' y1='${y + i * 14}' x2='${x + this.lineWidth}' y2='${y + i * 14}'
 				style="stroke:black;stroke-width:1"
 			></line>`;
     }
@@ -267,30 +223,23 @@ class TabPaper {
   drawNote(x, y, section, pos, length, data) {
     this.vHTML += "<svg>";
     for (let i = 0; i < data.length / 2; i++) {
-      this.vHTML += `<circle class="notecircle" cx='${x}' cy='${y +
-        14 * (data[i * 2] - 1)}' r='5'
+      this.vHTML += `<circle class="notecircle" cx='${x}' cy='${y + 14 * (data[i * 2] - 1)}' r='5'
 			fill='white' stroke-width='0' stroke='black' style='cursor:pointer;'></circle>`;
-      this.vHTML += `<text class="notetext" ln=${this
-        .counter} data-type="nt" section="${section}" pos="${pos}" i="${i}" x='${x -
-        4}' y='${y + 14 * (data[i * 2] - 1) + 5}'
-			fill='black' style='font-size:14px;cursor:pointer;'>${data[
-        i * 2 + 1
-      ]}</text>`;
+      this.vHTML += `<text class="notetext" ln=${this.counter} data-type="nt" section="${section}" pos="${pos}" i="${i}" x='${x - 4}' y='${y +
+        14 * (data[i * 2] - 1) +
+        5}'
+			fill='black' style='font-size:14px;cursor:pointer;'>${data[i * 2 + 1]}</text>`;
       this.counter++;
     }
 
-    this.vHTML += `<path d='M${x} ${y +
-      78} l0 25' stroke-width='1' stroke='black'></path>`;
+    this.vHTML += `<path d='M${x} ${y + 78} l0 25' stroke-width='1' stroke='black'></path>`;
     if (length > this.beatLength) {
-      this.vHTML += `<path d='M${x} ${y +
-        102} l6 1' stroke-width='2' stroke='black'></path>`;
+      this.vHTML += `<path d='M${x} ${y + 102} l6 1' stroke-width='2' stroke='black'></path>`;
     }
     if (length > this.beatLength * 2) {
       var j = 1;
       for (let i = this.beatLength * 2; i < length; i *= 2) {
-        this.vHTML += `<path d='M${x} ${y +
-          102 -
-          4 * j} l6 1' stroke-width='1' stroke='black'></path>`;
+        this.vHTML += `<path d='M${x} ${y + 102 - 4 * j} l6 1' stroke-width='1' stroke='black'></path>`;
         j++;
       }
     }
