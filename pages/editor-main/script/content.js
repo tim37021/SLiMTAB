@@ -89,8 +89,6 @@ class TabPaper {
         if (i % 4 < 3) this.drawBar(ix, iy);
         ix += distance_ratio * 20;
         if (i % 4 == 3) {
-          console.log(ix);
-          console.log(nx + this.lineWidth);
           this.drawBar(nx + this.lineWidth, iy);
           (ix = nx), (iy += this.lineHeight);
           checkY();
