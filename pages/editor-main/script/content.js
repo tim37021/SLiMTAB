@@ -55,23 +55,45 @@ class TabPaper{
 		this.drawLine(ix,iy);
 		ix+=80;
 		this.counter=0;
+		
+		var note_distance = 80;
+		var distance_ratio = 1.0;
 		for(let i=0;i<this.data.length;i++){
 			let totaltime=0;
+			// estimate note length
+
+			if(i%4==0) {
+				distance_ratio = 1.0
+				var cursor = ix;
+				var orig_cursor = ix;
+				for(let j=i; j<i+4 && j<this.data.length; j++) {
+					for(let k=0; k<this.data[j].length; k++)
+						//if(k<this.data[j].length-1)
+							cursor+=note_distance*this.beatLength/this.data[j][k][0];
+						//else
+						//	cursor+=20;
+				}
+				if(cursor > nx+this.lineWidth) {
+					distance_ratio = ((nx+this.lineWidth-orig_cursor)/((cursor+60)-orig_cursor))
+				}
+			}
 			for(let j=0;j<this.data[i].length;j++){
 				this.drawNote(ix,iy,i,j,this.data[i][j][0],this.data[i][j].slice(1));
-				ix+=80*this.beatLength/this.data[i][j][0];
-				if(ix>=nx+this.lineWidth){
+				//if(j<this.data[i].length-1)
+					ix+=distance_ratio*note_distance*this.beatLength/this.data[i][j][0];
+				//else
+				//	ix+=distance_ratio*20;
+				/*if(ix>=nx+this.lineWidth){
 					ix=nx,iy+=this.lineHeight;
 					checkY();
 					this.drawLine(ix,iy);
 					ix+=80;
-				}
+				}*/
 				totaltime+=1/this.data[i][j][0]*this.beatLength;
 			}
 			if(i!=this.data.length-1){
 				if(totaltime!=this.beatPerSection)this.drawAlert(ix,iy);
-				ix+=20;
-				if(ix<nx+this.lineWidth){
+				/*if(ix<nx+this.lineWidth){
 					this.drawBar(ix,iy);
 				}else{
 					ix=nx,iy+=this.lineHeight;
@@ -79,9 +101,14 @@ class TabPaper{
 					this.drawLine(ix,iy);
 					ix+=80;
 					this.drawBar(ix,iy);
-				}
-				ix+=20;
-				if(ix>=nx+this.lineWidth){
+				}*/
+				if(i%4 < 3)
+					this.drawBar(ix,iy);
+				ix+=distance_ratio*20;
+				if(i%4==3){
+					console.log(ix)
+					console.log(nx+this.lineWidth)
+					this.drawBar(nx+this.lineWidth, iy)
 					ix=nx,iy+=this.lineHeight;
 					checkY();
 					this.drawLine(ix,iy);
