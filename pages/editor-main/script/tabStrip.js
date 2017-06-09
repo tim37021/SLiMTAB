@@ -74,7 +74,7 @@ class tabTag {
     this.paper = paper;
     if (!paper) {
       this.paper = new TabPaper(tabname);
-      this.paper.load([]);
+      this.paper.load([[[4, -1]]]);
     }
     this.x = 0;
     this.content = document.createElement("div");
