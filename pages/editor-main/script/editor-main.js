@@ -3,6 +3,7 @@ const dialog = remote.dialog;
 const fs = require("fs");
 var assert = require("assert");
 var pythonBridge = require("python-bridge");
+const {ipcRenderer} = require("electron")
 
 document.querySelector("#openfile").addEventListener("click", openDialog);
 document.querySelector("#saveas").addEventListener("click", saveDialog);
@@ -84,7 +85,10 @@ function stop_record() {
 }
 
 function print() {
-  webview.print();
+  cont = tabstrip.operTb.paper.content.cloneNode(true)
+  cont.children[0].style.padding = "0px 3px 3px";
+  ipcRenderer.send('print-document', cont.innerHTML);
+  cont = null
 }
 
 var checkDevices = setInterval(function() {
@@ -103,6 +107,14 @@ var checkDevices = setInterval(function() {
           e.innerHTML = name + ":" + index;
 
           audio.appendChild(e);
+        });
+        python`manager.getDefaultDevice()`.then(x => {
+          if (audio.parentElement.children[0].innerHTML == "") {
+            if (x["input"] != -1)
+              audio.parentElement.children[0].innerHTML =
+                audio.children[x["input"]].innerHTML;
+            else audio.parentElement.children[0].innerHTML = "No input device";
+          }
         });
       });
     } else clearInterval(checkDevices);

@@ -82,5 +82,16 @@ ipcMain.on("splash-timeout", function() {
   splashWindow.close();
 });
 
+ipcMain.on("print-document", function(event, args) {
+  var nodeConsole = require('console')
+  var myConsole = new nodeConsole.Console(process.stdout, process.stderr);
+  printWindow = new BrowserWindow({ width: 800, height: 600, frame: true });
+  
+  printWindow.loadURL(`data:text/html,${encodeURI('<html style="width: 100%; height: 100%;"><body style="padding: 0; margin: 0">'+args+'</body></html>')}`)
+  printWindow.webContents.on('did-finish-load', (error, data) => {
+    printWindow.webContents.print()
+  })
+});
+
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
