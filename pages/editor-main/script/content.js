@@ -58,44 +58,48 @@ class TabPaper {
 		style="background:#FFFFFF";>`;
     this.drawTitle(ix, iy);
     iy += 40;
-    this.drawLine(ix, iy);
+    this.drawLine(ix, iy, true);
     ix += 80;
     this.counter = 0;
 
     var note_distance = 80;
     var distance_ratio = 1.0;
+    var notes_four_sections = 0;
+    var calc_beats = function(beatLength, arr) {
+      var ret = 0;
+      for(let i=0; i<arr.length; i++)
+        ret += beatLength / arr[i][0];
+      return ret;
+    };
     for (let i = 0; i < this.data.length; i++) {
       let totaltime = 0;
-      // estimate note length
+      // estimate note  section
 
       if (i % 4 == 0) {
-        distance_ratio = 1.0;
-        var cursor = ix;
-        var orig_cursor = ix;
         for (let j = i; j < i + 4 && j < this.data.length; j++) {
-          for (let k = 0; k < this.data[j].length; k++) cursor += note_distance * this.beatLength / this.data[j][k][0];
-        }
-        if (cursor > nx + this.lineWidth) {
-          distance_ratio = (nx + this.lineWidth - orig_cursor) / (cursor + 60 - orig_cursor);
+            notes_four_sections += this.data[j].length;
         }
       }
+
+      var section_width = (this.lineWidth-80) * (this.data[i].length / notes_four_sections)
+      var beat_width = section_width / calc_beats(this.beatLength, this.data[i]);
+
       for (let j = 0; j < this.data[i].length; j++) {
+        if(i%4!=0 || j!=0)
+          ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
         this.drawNote(ix, iy, i, j, this.data[i][j][0], this.data[i][j].slice(1));
-        ix += distance_ratio * note_distance * this.beatLength / this.data[i][j][0];
+        ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
         totaltime += 1 / this.data[i][j][0] * this.beatLength;
       }
-      if (i != this.data.length - 1) {
-        if (totaltime != this.beatPerSection) this.drawAlert(ix, iy);
-        if (i % 4 < 3) this.drawBar(ix, iy);
-        ix += distance_ratio * 20;
-        if (i % 4 == 3) {
-          this.drawBar(nx + this.lineWidth, iy);
-          (ix = nx), (iy += this.lineHeight);
-          checkY();
-          this.drawLine(ix, iy);
-          ix += 80;
-        }
+      if (totaltime != this.beatPerSection) this.drawAlert(ix, iy);
+      if (i % 4 < 3) this.drawBar(ix, iy);
+      if (i % 4 == 3) {
+        (ix = nx), (iy += this.lineHeight);
+        checkY();
+        this.drawLine(ix, iy);
+        ix += 80;
       }
+      
     }
     this.vHTML += "</svg></div>";
     this.content.innerHTML = this.vHTML;
@@ -197,7 +201,7 @@ class TabPaper {
 		fill='red' stroke-width='0' stroke='red'></circle>`;
   }
 
-  drawLine(x, y) {
+  drawLine(x, y, first=false) {
     this.vHTML += '<svg  stroke-linecap="square" >';
     for (let i = 0; i < 6; i++) {
       this.vHTML += `<line x1='${x}' y1='${y + i * 14}' x2='${x + this.lineWidth}' y2='${y + i * 14}'
@@ -209,10 +213,12 @@ class TabPaper {
 		<tspan x='${x + 10}' y='${y + 21 + 21}'>A</tspan>
 		<tspan x='${x + 10}' y='${y + 42 + 21}'>B</tspan>
 		</text>`;
-    this.vHTML += `<text style='fill:black;font:bold 24px serif'>
-		<tspan x='${x + 33}' y='${y + 28}'>${this.beatPerSection}</tspan>
-		<tspan x='${x + 33}' y='${y + 23 + 28}'>${this.beatLength}</tspan>
-		</text>`;
+    if(first) {
+      this.vHTML += `<text style='fill:black;font:bold 24px serif'>
+		  <tspan x='${x + 33}' y='${y + 28}'>${this.beatPerSection}</tspan>
+		  <tspan x='${x + 33}' y='${y + 23 + 28}'>${this.beatLength}</tspan>
+		  </text>`;
+    }
     this.vHTML += `<path d='M${x} ${y} l0 70 M${x + this.lineWidth} ${y} l0 70' 
 		style='stroke:black;stroke-width:1'></path>`;
     this.vHTML = this.vHTML + "</svg>";
