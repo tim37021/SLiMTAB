@@ -56,17 +56,17 @@ window.onload=function(){
     </div>
     <div class="modal-body">
       <div class="modal_content">
-      音訊輸出:<div class="dropdown" style="width: 120px; height: 25px; margin: 13px 0px 10px 10px;">
-        <div style="width: 100px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">Built-in Output</div>
-        <div class="dropdown-content" style="width: 120px; display: none;">
+      音訊輸出:<div class="dropdown" style="width: 250px; height: 25px; margin: 13px 0px 10px 10px;">
+        <div style="width: 220px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">Built-in Output</div>
+        <div class="dropdown-content" style="width: 250px; display: none;">
           <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Built-in Output</a>
           <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Built-in Output2</a>
         </div>
       </div>
       <p>音訊輸入:</p>
-      <div class="dropdown" style="width: 120px; height: 25px; margin: 13px 0px 10px 10px;">
-        <div style="width: 100px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">Steinberg UR12</div>
-        <div class="dropdown-content" style="width: 120px; display: none;">
+      <div class="dropdown" style="width: 250px; height: 25px; margin: 13px 0px 10px 10px;">
+        <div style="width: 220px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">Steinberg UR12</div>
+        <div class="dropdown-content" style="width: 250px; display: none;">
           <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Steinberg UR12</a>
           <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Steinberg UR12</a>
         </div>
@@ -83,7 +83,7 @@ window.onload=function(){
       <div class="title"></div>
       <div class="menuroot" id="file_menu_root" onclick="showFileMenu(this, event)">檔案</div>
       <div class="menuroot" id="edit_menu_root">編輯</div>
-      <div class="menuroot">說明</div>
+      <div class="menuroot" onclick="addclose();">說明</div>
       <div class="btn_setting" title="設定" onclick="setting();"></div>   
       <img src="ui/line_vertical.png" style="margin: 7px 0px 4px 4px;  position: absolute;right: 11%;">
       <div class="btn_shrink" title="最小化"  onclick="Minimize();"></div>

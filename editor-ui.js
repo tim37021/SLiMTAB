@@ -140,20 +140,6 @@ var window = remote.getCurrentWindow();
 }
 
 
-// Get the modal
-var modal = document.getElementById('myModal');
-
-// Get the button that opens the modal
-var btn = document.getElementById("myBtn");
-
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-    document.getElementById("myModal").style.display = "none";
-}
-
 
 function setting() {
     document.getElementById("myModal").style.display = "block";
@@ -162,3 +148,23 @@ function setting() {
 function cancel_setting() {
      document.getElementById("myModal").style.display = "none";
 }
+
+
+function addclose(){
+		var node = document.createElement('div');
+		node.setAttribute("style",`
+			height:20px;
+			width:20px;
+            line-height: 15px;
+			position:absolute;
+			right: 5px;
+            top: 2px;
+            color:white;
+            font-size:15px;
+		`);
+        node.setAttribute("class","close")
+    var textnode = document.createTextNode("x");
+    node.appendChild(textnode);
+	document.querySelector(".page").appendChild(node);
+}
+
