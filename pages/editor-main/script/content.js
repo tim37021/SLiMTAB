@@ -20,6 +20,7 @@ class TabPaper {
     this.data = null;
     this.title = title;
     this.sel = [];
+    this.cursor = [0, 0, 1];
     this.check();
   }
   check() {
@@ -87,6 +88,8 @@ class TabPaper {
       for (let j = 0; j < this.data[i].length; j++) {
         if(i%4!=0 || j!=0)
           ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
+        if(i==this.cursor[0]&&j==this.cursor[1])
+          this.drawCursor(ix, iy)
         this.drawNote(ix, iy, i, j, this.data[i][j][0], this.data[i][j].slice(1));
         ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
         totaltime += 1 / this.data[i][j][0] * this.beatLength;
@@ -133,10 +136,12 @@ class TabPaper {
 
   ckEvent(e) {
     if (e.target.getAttribute("data-type") == "nt") {
-      var section = e.target.getAttribute("section");
-      var pos = e.target.getAttribute("pos");
-      var id = e.target.getAttribute("i");
-      this.selNote(section, pos, id, e.target.getAttribute("ln"));
+      var section = parseInt(e.target.getAttribute("section"));
+      var pos = parseInt(e.target.getAttribute("pos"));
+      var id = parseInt(e.target.getAttribute("i"));
+      //this.selNote(section, pos, id, e.target.getAttribute("ln"));
+      this.cursor = [section, pos, this.data[section][pos][1+2*id]];
+      this.render()
     }
   }
 
@@ -145,7 +150,37 @@ class TabPaper {
   }
 
   kdEvent(e) {
-    if (e.keyCode == 107) {
+    Math.clamp = function(number, min, max) {
+      return Math.max(min, Math.min(number, max));
+    }
+    var is_key_event = false;
+    switch(e.keyCode) {
+      case 87:
+        this.cursor[2] -= 1; is_key_event = true; break; 
+      case 83:
+        this.cursor[2] += 1; is_key_event = true; break;
+      case 65:
+        this.cursor[1] -= 1; is_key_event = true; break;
+      case 68:
+        this.cursor[1] += 1; is_key_event = true; break;
+    }
+    this.cursor[2] = Math.clamp(this.cursor[2], 1, 6);
+    if(this.cursor[1]<0 && this.cursor[0]>0) {
+      this.cursor[0]--;
+      this.cursor[1]=this.data[this.cursor[0]].length-1;
+    }
+    if(this.cursor[1]>=this.data[this.cursor[0]].length) {
+      this.cursor[0]++;
+      this.cursor[1]=0;
+    }
+    if(this.cursor[0]==this.data.length) {
+      this.cursor[0] = this.data.length-1;
+      this.cursor[1]=this.data[this.cursor[0]].length-1;
+    }
+    this.cursor[1] = Math.clamp(this.cursor[1], 0, this.data[this.cursor[0]].length-1);
+    console.log(this.cursor)
+    this.render()
+    /*if (e.keyCode == 107) {
       if (this.sel.length > 0) {
         this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1 + 1]++;
         this.noteTextList[this.sel[0][3]].innerHTML = this.data[this.sel[0][0]][this.sel[0][1]][this.sel[0][2] * 2 + 1 + 1];
@@ -159,6 +194,7 @@ class TabPaper {
         }
       }
     }
+    
     if (e.keyCode == 87) {
       if (this.sel.length > 0) {
         let temp = this.sel[0];
@@ -182,7 +218,7 @@ class TabPaper {
           this.noteCircleList[temp[3]].setAttribute("cy", `${Number(orcy) + 14}`);
         }
       }
-    }
+    }*/
   }
 
   load(data) {
@@ -226,11 +262,14 @@ class TabPaper {
     this.vHTML = this.vHTML + "</svg>";
   }
 
+  drawCursor(x, y) {
+    this.vHTML += `<circle class="notecircle" cx='${x}' cy='${y+14 * (this.cursor[2] - 1)}' r='5'
+			fill='green' stroke-width='0' stroke='black' style='cursor:pointer;'></circle>`;
+  }
+
   drawNote(x, y, section, pos, length, data) {
     this.vHTML += "<svg>";
     for (let i = 0; i < data.length / 2; i++) {
-      this.vHTML += `<circle class="notecircle" cx='${x}' cy='${y + 14 * (data[i * 2] - 1)}' r='5'
-			fill='white' stroke-width='0' stroke='black' style='cursor:pointer;'></circle>`;
       this.vHTML += `<text class="notetext" ln=${this.counter} data-type="nt" section="${section}" pos="${pos}" i="${i}" x='${x - 4}' y='${y +
         14 * (data[i * 2] - 1) +
         5}'
