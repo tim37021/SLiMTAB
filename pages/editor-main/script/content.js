@@ -84,7 +84,7 @@ class TabPaper {
       }
 
       var section_width = (this.lineWidth - 80) * (this.data[i].length / notes_four_sections);
-      var beat_width = section_width / calc_beats(this.beatLength, this.data[i]);
+      var beat_width = Math.min(section_width / calc_beats(this.beatLength, this.data[i]), 48);
 
       for (let j = 0; j < this.data[i].length; j++) {
         if (i % 4 != 0 || j != 0) ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
