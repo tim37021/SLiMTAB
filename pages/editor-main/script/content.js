@@ -191,6 +191,7 @@ class TabPaper {
   }
 
   kdEvent(e) {
+	  let oriline=Math.floor(this.cursor[0]/4);
     Math.clamp = function(number, min, max) {
       return Math.max(min, Math.min(number, max));
     };
@@ -267,7 +268,9 @@ class TabPaper {
         }
       }
     }
-    this.partialRender(Math.floor(this.cursor[0]/4));
+	let moveline=Math.floor(this.cursor[0]/4);
+	if(moveline!=oriline)this.partialRender(oriline);
+    this.partialRender(moveline);
   }
 
   kpEvent(e) {
