@@ -77,22 +77,29 @@ class TabPaper {
 
       if (i % 4 == 0) {
         notes_four_sections = 0;
-        for (let j = i; j < i + 4 && j < this.data.length; j++) {
-          notes_four_sections += this.data[j].length;
+        for (let j = i; j < i + 4; j++) {
+          if(j<this.data.length)
+            notes_four_sections += (this.data[j].length<=4?4:this.data[j].length);
+          else
+            notes_four_sections += 4;
         }
       }
 
-      var section_width = (this.lineWidth - 80) * (this.data[i].length / notes_four_sections);
-      var beat_width = Math.min(section_width / calc_beats(this.beatLength, this.data[i]), 48);
-
+      var section_width = (this.lineWidth - 80) * ((this.data[i].length<=4?4:this.data[i].length) / notes_four_sections);
+      var beats = calc_beats(this.beatLength, this.data[i]);
+      var beat_width = Math.min(section_width / beats, (this.lineWidth-80)/(this.beatPerSection*4));
+      var oix = ix;
+      var actual_section_width = beat_width * beats;
+      var pos = this.vHTML.length-1;
+      ix += (section_width - actual_section_width) / 2;
       for (let j = 0; j < this.data[i].length; j++) {
-        if (i % 4 != 0 || j != 0) ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
+        ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
         if (i == this.cursor[0] && j == this.cursor[1]) this.drawCursor(ix, iy);
         this.drawNote(ix, iy, i, j, this.data[i][j][0], this.data[i][j].slice(1));
         ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
-        totaltime += 1 / this.data[i][j][0] * this.beatLength;
       }
-      if (totaltime != this.beatPerSection) this.drawAlert(ix, iy);
+      ix = oix + section_width;
+      if (beats != this.beatPerSection) this.drawAlert(ix-section_width, iy, section_width, pos);
 
       if (i % 4 == 3) {
         (ix = nx), (iy += this.lineHeight);
@@ -257,9 +264,11 @@ class TabPaper {
 		style='stroke-width:1'></path>`;
   }
 
-  drawAlert(x, y) {
-    this.vHTML += `<circle cx='${x}' cy='${y - 14}' r='5' 
-		fill='red' stroke-width='0' stroke='red'></circle>`;
+  drawAlert(x, y, sectionWidth, pos=-1) {
+    if(pos == -1)
+      this.vHTML += `<rect x='${x}' y='${y}' width='${sectionWidth}' height='70' style="fill: rgba(255, 0, 0, 0.25)"></rect>`;
+    else
+      this.vHTML = this.vHTML.slice(0, pos+1)+`<rect x='${x}' y='${y}' width='${sectionWidth}' height='70' style="fill: rgba(255, 0, 0, 0.5)"></rect>`+this.vHTML.slice(pos);
   }
 
   drawLine(x, y, first = false) {
