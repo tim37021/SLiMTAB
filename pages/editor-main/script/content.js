@@ -260,8 +260,7 @@ class TabPaper {
   }
 
   drawBar(x, y) {
-    this.vHTML += `<path d='M${x} ${y} l0 70' 
-		style='stroke-width:1'></path>`;
+    this.vHTML += `<line x1='${x}' y1='${y}' x2='${x}' y2='${y+70}' style="stroke:black;stroke-width:1"></line>`;
   }
 
   drawAlert(x, y, sectionWidth, pos=-1) {
@@ -291,8 +290,8 @@ class TabPaper {
 		  <tspan x='${x + 33}' y='${y + 23 + 28}'>${this.beatLength}</tspan>
 		  </text>`;
     }
-    this.vHTML += `<path d='M${x} ${y} l0 70 M${x + this.lineWidth} ${y} l0 70' 
-		stroke-width='1'></path>`;
+    this.drawBar(x, y);
+    this.drawBar(x+this.lineWidth, y);
     this.vHTML = this.vHTML + "</svg>";
   }
 
