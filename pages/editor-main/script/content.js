@@ -20,7 +20,6 @@ class TabPaper {
     this.content.addEventListener("keypress", this.kpEvent.bind(this));
     this.data = null;
     this.title = title;
-    this.sel = [];
     this.cursor = [0, 0, 1];
     this.check();
   }
@@ -106,9 +105,8 @@ class TabPaper {
     this.vHTML += "</svg></div>";
     this.content.innerHTML = this.vHTML;
     this.zoom();
-    this.noteTextList = this.content.getElementsByClassName("notetext");
-    this.noteCircleList = this.content.getElementsByClassName("notecircle");
     this.vHTML = "";
+	this.content.focus();
   }
 
   setDisplayer(e) {
@@ -125,18 +123,12 @@ class TabPaper {
     }
   }
 
-  selNote(section, pos, id, ln) {
-    this.sel[0] = [section, pos, id, ln];
-    for (let i = 0; i < this.noteCircleList.length; i++) this.noteCircleList[i].setAttribute("fill", "rgb(255,255,255)");
-    this.noteCircleList[ln].setAttribute("fill", "rgb(80,255,80)");
-  }
 
   ckEvent(e) {
     if (e.target.getAttribute("data-type") == "nt") {
       var section = parseInt(e.target.getAttribute("section"));
       var pos = parseInt(e.target.getAttribute("pos"));
       var id = parseInt(e.target.getAttribute("i"));
-      //this.selNote(section, pos, id, e.target.getAttribute("ln"));
       this.cursor = [section, pos, this.data[section][pos][1 + 2 * id]];
       this.render();
     }
@@ -262,7 +254,7 @@ class TabPaper {
 
   drawBar(x, y) {
     this.vHTML += `<path d='M${x} ${y} l0 70' 
-		style='stroke:black;stroke-width:1'></path>`;
+		style='stroke-width:1'></path>`;
   }
 
   drawAlert(x, y) {
@@ -291,15 +283,13 @@ class TabPaper {
 		  </text>`;
     }
     this.vHTML += `<path d='M${x} ${y} l0 70 M${x + this.lineWidth} ${y} l0 70' 
-		style='stroke:black;stroke-width:1'></path>`;
+		stroke-width='1'></path>`;
     this.vHTML = this.vHTML + "</svg>";
   }
 
   drawCursor(x, y) {
-
     this.vHTML += `<circle class="notecircle" cx='${x}' cy='${y + 14 * (this.cursor[2] - 1)}' r='5'
 			fill='#F39800' stroke-width='0' stroke='black' style='cursor:pointer;'></circle>`;
-
   }
 
   drawNote(x, y, section, pos, length, data) {
@@ -314,22 +304,20 @@ class TabPaper {
     } else {
       for (let i = 0; i < data.length / 2; i++) {
         this.vHTML += `<text class="notetext" ln=${this.counter} data-type="nt" section="${section}" pos="${pos}" i="${i}" x='${x - 4}' y='${y +
-          14 * (data[i * 2] - 1) +
-          5}'
-			fill='black' style='font-size:14px;cursor:pointer;'>${data[i * 2 + 1]}</text>`;
+          14 * (data[i * 2] - 1) +5}'>${data[i * 2 + 1]}</text>`;
         this.counter++;
       }
     }
 
     if(!is_blank) {
-      this.vHTML += `<path d='M${x} ${y + 78} l0 25' stroke-width='1' stroke='black'></path>`;
+      this.vHTML += `<path d='M${x} ${y + 78} l0 25' stroke-width='1'></path>`;
       if (length > this.beatLength) {
-        this.vHTML += `<path d='M${x} ${y + 102} l6 1' stroke-width='2' stroke='black'></path>`;
+        this.vHTML += `<path d='M${x} ${y + 102} l6 1' stroke-width='2'></path>`;
       }
       if (length > this.beatLength * 2) {
         var j = 1;
         for (let i = this.beatLength * 2; i < length; i *= 2) {
-          this.vHTML += `<path d='M${x} ${y + 102 - 4 * j} l6 1' stroke-width='1' stroke='black'></path>`;
+          this.vHTML += `<path d='M${x} ${y + 102 - 4 * j} l6 1' stroke-width='1'></path>`;
           j++;
         }
       }
