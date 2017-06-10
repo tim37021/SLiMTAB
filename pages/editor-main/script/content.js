@@ -175,6 +175,9 @@ class TabPaper {
         this.data[this.cursor[0]][this.cursor[1]][0] /= 2;
         this.data[this.cursor[0]][this.cursor[1]][0] = Math.clamp(this.data[this.cursor[0]][this.cursor[1]][0], 1, 32);
         break;
+      case 46: // delete
+        this.deleteNote();
+        break;
     }
     this.cursor[2] = Math.clamp(this.cursor[2], 1, 6);
   
@@ -291,13 +294,39 @@ class TabPaper {
 		  </text>`;
     }
     this.drawBar(x, y);
-    this.drawBar(x+this.lineWidth, y);
+    this.drawBar(x+this.Lin, y);
     this.vHTML = this.vHTML + "</svg>";
   }
 
   drawCursor(x, y) {
     this.vHTML += `<circle class="notecircle" cx='${x}' cy='${y + 14 * (this.cursor[2] - 1)}' r='5'
 			fill='#F39800' stroke-width='0' stroke='black' style='cursor:pointer;'></circle>`;
+  }
+
+  deleteNote() {
+      var is_inserting = this.data[this.cursor[0]][this.cursor[1]].length == 2;
+      if(is_inserting)
+        return;
+      var d = this.data[this.cursor[0]][this.cursor[1]].slice(1);
+      var res = -1;
+      if(d.length == 1) {
+        res = 0;
+      } else {
+        for(let i=0; i<d.length/2; i++) {
+          if(d[i*2]==this.cursor[2]) {
+            res = i*2;
+            break;
+          }
+        }
+      }
+      if(res != -1) {
+        this.data[this.cursor[0]][this.cursor[1]].splice(res+1, 2);
+      }
+      if(this.data[this.cursor[0]][this.cursor[1]].length==1) {
+        this.data[this.cursor[0]].splice(this.cursor[1], 1)
+      }
+
+      this.render()
   }
 
   drawNote(x, y, section, pos, length, data) {
