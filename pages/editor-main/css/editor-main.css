@@ -268,6 +268,7 @@ li:hover {
 .dropdown-content {
   position: absolute;
   padding-top: 4px;
+  z-index: 100;
 }
 .dropdown-content a {
     color: black;
