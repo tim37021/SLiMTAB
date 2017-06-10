@@ -6,3 +6,10 @@
 path{
 	 stroke:black;
 }
+@media print
+{    
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
+}
