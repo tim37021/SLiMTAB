@@ -13,6 +13,8 @@ class TabPaper {
     this.content.onselectstart = function() {
       return false;
     };
+	this.st=0;//scroll top ,just record, will cause any effect if be changed
+	this.sl=0;//scroll left
     this.content.setAttribute("tabindex", "1");
     this.content.addEventListener("click", this.ckEvent.bind(this));
     this.content.addEventListener("keydown", this.kdEvent.bind(this));
@@ -163,6 +165,7 @@ class TabPaper {
 
   setDisplayer(e) {
     this.displayer = e;
+	this.displayer.addEventListener("scroll",this.scrollEvent.bind(this));
   }
 
   zoom() {
@@ -175,7 +178,13 @@ class TabPaper {
     }
   }
 
-
+	scrollEvent(){
+		if(this.content.innerHTML.length!=0){
+		this.st=this.displayer.scrollTop;
+		this.sl=this.displayer.scrollLeft;
+		}
+	}
+	
   ckEvent(e) {
     if (e.target.getAttribute("data-type") == "nt") {
       var section = parseInt(e.target.getAttribute("section"));
