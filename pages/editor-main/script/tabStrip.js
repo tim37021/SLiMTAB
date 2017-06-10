@@ -7,7 +7,7 @@ class tabStrip {
     this.content.style.height = "28px";
     this.content.addEventListener("click", () => {
       for (let i = 0; i < this.container.length; i++) {
-        if (this.container[i].paper) this.container[i].paper.content.style.display = "none";
+        if (this.container[i].paper)this.container[i].paper.content.innerHTML="";
         this.container[i].content.style.backgroundColor = "#252525";
         this.container[i].content.style.color = "#808080";
         this.container[i].content.style.borderTop = "1px solid #474747";
@@ -20,7 +20,7 @@ class tabStrip {
   }
   addTag(tag) {
     for (let i = 0; i < this.container.length; i++) {
-      this.container[i].paper.content.style.display = "none";
+      this.container[i].paper.content.innerHTML= "";
       this.container[i].content.style.backgroundColor = "#252525";
       this.container[i].content.style.color = "#808080";
       this.container[i].content.style.borderTop = "1px solid #474747";
@@ -104,7 +104,6 @@ class tabTag {
     };
   }
   active() {
-    this.paper.content.style.display = "inline";
     this.paper.render();
     this.content.style.backgroundColor = "#474747";
     this.content.style.color = "cccccc";
