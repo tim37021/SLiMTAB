@@ -1,6 +1,7 @@
 const electron = require("electron");
 const ipcMain = electron.ipcMain;
 const fs = require("fs")
+const process = require("process")
 // Module to control application life.
 const app = electron.app;
 // Module to create native browser window.
@@ -88,10 +89,14 @@ ipcMain.on("print-document", function(event, args) {
   var myConsole = new nodeConsole.Console(process.stdout, process.stderr);
   printWindow = new BrowserWindow({ width: 800, height: 600, frame: true });
   
-  printWindow.loadURL(`data:text/html,${encodeURI('<html style="width: 100%; height: 100%;"><head><style>'+fs.readFileSync('./pages/editor-main/css/content.css')
-    +'</style></head><body style="padding: 0; margin: 0">'+args+'</body></html>')}`)
+  printWindow.loadURL(`data:text/html,${encodeURI('<html style="width: 100%; height: 100%;"><head>'+
+  `<link rel="stylesheet" type="text/css" href="${process.cwd()}/pages/editor-main/css/content.css">`+
+  `<link rel="stylesheet" type="text/css" href="${process.cwd()}/pages/editor-main/fonts/fonts.css">`+
+  `<style>body{font-family: 'Open Sans', sans-serif;}</style>`+
+  '</head><body style="padding: 0; margin: 0">'+args+'</body></html>')}`)
   printWindow.webContents.on('did-finish-load', (error, data) => {
     printWindow.webContents.print()
+    myConsole.log(process.cwd())
   })
 });
 
