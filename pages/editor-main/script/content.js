@@ -248,7 +248,7 @@ class TabPaper {
         break;
       // TODO: refine this
       case 188: // ,
-        if(!is_inserting) {
+        if(!is_inserting && this.cursor[0] > 0) {
           this.data[this.cursor[0]].splice(0, 0, [this.defaultNoteLength, -1]);
           this.cursor[1] = -1;
           is_inserting = true;
