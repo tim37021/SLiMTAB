@@ -13,6 +13,7 @@ class TabPaper {
     this.content.onselectstart = function() {
       return false;
     };
+    this.defaultNoteLength = 4;
 	this.st=0;//scroll top ,just record, will cause any effect if be changed
 	this.sl=0;//scroll left
     this.content.setAttribute("tabindex", "1");
@@ -242,13 +243,13 @@ class TabPaper {
         break;
       case 73: //insert I
         if(!is_inserting) {
-           this.data[this.cursor[0]].splice(this.cursor[1], 0, [4, -1]);
+           this.data[this.cursor[0]].splice(this.cursor[1], 0, [this.defaultNoteLength, -1]);
         }
         break;
       // TODO: refine this
       case 188: // ,
         if(!is_inserting) {
-          this.data[this.cursor[0]].splice(0, 0, [4, -1]);
+          this.data[this.cursor[0]].splice(0, 0, [this.defaultNoteLength, -1]);
           this.cursor[1] = -1;
           is_inserting = true;
           is_move_event = true;
@@ -256,7 +257,7 @@ class TabPaper {
         break;
       case 190: // .
         if(!is_inserting) {
-          this.data[this.cursor[0]].splice(this.data[this.cursor[0]].length, 0, [4, -1]);
+          this.data[this.cursor[0]].splice(this.data[this.cursor[0]].length, 0, [this.defaultNoteLength, -1]);
           this.cursor[1] = this.data[this.cursor[0]].length;
           is_inserting = true;
           is_move_event = true;
@@ -267,11 +268,11 @@ class TabPaper {
     this.cursor[2] = Math.clamp(this.cursor[2], 1, 6);
   
     if (this.cursor[1] == -1 && !is_inserting) {
-      this.data[this.cursor[0]].splice(0, 0, [4, -1]);
+      this.data[this.cursor[0]].splice(0, 0, [this.defaultNoteLength, -1]);
       this.cursor[1] = 0;
     }
     if (this.cursor[1] == this.data[this.cursor[0]].length && !is_inserting) {
-      this.data[this.cursor[0]].splice(this.data[this.cursor[0]].length, 0, [4, -1]);
+      this.data[this.cursor[0]].splice(this.data[this.cursor[0]].length, 0, [this.defaultNoteLength, -1]);
     }
     if (is_inserting && is_move_event) {
       if (this.cursor[1] == this.data[this.cursor[0]].length) {
@@ -281,7 +282,7 @@ class TabPaper {
           this.cursor[1]=0;
           this.data[this.cursor[0] - 1].splice(this.data[this.cursor[0] - 1].length - 1, 1);
           if (this.cursor[0] == this.data.length) {
-            this.data.splice(this.cursor[0], 0, [[4, -1]]);
+            this.data.splice(this.cursor[0], 0, [[this.defaultNoteLength, -1]]);
           }
         } else {
           this.cursor[1] = this.data[this.cursor[0]].length-1;
@@ -418,8 +419,8 @@ class TabPaper {
     var is_blank = false;
     if (data.length == 1) {
       // pass
-      // [length 0] is rest note
-      // [4 -1] is blank, means inserting...
+      // [x 0] is rest note
+      // [x -1] is blank, means inserting...
       if(data[0]==-1)
         is_blank = true;
     } else {
