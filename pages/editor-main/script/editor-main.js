@@ -98,6 +98,7 @@ function set_note_length()
   tabstrip.operTb.paper.setNoteLength(parseInt(this.id.slice(2)));
 }
 
+/*
 var checkDevices = setInterval(function() {
   if (python != null) {
     var audio = document.getElementById("audioDeviceSelection");
@@ -122,3 +123,4 @@ var checkDevices = setInterval(function() {
     } else clearInterval(checkDevices);
   }
 }, 1000);
+*/
