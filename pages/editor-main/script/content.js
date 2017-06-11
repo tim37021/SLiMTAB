@@ -104,6 +104,10 @@ class TabPaper {
   isInserting() {
     return this.data[this.cursor[0]][this.cursor[1]].length == 2;
   } 
+  
+  isInsertingTab() {
+    return this.data[this.cursor[0]].length == 1 && isInserting();
+  }
 
   render() {
     var checkY = function() {
@@ -223,11 +227,13 @@ class TabPaper {
   }
 
   ckEvent(e) {
-    if (e.target.getAttribute("data-type") == "nt") {
+    if (e.target.getAttribute("data-type") == "nt" && !this.isInserting()) {
       var section = parseInt(e.target.getAttribute("section"));
       var pos = parseInt(e.target.getAttribute("pos"));
       var id = parseInt(e.target.getAttribute("i"));
+      var oldsection = this.cursor[0];
       this.cursor = [section, pos, this.data[section][pos][1 + 2 * id]];
+      this.partialRender(Math.floor(oldsection / 4));
       this.partialRender(Math.floor(this.cursor[0] / 4));
     }
   }
