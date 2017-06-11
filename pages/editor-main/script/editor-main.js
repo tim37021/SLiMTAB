@@ -9,7 +9,7 @@ document.querySelector("#openfile").addEventListener("click", openDialog);
 document.querySelector("#saveas").addEventListener("click", saveDialog);
 document.querySelector("#recordbtn").addEventListener("click", record);
 document.querySelector("#stopbtn").addEventListener("click", stop_record);
-document.querySelectorAll("#printbtn").forEach(function(x) {
+Array.from(document.getElementsByClassName("print")).forEach(function(x) {
   x.addEventListener("click", print);
 });
 
