@@ -340,6 +340,11 @@ class TabPaper {
 
   }
 
+  setNoteLength(length) {
+    this.data[this.cursor[0]][this.cursor[1]][0] = length;
+    this.partialRender(Math.floor(this.cursor[0]/4));
+  }
+
   load(data) {
     this.data = data;
   }

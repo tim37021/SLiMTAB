@@ -12,6 +12,9 @@ document.querySelector("#stopbtn").addEventListener("click", stop_record);
 Array.from(document.getElementsByClassName("print")).forEach(function(x) {
   x.addEventListener("click", print);
 });
+Array.from(document.getElementsByClassName("set-note-length")).forEach(function(x) {
+  x.addEventListener("click", set_note_length);
+});
 
 function openDialog() {
   var filename = dialog.showOpenDialog();
@@ -88,6 +91,11 @@ function print() {
   cont.children[0].style.padding = "0px 3px 3px";
   ipcRenderer.send("print-document", cont.innerHTML);
   cont = null;
+}
+
+function set_note_length()
+{
+  tabstrip.operTb.paper.setNoteLength(parseInt(this.id.slice(2)));
 }
 
 var checkDevices = setInterval(function() {
