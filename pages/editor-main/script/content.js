@@ -248,7 +248,8 @@ class TabPaper {
         break;
       // TODO: refine this
       case 188: // ,
-        if(!is_inserting && this.cursor[0] > 0) {
+      
+        if((!is_inserting || is_inserting_tab) && this.cursor[0] > 0) {
           this.data[this.cursor[0]].splice(0, 0, [this.defaultNoteLength, -1]);
           this.cursor[1] = -1;
           is_inserting = true;
@@ -431,17 +432,22 @@ class TabPaper {
     }
 
     if(!is_blank) {
-      this.vHTML += `<path d='M${x} ${y + 78} l0 25' stroke-width='1'></path>`;
-      if (length > this.beatLength) {
-        this.vHTML += `<path d='M${x} ${y + 102} l6 1' stroke-width='2'></path>`;
-      }
-      if (length > this.beatLength * 2) {
-        var j = 1;
-        for (let i = this.beatLength * 2; i < length; i *= 2) {
-          this.vHTML += `<path d='M${x} ${y + 102 - 4 * j} l6 1' stroke-width='1'></path>`;
-          j++;
+      if (length > 1) {
+        if(length == 2)
+          this.vHTML += `<path d='M${x} ${y + 88} l0 15' stroke-width='1'></path>`;
+        if(length >= 4)
+          this.vHTML += `<path d='M${x} ${y + 78} l0 25' stroke-width='1'></path>`;
+        if (length > 4) {
+          this.vHTML += `<path d='M${x} ${y + 102} l6 1' stroke-width='2'></path>`;
         }
-      }
+        if (length > 8) {
+          var j = 1;
+          for (let i = 8; i < length; i *= 2) {
+            this.vHTML += `<path d='M${x} ${y + 102 - 4 * j} l6 1' stroke-width='1'></path>`;
+            j++;
+          }
+        }
+        }
     }
     this.vHTML += "</svg>";
   }
