@@ -237,11 +237,29 @@ class TabPaper {
         this.data[this.cursor[0]][this.cursor[1]][0] = Math.clamp(this.data[this.cursor[0]][this.cursor[1]][0], 1, 32);
         break;
       case 46: // delete
+      case 8: // backspace
         this.deleteNote();
         break;
       case 73: //insert I
         if(!is_inserting) {
            this.data[this.cursor[0]].splice(this.cursor[1], 0, [4, -1]);
+        }
+        break;
+      // TODO: refine this
+      case 188: // ,
+        if(!is_inserting) {
+          this.data[this.cursor[0]].splice(0, 0, [4, -1]);
+          this.cursor[1] = -1;
+          is_inserting = true;
+          is_move_event = true;
+        }
+        break;
+      case 190: // .
+        if(!is_inserting) {
+          this.data[this.cursor[0]].splice(this.data[this.cursor[0]].length, 0, [4, -1]);
+          this.cursor[1] = this.data[this.cursor[0]].length;
+          is_inserting = true;
+          is_move_event = true;
         }
         break;
 
