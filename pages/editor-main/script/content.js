@@ -41,7 +41,12 @@ class TabPaper {
 		beatPerSection:this.beatPerSection
 	  };
 	  let targetElement=document.getElementById('line_'+line);
+	  if(!targetElement){
+	    this.render();
+		return;
+	  }
 	  let ix=Number(targetElement.getAttribute('ix')),iy=Number(targetElement.getAttribute('iy'));
+	  
 	  let notes_four_sections=0;
 	  var calc_beats = function(beatLength, arr) {
 		  var ret = 0;
@@ -123,7 +128,7 @@ class TabPaper {
       // estimate note  section
 
       if (i % 4 == 0) {
-		  this.vHTML+=`<svg id='line_${i/4}' ix=${ix} iy=${iy}>`;
+		  this.vHTML+=`<svg class="tab_line" id='line_${i/4}' ix=${ix} iy=${iy}>`;
         notes_four_sections = 0;
         for (let j = i; j < i + 4; j++) {
           if(j<this.data.length)
@@ -148,13 +153,14 @@ class TabPaper {
       }
       ix = oix + section_width;
       if (beats != this.beatPerSection) this.drawAlert(ix-section_width, iy, section_width, pos);
+	  if(i%4!=3) this.drawBar(ix, iy);
 		if(i%4==3 || i==this.data.length-1)this.vHTML+='</svg>';
       if (i % 4 == 3) {
         (ix = nx), (iy += this.lineHeight);
         checkY();
         this.drawLine(ix, iy);
         ix += 80;
-      } else this.drawBar(ix, iy);
+      }
     }
     this.vHTML += "</svg></div>";
     this.content.innerHTML = this.vHTML;
