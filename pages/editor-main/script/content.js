@@ -202,6 +202,9 @@ class TabPaper {
     this.zoom();
     this.vHTML = "";
     this.content.focus();
+
+    if(this.event['change-length']!=null)
+      this.event['change-length'](this, this.defaultNoteLength);
   }
 
   setDisplayer(e) {
