@@ -87,6 +87,7 @@ class tabTag {
       "style",
       `
 			border-right:1px solid black;
+			border-left:1px solid black;
 			padding-left:9px;
 			line-height:27px;
 			height:26px;
