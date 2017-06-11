@@ -239,6 +239,12 @@ class TabPaper {
       case 46: // delete
         this.deleteNote();
         break;
+      case 73: //insert I
+        if(!is_inserting) {
+           this.data[this.cursor[0]].splice(this.cursor[1], 0, [4, -1]);
+        }
+        break;
+
     }
     this.cursor[2] = Math.clamp(this.cursor[2], 1, 6);
   
@@ -274,12 +280,10 @@ class TabPaper {
         } else this.cursor[1] = 0;
       } else {
         if (e.keyCode == 68) {
-          this.data[this.cursor[0]].splice(0, 1);
-          this.cursor[1] = 0;
+          this.data[this.cursor[0]].splice(this.cursor[1]-1, 1);
+          this.cursor[1] = this.cursor[1]-1;
         } else {
-          this.data[this.cursor[0]].splice(this.data[this.cursor[0]].length - 1, 1);
-          this.cursor[1] = this.data[this.cursor[0]].length - 1;
-
+          this.data[this.cursor[0]].splice(this.cursor[1]+1, 1);
         }
       }
     }
