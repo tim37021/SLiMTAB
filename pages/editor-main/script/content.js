@@ -381,6 +381,7 @@ class TabPaper {
 
   setNoteLength(length) {
     this.data[this.cursor[0]][this.cursor[1]][0] = length;
+    this.defaultNoteLength = length;
     this.event['change-length'](this, length);
     this.partialRender(Math.floor(this.cursor[0] / 4));
   }
