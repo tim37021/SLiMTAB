@@ -356,6 +356,7 @@ class TabPaper {
     if (e.key >= "0" && e.key <= "9") {
       var d = this.data[this.cursor[0]][this.cursor[1]].slice(1);
       var res = -1;
+      var ins_pos = 0;
       if (d.length == 1) {
         res = 0;
       } else {
@@ -473,7 +474,7 @@ class TabPaper {
   drawNote(x, y, section, pos, length, data) {
     this.vHTML += "<svg>";
     var is_blank = false;
-    var last = 88;
+    var last = 78;
     if (data.length == 1) {
       // pass
       // [x 0] is rest note
@@ -484,7 +485,10 @@ class TabPaper {
         this.vHTML += `<text class="notetext" data-type="nt" section="${section}" pos="${pos}" i="${i}" x='${x - 4}' y='${y +
           14 * (data[i * 2] - 1) +
           5}'>${data[i * 2 + 1]}</text>`;
-        last = 14 * (data[i * 2] - 1) + 8;
+        if(i==0)
+          last = 14 * (data[i * 2] - 1) + 8;
+        else
+          last = Math.max(14 * (data[i * 2] - 1) + 8, last);
       }
     }
 
