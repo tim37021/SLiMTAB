@@ -421,7 +421,7 @@ class TabPaper {
         this.data[this.cursor[0]][this.cursor[1]].splice(res+1, 2);
       }
       if(this.data[this.cursor[0]][this.cursor[1]].length==1) {
-        this.data[this.cursor[0]].splice(this.cursor[1], 1)
+        this.data[this.cursor[0]].splice(this.cursor[1], 1);
       }
 
       this.partialRender(Math.floor(this.cursor[0]/4));
@@ -430,6 +430,7 @@ class TabPaper {
   drawNote(x, y, section, pos, length, data) {
     this.vHTML += "<svg>";
     var is_blank = false;
+    var last = 88;
     if (data.length == 1) {
       // pass
       // [x 0] is rest note
@@ -440,6 +441,7 @@ class TabPaper {
       for (let i = 0; i < data.length / 2; i++) {
         this.vHTML += `<text class="notetext" data-type="nt" section="${section}" pos="${pos}" i="${i}" x='${x - 4}' y='${y +
           14 * (data[i * 2] - 1) +5}'>${data[i * 2 + 1]}</text>`;
+        last = 14 * (data[i * 2] - 1) + 8;
       }
     }
 
@@ -448,7 +450,7 @@ class TabPaper {
         if(length == 2)
           this.vHTML += `<path d='M${x} ${y + 88} l0 15' stroke-width='1'></path>`;
         if(length >= 4)
-          this.vHTML += `<path d='M${x} ${y + 78} l0 25' stroke-width='1'></path>`;
+          this.vHTML += `<path d='M${x} ${y + last} l0 ${102-last}' stroke-width='1'></path>`;
         if (length > 4) {
           this.vHTML += `<path d='M${x} ${y + 102} l6 1' stroke-width='2'></path>`;
         }
