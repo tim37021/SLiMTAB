@@ -10,8 +10,10 @@
   <script type="text/javascript" src="script/editor-ui.js"></script>
   <script type="text/javascript" src="script/content.js"></script>
   <script type="text/javascript" src="script/tabStrip.js"></script>
+  <script type="text/javascript" src="script/animation.js"></script>
   <script>
     let tabstrip;
+    let defaultnote;
     window.onload = function () {
       tabstrip = new tabStrip();
       tabstrip.setPaperDisplayer(document.getElementById("tabpaper1"));//must do this before addTag
@@ -53,6 +55,16 @@
         [4, 2, 4, 6, 3],
         [8, 1, 2, 2, 6, 3, 5]]
       ]);
+
+      defaultnote = new MovingElement(document.getElementById('default-note'), 5);
+      tabstrip.setEventListener({
+        'insert': function(paper) {
+          defaultnote.moveTo(Math.log2(paper.defaultNoteLength)*41, 0);
+        },
+        'change-length': function(paper, length) {
+            defaultnote.moveTo(Math.log2(length)*41, 0);
+        },
+      });
     }
   </script>
 </head>
@@ -122,6 +134,7 @@
     <div class="btn redoicon"></div>
     <img src="ui/line_vertical.png" style="margin: 7px 0px 4px 4px;">
     <div class="btn doticon"></div>
+    <div style="transition: width 0.1s; position: absolute; left: 304px; top: 92px; z-index: 0; width: 32px; height: 2px; background: #F39800;" id='default-note'></div>
     <div class="btn note_wholeicon set-note-length" id='sn1'></div>
     <div class="btn note_halficon set-note-length" id='sn2'></div>
     <div class="btn note_quartericon set-note-length" id='sn4'></div>

@@ -101,6 +101,10 @@ class TabPaper {
     targetElement.innerHTML = vobj.vHTML;
   }
 
+  isInserting() {
+    return this.data[this.cursor[0]][this.cursor[1]].length == 2;
+  } 
+
   render() {
     var checkY = function() {
       if (iy + 130 > this.height) {
@@ -237,7 +241,7 @@ class TabPaper {
     var is_move_event = false;
     var is_inserting = this.data[this.cursor[0]][this.cursor[1]].length == 2;
     var is_inserting_tab = this.data[this.cursor[0]].length == 1 && is_inserting;
-    if (!is_inserting) this.defaultNoteLength = this.data[this.cursor[0]][this.cursor[1]][0];
+    //if (!is_inserting) this.defaultNoteLength = this.data[this.cursor[0]][this.cursor[1]][0];
     switch (e.keyCode) {
       case 87:
         this.cursor[2] -= 1;
@@ -256,10 +260,18 @@ class TabPaper {
       case 107: // page up
         this.data[this.cursor[0]][this.cursor[1]][0] *= 2;
         this.data[this.cursor[0]][this.cursor[1]][0] = Math.clamp(this.data[this.cursor[0]][this.cursor[1]][0], 1, 32);
+        this.defaultNoteLength = Math.clamp(this.data[this.cursor[0]][this.cursor[1]][0], 1, 32);
+        if(this.event['change-length']!=null) {
+          this.event['change-length'](this, this.data[this.cursor[0]][this.cursor[1]][0]);
+        }
         break;
       case 109: // page down
         this.data[this.cursor[0]][this.cursor[1]][0] /= 2;
         this.data[this.cursor[0]][this.cursor[1]][0] = Math.clamp(this.data[this.cursor[0]][this.cursor[1]][0], 1, 32);
+        this.defaultNoteLength = Math.clamp(this.data[this.cursor[0]][this.cursor[1]][0], 1, 32);
+        if(this.event['change-length']!=null) {
+          this.event['change-length'](this, this.data[this.cursor[0]][this.cursor[1]][0]);
+        }
         break;
       case 46: // delete
       case 8: // backspace
@@ -268,6 +280,8 @@ class TabPaper {
       case 73: //insert I
         if (!is_inserting) {
           this.data[this.cursor[0]].splice(this.cursor[1], 0, [this.defaultNoteLength, -1]);
+          if(this.event['insert']!=null)
+            this.event['insert'](this);
         }
         break;
       // TODO: refine this
@@ -293,9 +307,13 @@ class TabPaper {
     if (this.cursor[1] == -1 && !is_inserting) {
       this.data[this.cursor[0]].splice(0, 0, [this.defaultNoteLength, -1]);
       this.cursor[1] = 0;
+      if(this.event['insert']!=null)
+        this.event['insert'](this);
     }
     if (this.cursor[1] == this.data[this.cursor[0]].length && !is_inserting) {
       this.data[this.cursor[0]].splice(this.data[this.cursor[0]].length, 0, [this.defaultNoteLength, -1]);
+      if(this.event['insert']!=null)
+        this.event['insert'](this);
     }
     if (is_inserting && is_move_event) {
       if (this.cursor[1] == this.data[this.cursor[0]].length) {
@@ -328,7 +346,7 @@ class TabPaper {
         }
       }
     }
-    if (is_move_event && this.event["cursormove"] != null) this.event["cursormove"](this);
+    if (is_move_event && this.event["move-cursor"] != null) this.event["move-cursor"](this);
     let moveline = Math.floor(this.cursor[0] / 4);
     if (moveline != oriline) this.partialRender(oriline);
     this.partialRender(moveline);
@@ -362,6 +380,7 @@ class TabPaper {
 
   setNoteLength(length) {
     this.data[this.cursor[0]][this.cursor[1]][0] = length;
+    this.event['change-length'](this, length);
     this.partialRender(Math.floor(this.cursor[0] / 4));
   }
 
