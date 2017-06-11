@@ -14,6 +14,7 @@ class tabStrip {
       }
       this.operTb.active();
     });
+    this.event = {'cursormove': null};
     this.tagWidth = 290;
     this.zooming = 1.0;
     document.addEventListener("mouseup", this.alignTag.bind(this));
@@ -28,6 +29,7 @@ class tabStrip {
     tag.setX(this.tagWidth * this.container.length);
     tag.paper.setDisplayer(this.paperDisplayer);
     tag.manager = this;
+    tag.paper.event = this.event;
     this.operTb = tag;
     this.container.push(tag);
     this.content.appendChild(tag.content);
@@ -66,6 +68,12 @@ class tabStrip {
     this.operTp.setScale(val);
     this.operTp.zoom(val);
     this.zooming = val;
+  }
+  setEventListener(event) {
+    this.event = event;
+    for (let i = 0; i < this.container.length; i++) {
+      this.container[i].paper.event = this.event;
+    }
   }
 }
 

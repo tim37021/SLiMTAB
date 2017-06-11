@@ -1,5 +1,5 @@
 class TabPaper {
-  constructor(title = "Untitled", w = 900, h = 900 * 1.41, bps = 4, bl = 4, lw = 840, lh = 140) {
+  constructor(title = "Untitled", event=null, w = 900, h = 900 * 1.41, bps = 4, bl = 4, lw = 840, lh = 140) {
     this.width = w;
     this.height = h;
     this.lineHeight = lh;
@@ -20,6 +20,9 @@ class TabPaper {
     this.content.addEventListener("click", this.ckEvent.bind(this));
     this.content.addEventListener("keydown", this.kdEvent.bind(this));
     this.content.addEventListener("keypress", this.kpEvent.bind(this));
+    this.event = (event!=null)?event:{
+      'cursormove': null,
+    };
     this.data = null;
     this.title = title;
     this.cursor = [0, 0, 1];
@@ -214,6 +217,8 @@ class TabPaper {
     var is_move_event = false;
     var is_inserting = this.data[this.cursor[0]][this.cursor[1]].length == 2;
     var is_inserting_tab = this.data[this.cursor[0]].length == 1 && is_inserting;
+    if(!is_inserting)
+      this.defaultNoteLength = this.data[this.cursor[0]][this.cursor[1]][0];
     switch (e.keyCode) {
       case 87:
         this.cursor[2] -= 1;
@@ -307,6 +312,8 @@ class TabPaper {
         }
       }
     }
+    if(is_move_event&&this.event['cursormove']!=null)
+      this.event['cursormove'](this);
 	let moveline=Math.floor(this.cursor[0]/4);
 	if(moveline!=oriline)this.partialRender(oriline);
     this.partialRender(moveline);
@@ -436,7 +443,7 @@ class TabPaper {
       }
     }
 
-    if(!is_blank) {
+    //if(!is_blank) {
       if (length > 1) {
         if(length == 2)
           this.vHTML += `<path d='M${x} ${y + 88} l0 15' stroke-width='1'></path>`;
@@ -453,7 +460,7 @@ class TabPaper {
           }
         }
         }
-    }
+    //}
     this.vHTML += "</svg>";
   }
 }
