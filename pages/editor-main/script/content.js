@@ -330,9 +330,9 @@ class TabPaper {
 
   drawAlert(x, y, sectionWidth, pos=-1) {
     if(pos == -1)
-      this.vHTML += `<rect class="no-print" x='${x}' y='${y}' width='${sectionWidth}' height='70' style="fill: rgba(255, 0, 0, 0.25)"></rect>`;
+      this.vHTML = `<rect class="no-print" x='${x}' y='${y}' width='${sectionWidth}' height='70' style="fill: rgba(193, 39, 45, 0.7)"></rect>`+this.vHTML;
     else
-      this.vHTML = this.vHTML.slice(0, pos+1)+`<rect class="no-print" x='${x}' y='${y}' width='${sectionWidth}' height='70' style="fill: rgba(255, 0, 0, 0.5)"></rect>`+this.vHTML.slice(pos);
+      this.vHTML = this.vHTML.slice(0, pos+1)+`<rect class="no-print" x='${x}' y='${y}' width='${sectionWidth}' height='70' style="fill: rgba(193, 39, 45, 0.7)"></rect>`+this.vHTML.slice(pos);
   }
 
   drawLine(x, y, first = false) {
@@ -361,7 +361,7 @@ class TabPaper {
   }
 
   drawCursor(x, y) {
-    this.vHTML += `<circle class="no-print notecircle" cx='${x}' cy='${y + 14 * (this.cursor[2] - 1)}' r='5'
+    this.vHTML += `<circle class="no-print notecircle" cx='${x}' cy='${y + 14 * (this.cursor[2] - 1)}' r='8'
 			fill='#F39800' stroke-width='0' stroke='black' style='cursor:pointer;'></circle>`;
   }
 
