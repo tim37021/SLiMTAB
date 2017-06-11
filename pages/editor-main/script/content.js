@@ -7,13 +7,14 @@ class TabPaper {
     this.beatLength = bl;
     this.beatPerSection = bps;
     this.vHTML = "";
-    this.st = 0;
     this.scale = 1;
     this.content = document.createElement("div");
     this.content.style.outline = "none";
     this.content.onselectstart = function() {
       return false;
     };
+	this.st=0;//scroll top ,just record, will cause any effect if be changed
+	this.sl=0;//scroll left
     this.content.setAttribute("tabindex", "1");
     this.content.addEventListener("click", this.ckEvent.bind(this));
     this.content.addEventListener("keydown", this.kdEvent.bind(this));
@@ -29,6 +30,54 @@ class TabPaper {
     if (this.lineHeight > 300) this.lineHeight = 120;
     if (this.lineWidth > this.width) this.lineWidth = this.width - 60;
   }
+  
+  partialRender(line){
+	  let vobj={
+		vHTML:"",
+		cursor:this.cursor,
+		lineHeight:this.lineHeight,
+		lineWidth:this.lineWidth,
+		beatLength:this.beatLength,
+		beatPerSection:this.beatPerSection
+	  };
+	  let targetElement=document.getElementById('line_'+line);
+	  let ix=Number(targetElement.getAttribute('ix')),iy=Number(targetElement.getAttribute('iy'));
+	  let notes_four_sections=0;
+	  var calc_beats = function(beatLength, arr) {
+		  var ret = 0;
+		  for (let i = 0; i < arr.length; i++) ret += beatLength / arr[i][0];
+		  return ret;
+	  };
+	  for (let i = line*4; i <line*4+4 && i<this.data.length;i++) {
+		  if (i % 4 == 0) {
+			notes_four_sections = 0;
+			for (let j = i; j < i + 4; j++) {
+			  if(j<this.data.length)
+				notes_four_sections += (this.data[j].length<=4?4:this.data[j].length);
+			  else
+				notes_four_sections += 4;
+			}
+		  }
+		  var section_width = (this.lineWidth - 80) * ((this.data[i].length<=4?4:this.data[i].length) / notes_four_sections);
+		  var beats = calc_beats(this.beatLength, this.data[i]);
+		  var beat_width = Math.min(section_width / beats, (this.lineWidth-80)/(this.beatPerSection*4));
+		  var oix = ix;
+		  var actual_section_width = beat_width * beats;
+		  var pos = vobj.vHTML.length-1;
+		  ix += (section_width - actual_section_width) / 2;
+		  for (let j = 0; j < this.data[i].length; j++) {
+			ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
+			if (i == this.cursor[0] && j == this.cursor[1]) this.drawCursor.call(vobj,ix, iy);
+			this.drawNote.call(vobj,ix, iy, i, j, this.data[i][j][0], this.data[i][j].slice(1));
+			ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
+		  }
+		  ix = oix + section_width;
+		  if (beats != this.beatPerSection) this.drawAlert.call(vobj,ix-section_width, iy, section_width, pos);
+		  if(i%4!=3)this.drawBar.call(vobj,ix, iy)
+	  }
+	  targetElement.innerHTML=vobj.vHTML;
+  }
+  
   render() {
     var checkY = function() {
       if (iy + 130 > this.height) {
@@ -61,7 +110,6 @@ class TabPaper {
     iy += 40;
     this.drawLine(ix, iy, true);
     ix += 80;
-    this.counter = 0;
 
     var note_distance = 80;
     var distance_ratio = 1.0;
@@ -72,10 +120,10 @@ class TabPaper {
       return ret;
     };
     for (let i = 0; i < this.data.length; i++) {
-      let totaltime = 0;
       // estimate note  section
 
       if (i % 4 == 0) {
+		  this.vHTML+=`<svg id='line_${i/4}' ix=${ix} iy=${iy}>`;
         notes_four_sections = 0;
         for (let j = i; j < i + 4; j++) {
           if(j<this.data.length)
@@ -100,10 +148,9 @@ class TabPaper {
       }
       ix = oix + section_width;
       if (beats != this.beatPerSection) this.drawAlert(ix-section_width, iy, section_width, pos);
-
+		if(i%4==3 || i==this.data.length-1)this.vHTML+='</svg>';
       if (i % 4 == 3) {
         (ix = nx), (iy += this.lineHeight);
-        this.drawBar(nx + this.lineWidth, iy);
         checkY();
         this.drawLine(ix, iy);
         ix += 80;
@@ -118,6 +165,7 @@ class TabPaper {
 
   setDisplayer(e) {
     this.displayer = e;
+	this.displayer.addEventListener("scroll",this.scrollEvent.bind(this));
   }
 
   zoom() {
@@ -130,14 +178,20 @@ class TabPaper {
     }
   }
 
-
+	scrollEvent(){
+		if(this.content.innerHTML.length!=0){
+		this.st=this.displayer.scrollTop;
+		this.sl=this.displayer.scrollLeft;
+		}
+	}
+	
   ckEvent(e) {
     if (e.target.getAttribute("data-type") == "nt") {
       var section = parseInt(e.target.getAttribute("section"));
       var pos = parseInt(e.target.getAttribute("pos"));
       var id = parseInt(e.target.getAttribute("i"));
       this.cursor = [section, pos, this.data[section][pos][1 + 2 * id]];
-      this.render();
+      this.partialRender(Math.floor(this.cursor[0]/4));
     }
   }
 
@@ -146,6 +200,7 @@ class TabPaper {
   }
 
   kdEvent(e) {
+	  let oriline=Math.floor(this.cursor[0]/4);
     Math.clamp = function(number, min, max) {
       return Math.max(min, Math.min(number, max));
     };
@@ -222,8 +277,9 @@ class TabPaper {
         }
       }
     }
-   
-    this.render();
+	let moveline=Math.floor(this.cursor[0]/4);
+	if(moveline!=oriline)this.partialRender(oriline);
+    this.partialRender(moveline);
   }
 
   kpEvent(e) {
@@ -248,7 +304,7 @@ class TabPaper {
         this.data[this.cursor[0]][this.cursor[1]].splice(this.data[this.cursor[0]][this.cursor[1]].length, 0, e.key-'0');
       }
 
-      this.render()
+      this.partialRender(Math.floor(this.cursor[0]/4));
 
     }
 
@@ -294,7 +350,7 @@ class TabPaper {
 		  </text>`;
     }
     this.drawBar(x, y);
-    this.drawBar(x+this.Lin, y);
+    this.drawBar(x+this.lineWidth, y);
     this.vHTML = this.vHTML + "</svg>";
   }
 
@@ -326,7 +382,7 @@ class TabPaper {
         this.data[this.cursor[0]].splice(this.cursor[1], 1)
       }
 
-      this.render()
+      this.partialRender(Math.floor(this.cursor[0]/4));
   }
 
   drawNote(x, y, section, pos, length, data) {
@@ -340,9 +396,8 @@ class TabPaper {
         is_blank = true;
     } else {
       for (let i = 0; i < data.length / 2; i++) {
-        this.vHTML += `<text class="notetext" ln=${this.counter} data-type="nt" section="${section}" pos="${pos}" i="${i}" x='${x - 4}' y='${y +
+        this.vHTML += `<text class="notetext" data-type="nt" section="${section}" pos="${pos}" i="${i}" x='${x - 4}' y='${y +
           14 * (data[i * 2] - 1) +5}'>${data[i * 2 + 1]}</text>`;
-        this.counter++;
       }
     }
 
