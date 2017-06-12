@@ -517,4 +517,26 @@ class TabPaper {
     //}
     this.vHTML += "</svg>";
   }
+
+  outputSequence(bpm=120) {
+    var ret = []
+    var midi_note = function(string_num, number) {
+      return [52, 47, 43, 38, 33, 28][string_num-1]+number;
+    }
+  
+    var spb = 1.0/(bpm/60);
+    var totaltime = 0;
+    for(let i=0; i<this.data.length; i++) {
+      for(let j=0; j<this.data[i].length; j++) {
+        var sec = (this.beatLength / this.data[i][j][0]) * spb;
+        for(let k=1; k<this.data[i][j].length; k+=2) {
+          ret.push({'time':totaltime, 'duration':sec, 'note': midi_note(this.data[i][j][k], this.data[i][j][k+1])});
+        }
+
+        totaltime += sec;
+      }
+    }
+
+    return ret;
+  }
 }

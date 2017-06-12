@@ -8,6 +8,7 @@ const { ipcRenderer } = require("electron");
 document.querySelector("#openfile").addEventListener("click", openDialog);
 document.querySelector("#saveas").addEventListener("click", saveDialog);
 document.querySelector("#recordbtn").addEventListener("click", record);
+document.querySelector("#playbtn").addEventListener('click', play);
 document.querySelector("#stopbtn").addEventListener("click", stop_record);
 Array.from(document.getElementsByClassName("print")).forEach(function(x) {
   x.addEventListener("click", print);
@@ -78,6 +79,22 @@ function record() {
       python.ex`manager.record()`;
     } else msgbox("錯誤", "沒有權限存取裝置或者裝置不存在");
   });
+}
+
+const Soundfont = require('soundfont-player');
+function play() {
+
+  var seq = tabstrip.operTb.paper.outputSequence();
+  var ac = new AudioContext()
+  Soundfont.instrument(ac, 'marimba', { soundfont: 'MusyngKite' }).then(function (marimba) {
+    seq.forEach(x => {
+      marimba.play(x['note'], x['time'], {duration: x['duration']})
+    })
+    setTimeout(function () {
+      ac.close()
+    }, seq[seq.length-1]['time']*1000);
+  })
+
 }
 
 function stop_record() {
