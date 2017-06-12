@@ -139,4 +139,4 @@ var checkDevices = setInterval(function() {
       });
     } else clearInterval(checkDevices);
   }
-}, 1000);
+}, 1000);*/
