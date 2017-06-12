@@ -13,6 +13,9 @@ const url = require("url");
 let splashWindow;
 let editorWindow;
 
+var nodeConsole = require('console')
+var myConsole = new nodeConsole.Console(process.stdout, process.stderr);
+
 function createSplash() {
   // Create the browser window.
   splashWindow = new BrowserWindow({ width: 621, height: 421, frame: false });
@@ -52,6 +55,12 @@ function createEditor() {
 
   if (process.env.NODE_ENV === "dev") editorWindow.webContents.openDevTools();
 
+  editorWindow.webContents.on("will-navigate", function(event, url) {
+    myConsole.log("QQQ");
+    editorWindow.webContents.send( 'open', `${url}` );
+    event.preventDefault();
+  })
+
   // Emitted when the window is closed.
   editorWindow.on("closed", function() {
     // Dereference the window object, usually you would store windows
@@ -85,8 +94,6 @@ ipcMain.on("splash-timeout", function() {
 });
 
 ipcMain.on("print-document", function(event, args) {
-  var nodeConsole = require('console')
-  var myConsole = new nodeConsole.Console(process.stdout, process.stderr);
   printWindow = new BrowserWindow({ width: 800, height: 600, frame: true });
   
   printWindow.loadURL(`data:text/html,${encodeURI('<html style="width: 100%; height: 100%;"><head>'+

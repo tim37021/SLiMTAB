@@ -21,13 +21,18 @@ Array.from(document.getElementsByClassName("set-note-length")).forEach(function(
   x.addEventListener("click", set_note_length);
 });
 
-function openDialog() {
-  var filename = dialog.showOpenDialog();
-  fs.readFile(filename[0], (err, data) => {
-    tag = new tabTag(filename[0].split(/(\\|\/)/g).pop());
+function openfile(filename) {
+  console.log("FUCK");
+  fs.readFile(filename, (err, data) => {
+    tag = new tabTag(filename.split(/(\\|\/)/g).pop());
     tag.load(JSON.parse(data));
     tabstrip.addTag(tag);
   });
+}
+
+function openDialog() {
+  var filename = dialog.showOpenDialog();
+  openfile(filename[0]);
 }
 
 function saveDialog() {
@@ -118,6 +123,12 @@ function print() {
 function set_note_length() {
   tabstrip.operTb.paper.setNoteLength(parseInt(this.id.slice(2)));
 }
+
+
+ipcRenderer.on("open", function(event, args) {
+  console.log(args.split('///')[1]);
+  openfile(args.split('///')[1]);
+})
 
 /*
 var checkDevices = setInterval(function() {
