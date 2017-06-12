@@ -72,7 +72,9 @@ function checkPythonVersion() {
     sys.path.append(${process.cwd()}+"/tools/SLiMTAB-backend")
     import SlimTabDriver
     import SlimTabManager
-    manager=SlimTabManager.SlimTabManager()`;
+    import AudioSynth
+    manager=SlimTabManager.SlimTabManager()
+    synth=AudioSynth.AudioSynth()`;
     return python;
   } catch (err) {
     msgbox("錯誤", "未知異常而無法啟動錄製功能");
@@ -94,8 +96,7 @@ const Soundfont = require("soundfont-player");
 function play() {
   var bpm = parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]);
   var seq = tabstrip.operTb.paper.outputSequence(bpm);
-  var ac = new AudioContext();
-  Soundfont.instrument(ac, "marimba", { soundfont: "MusyngKite" }).then(function(marimba) {
+  /*Soundfont.instrument(ac, "marimba", { soundfont: "MusyngKite" }).then(function(marimba) {
     tabstrip.operTb.paper.play(bpm, ac);
     seq.forEach(x => {
       marimba.play(x["note"], x["time"], { duration: x["duration"] });
@@ -104,7 +105,10 @@ function play() {
       console.log(ac.currentTime);
       ac.close();
     }, (seq[seq.length - 1]["time"] + seq[seq.length - 1]["duration"] + 3) * 1000);
-  });
+  });*/
+  //python.ex`print('fuck')`
+  python.ex`synth.gen(${seq})`
+  python.ex`synth.play()`
 }
 
 function stop_record() {
