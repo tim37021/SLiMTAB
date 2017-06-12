@@ -83,8 +83,8 @@ function record() {
 
 const Soundfont = require('soundfont-player');
 function play() {
-
-  var seq = tabstrip.operTb.paper.outputSequence();
+  var bpm = parseInt(document.getElementById('bpm_selection').innerHTML.split(' ')[0])
+  var seq = tabstrip.operTb.paper.outputSequence(bpm);
   var ac = new AudioContext()
   Soundfont.instrument(ac, 'marimba', { soundfont: 'MusyngKite' }).then(function (marimba) {
     seq.forEach(x => {

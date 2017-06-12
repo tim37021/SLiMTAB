@@ -68,6 +68,28 @@
             defaultnote.moveTo(document.getElementById(`sn${paper.defaultNoteLength}`).offsetLeft, 0);
         },
       });
+
+      Array.from(document.getElementsByClassName('editable')).forEach(x => {
+        x.addEventListener('dblclick', function (event) {
+          event.target.contentEditable = true;
+          event.target.innerHTML = "";
+        })
+        x.addEventListener('keydown', function(event) {
+          if(event.keyCode == 13) {
+            eval(x.getAttribute('onfinish'));
+            event.target.contentEditable = false;
+          }
+        })
+        if(x.classList.contains('numberonly')) {
+          x.addEventListener('keypress', function (event) {
+            if(event.key<'0'||event.key>'9') {
+              event.preventDefault();
+              return false;
+            }
+            return true;
+          })
+        }
+      });
     }
   </script>
 </head>
@@ -159,6 +181,19 @@
       <div class="dropdown-content" style="width: 120px; display: none;">
         <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">TAB</a>
         <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">SHEET</a>
+      </div>
+    </div>
+    <div class="dropdown" style="width: 120px; height: 25px; margin: 13px 0px 10px 10px;">
+      <div class="editable numberonly" style="width: 100px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="bpm_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()" onfinish="this.innerHTML+=' bpm'; hideMenus()">120 bpm</div>
+      <div class="dropdown-content" style="width: 120px; display: none;">
+        <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">70 bpm</a>
+        <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">80 bpm</a>
+        <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">90 bpm</a>
+        <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">100 bpm</a>
+        <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">110 bpm</a>
+        <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">120 bpm</a>
+        <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">120 bpm</a>
+        <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">130 bpm</a>
       </div>
     </div>
   </div>
