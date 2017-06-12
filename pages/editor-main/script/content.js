@@ -92,8 +92,8 @@ class TabPaper {
       var pos = vobj.vHTML.length - 1;
       for (let j = 0; j < this.data[i].length; j++) {
         ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
-        if (i == this.cursor[0] && j == this.cursor[1]) this.drawCursor.call(vobj, ix, iy);
-        if (i == this.playingCursor[0] && j == this.playingCursor[1]) this.drawPlayingCursor.call(vobj, ix, iy);
+        if (i == this.cursor[0] && j == this.cursor[1] && !this.hideCursor) this.drawCursor.call(vobj, ix, iy);
+        if (i == this.playingCursor[0] && j == this.playingCursor[1] && this.hideCursor) this.drawPlayingCursor.call(vobj, ix, iy);
         this.drawNote.call(vobj, ix, iy, i, j, this.data[i][j][0], this.data[i][j].slice(1));
         ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
       }
@@ -185,8 +185,8 @@ class TabPaper {
 
       for (let j = 0; j < this.data[i].length; j++) {
         ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
-        if (i == this.cursor[0] && j == this.cursor[1]) this.drawCursor(ix, iy);
-        if (i == this.playingCursor[0] && j == this.playingCursor[1]) this.drawPlayingCursor(ix, iy);
+        if (i == this.cursor[0] && j == this.cursor[1] && !this.hideCursor) this.drawCursor(ix, iy);
+        if (i == this.playingCursor[0] && j == this.playingCursor[1] && this.hideCursor) this.drawPlayingCursor(ix, iy);
         this.drawNote(ix, iy, i, j, this.data[i][j][0], this.data[i][j].slice(1));
         ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
       }
@@ -429,7 +429,7 @@ class TabPaper {
   }
 
   drawPlayingCursor(x, y) {
-    this.vHTML += `<rect class="no-print" x='${x+10}' y='${y-10}' width='1' height='90' style="fill: #F39800"></rect>`;
+    this.vHTML += `<rect class="no-print" x='${x+10}' y='${y-10}' width='2' height='125' style="fill: #F39800"></rect>`;
   }
 
   drawLine(x, y, first = false) {
@@ -543,8 +543,10 @@ class TabPaper {
     var repeat = function() {
       if(this.playingCursor[0] >= this.data.length) {
         clearInterval(this.func);
+        this.hideCursor = false;
         if(this.event['play-finished'] != null)
           this.event['play-finished'](this);
+        this.render();
         return;
       }
       if(ac.currentTime - this.playCursorTime >= (this.beatLength / this.data[this.playingCursor[0]][this.playingCursor[1]][0]) * spb) {
@@ -552,12 +554,15 @@ class TabPaper {
         this.playingCursor[1] += 1;
         if(this.playingCursor[1] >= this.data[this.playingCursor[0]].length) {
           this.playingCursor[0] = this.playingCursor[0]+1;
+          if((this.playingCursor[0]-1)/4!=this.playingCursor[0]/4)
+            this.partialRender(this.playingCursor[0]/4)
           this.playingCursor[1] = 0;
         }
         this.partialRender(this.playingCursor[0]/4);
       }
     }
-    this.partialRender(this.playingCursor[0]/4);
+    this.hideCursor = true;
+    this.render();
     this.func = setInterval(repeat.bind(this), 10);
   }
 

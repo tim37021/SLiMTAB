@@ -58,13 +58,13 @@
 
       ele = document.getElementById('default-note');
       defaultnote = new MovingElement(ele, 5);
-      defaultnote.moveTo(document.getElementById('sn4').offsetLeft, 0);
+      defaultnote.moveTo(document.getElementById('sn4').offsetLeft+8, 0);
       tabstrip.setEventListener({
         'insert': function (paper) {
-          defaultnote.moveTo(document.getElementById(`sn${paper.defaultNoteLength}`).offsetLeft, 0);
+          defaultnote.moveTo(document.getElementById(`sn${paper.defaultNoteLength}`).offsetLeft+8, 0);
         },
         'change-length': function (paper, length) {
-          defaultnote.moveTo(document.getElementById(`sn${paper.defaultNoteLength}`).offsetLeft, 0);
+          defaultnote.moveTo(document.getElementById(`sn${paper.defaultNoteLength}`).offsetLeft+8, 0);
         },
       });
 
@@ -159,7 +159,7 @@
     <div class="btn redoicon"></div>
     <img src="ui/line_vertical.png" style="margin: 7px 0px 4px 4px;">
     <div class="btn doticon"></div>
-    <div style="transition: width 0.1s; position: absolute; top: 92px; z-index: 0; width: 32px; height: 2px; background: #F39800;"
+    <div style="transition: width 0.1s; position: absolute; top: 92px; z-index: 0; width: 16px; height: 2px; background: #F39800;"
       id='default-note'></div>
     <div class="btn note_wholeicon set-note-length" id='sn1'></div>
     <div class="btn note_halficon set-note-length" id='sn2'></div>

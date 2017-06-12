@@ -32,7 +32,7 @@ function openDialog() {
 
 function saveDialog() {
   var filename = dialog.showSaveDialog();
-  fs.writeFile(filename, JSON.stringify(tabstrip.operTb.paper.data));
+  fs.writeFileSync(filename, JSON.stringify(tabstrip.operTb.paper.data));
 }
 
 function msgbox(title, msg) {
