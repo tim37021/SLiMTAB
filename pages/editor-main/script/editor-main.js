@@ -5,8 +5,12 @@ var assert = require("assert");
 var pythonBridge = require("python-bridge");
 const { ipcRenderer } = require("electron");
 
-document.querySelector("#openfile").addEventListener("click", openDialog);
-document.querySelector("#saveas").addEventListener("click", saveDialog);
+Array.from(document.getElementsByClassName("open")).forEach(x =>{
+  x.addEventListener("click", openDialog);
+});
+Array.from(document.getElementsByClassName("saveas")).forEach(x => {
+  x.addEventListener("click", saveDialog);
+});
 document.querySelector("#recordbtn").addEventListener("click", record);
 document.querySelector("#playbtn").addEventListener("click", play);
 document.querySelector("#stopbtn").addEventListener("click", stop_record);
@@ -27,8 +31,8 @@ function openDialog() {
 }
 
 function saveDialog() {
-  dialog.showSaveDialog();
-  alert("OK");
+  var filename = dialog.showSaveDialog();
+  fs.writeFile(filename, JSON.stringify(tabstrip.operTb.paper.data));
 }
 
 function msgbox(title, msg) {
