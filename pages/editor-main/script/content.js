@@ -535,7 +535,7 @@ class TabPaper {
     this.playCursorTime = 0;
     var repeat = function() {
       if(this.playingCursor[0] >= this.data.length) {
-        clearInterval(repeat);
+        clearInterval(this.func);
         if(this.event['play-finished'] != null)
           this.event['play-finished'](this);
         return;
@@ -551,7 +551,7 @@ class TabPaper {
       }
     }
     this.partialRender(this.playingCursor[0]/4);
-    setInterval(repeat.bind(this), 10);
+    this.func = setInterval(repeat.bind(this), 10);
   }
 
   outputSequence(bpm=120) {
