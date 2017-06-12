@@ -8,7 +8,7 @@ const { ipcRenderer } = require("electron");
 document.querySelector("#openfile").addEventListener("click", openDialog);
 document.querySelector("#saveas").addEventListener("click", saveDialog);
 document.querySelector("#recordbtn").addEventListener("click", record);
-document.querySelector("#playbtn").addEventListener('click', play);
+document.querySelector("#playbtn").addEventListener("click", play);
 document.querySelector("#stopbtn").addEventListener("click", stop_record);
 Array.from(document.getElementsByClassName("print")).forEach(function(x) {
   x.addEventListener("click", print);
@@ -81,20 +81,21 @@ function record() {
   });
 }
 
-const Soundfont = require('soundfont-player');
+const Soundfont = require("soundfont-player");
 function play() {
-  var bpm = parseInt(document.getElementById('bpm_selection').innerHTML.split(' ')[0])
+  var bpm = parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]);
   var seq = tabstrip.operTb.paper.outputSequence(bpm);
-  var ac = new AudioContext()
-  Soundfont.instrument(ac, 'marimba', { soundfont: 'MusyngKite' }).then(function (marimba) {
+  var ac = new AudioContext();
+  Soundfont.instrument(ac, "marimba", { soundfont: "MusyngKite" }).then(function(marimba) {
+    tabstrip.operTb.paper.play(bpm, ac);
     seq.forEach(x => {
-      marimba.play(x['note'], x['time'], {duration: x['duration']})
-    })
-    setTimeout(function () {
-      ac.close()
-    }, seq[seq.length-1]['time']*1000);
-  })
-
+      marimba.play(x["note"], x["time"], { duration: x["duration"] });
+    });
+    setTimeout(function() {
+      console.log(ac.currentTime);
+      ac.close();
+    }, (seq[seq.length - 1]["time"] + seq[seq.length - 1]["duration"] + 3) * 1000);
+  });
 }
 
 function stop_record() {
@@ -110,8 +111,7 @@ function print() {
   cont = null;
 }
 
-function set_note_length()
-{
+function set_note_length() {
   tabstrip.operTb.paper.setNoteLength(parseInt(this.id.slice(2)));
 }
 
