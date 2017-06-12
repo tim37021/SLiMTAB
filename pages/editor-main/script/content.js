@@ -10,6 +10,7 @@ class TabPaper {
     this.scale = 1;
     this.content = document.createElement("div");
     this.content.style.outline = "none";
+    this.inputing = 0;
     this.content.onselectstart = function() {
       return false;
     };
@@ -257,17 +258,21 @@ class TabPaper {
     switch (e.keyCode) {
       case 87:
         this.cursor[2] -= 1;
+        this.inputing = 0;
         break;
       case 83:
         this.cursor[2] += 1;
+        this.inputing = 0;
         break;
       case 65:
         this.cursor[1] -= 1;
         is_move_event = true;
+        this.inputing = 0;
         break;
       case 68:
         this.cursor[1] += 1;
         is_move_event = true;
+        this.inputing = 0;
         break;
       case 107: // page up
         this.data[this.cursor[0]][this.cursor[1]][0] *= 2;
@@ -369,24 +374,26 @@ class TabPaper {
       var d = this.data[this.cursor[0]][this.cursor[1]].slice(1);
       var res = -1;
       var ins_pos = 0;
-      if (d.length == 1) {
-        res = 0;
-      } else {
+      if (d.length != 1) {
         for (let i = 0; i < d.length / 2; i++) {
           if (d[i * 2] == this.cursor[2]) {
             res = i * 2;
             break;
           }
         }
-      }
-      if (res != -1) {
-        this.data[this.cursor[0]][this.cursor[1]][res + 1] = this.cursor[2];
-        this.data[this.cursor[0]][this.cursor[1]][res + 2] = e.key - "0";
+        if (res != -1) {
+          this.data[this.cursor[0]][this.cursor[1]][res + 1] = this.cursor[2];
+          this.data[this.cursor[0]][this.cursor[1]][res + 2] = this.inputing*10+(e.key - "0");
+          this.data[this.cursor[0]][this.cursor[1]][res + 2] = Math.clamp(this.data[this.cursor[0]][this.cursor[1]][res + 2], 0, 22)
+        } else {
+          this.data[this.cursor[0]][this.cursor[1]].splice(this.data[this.cursor[0]][this.cursor[1]].length, 0, this.cursor[2]);
+          this.data[this.cursor[0]][this.cursor[1]].splice(this.data[this.cursor[0]][this.cursor[1]].length, 0, e.key - "0");
+        }
       } else {
-        this.data[this.cursor[0]][this.cursor[1]].splice(this.data[this.cursor[0]][this.cursor[1]].length, 0, this.cursor[2]);
-        this.data[this.cursor[0]][this.cursor[1]].splice(this.data[this.cursor[0]][this.cursor[1]].length, 0, e.key - "0");
+        this.data[this.cursor[0]][this.cursor[1]][1] = this.cursor[2];
+        this.data[this.cursor[0]][this.cursor[1]].push(e.key - "0");
       }
-
+      this.inputing = e.key - "0";
       this.partialRender(Math.floor(this.cursor[0] / 4));
     }
   }
@@ -422,11 +429,11 @@ class TabPaper {
   }
 
   drawPlayingCursor(x, y) {
-    this.vHTML += `<rect class="no-print" x='${x-2}' y='${y}' width='5' height='70' style="fill: rgba(193, 39, 45, 0.7)"></rect>`;
+    this.vHTML += `<rect class="no-print" x='${x+10}' y='${y-10}' width='1' height='90' style="fill: #F39800"></rect>`;
   }
 
   drawLine(x, y, first = false) {
-    this.vHTML += '<svg  stroke-linecap="square" >';
+    this.vHTML += '<svg stroke-linecap="square" >';
     for (let i = 0; i < 6; i++) {
       this.vHTML += `<line x1='${x}' y1='${y + i * 14}' x2='${x + this.lineWidth}' y2='${y + i * 14}'
 				style="stroke:black;stroke-width:1"
@@ -541,13 +548,13 @@ class TabPaper {
         return;
       }
       if(ac.currentTime - this.playCursorTime >= (this.beatLength / this.data[this.playingCursor[0]][this.playingCursor[1]][0]) * spb) {
+        this.playCursorTime += (this.beatLength / this.data[this.playingCursor[0]][this.playingCursor[1]][0]) * spb;
         this.playingCursor[1] += 1;
         if(this.playingCursor[1] >= this.data[this.playingCursor[0]].length) {
           this.playingCursor[0] = this.playingCursor[0]+1;
           this.playingCursor[1] = 0;
         }
         this.partialRender(this.playingCursor[0]/4);
-        this.playCursorTime = ac.currentTime;
       }
     }
     this.partialRender(this.playingCursor[0]/4);
