@@ -56,13 +56,16 @@
         [8, 1, 2, 2, 6, 3, 5]]
       ]);
 
-      defaultnote = new MovingElement(document.getElementById('default-note'), 5);
+      ele = document.getElementById('default-note');
+      defaultnote = new MovingElement(ele, 5);
+      defaultnote.moveTo(document.getElementById('sn4').offsetLeft, 0);
       tabstrip.setEventListener({
         'insert': function(paper) {
-          defaultnote.moveTo(Math.log2(paper.defaultNoteLength)*41, 0);
+          defaultnote.moveTo(document.getElementById(`sn${paper.defaultNoteLength}`).offsetLeft, 0);
         },
         'change-length': function(paper, length) {
-            defaultnote.moveTo(Math.log2(length)*41, 0);
+          console.log(document.getElementById(`sn${paper.defaultNoteLength}`).offsetLeft)
+            defaultnote.moveTo(document.getElementById(`sn${paper.defaultNoteLength}`).offsetLeft, 0);
         },
       });
     }
@@ -134,7 +137,7 @@
     <div class="btn redoicon"></div>
     <img src="ui/line_vertical.png" style="margin: 7px 0px 4px 4px;">
     <div class="btn doticon"></div>
-    <div style="transition: width 0.1s; position: absolute; left: 304px; top: 92px; z-index: 0; width: 32px; height: 2px; background: #F39800;" id='default-note'></div>
+    <div style="transition: width 0.1s; position: absolute; top: 92px; z-index: 0; width: 32px; height: 2px; background: #F39800;" id='default-note'></div>
     <div class="btn note_wholeicon set-note-length" id='sn1'></div>
     <div class="btn note_halficon set-note-length" id='sn2'></div>
     <div class="btn note_quartericon set-note-length" id='sn4'></div>
@@ -156,11 +159,6 @@
       <div class="dropdown-content" style="width: 120px; display: none;">
         <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">TAB</a>
         <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">SHEET</a>
-      </div>
-    </div>
-    <div class="dropdown" style="width: 200px; height: 25px; margin: 13px 0px 10px 10px;">
-      <div style="width: 100px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()"></div>
-      <div class="dropdown-content" style="width: 120px; display: none;" id="audioDeviceSelection">
       </div>
     </div>
   </div>
