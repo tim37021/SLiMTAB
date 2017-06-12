@@ -40,10 +40,14 @@ function saveDialog() {
   fs.writeFileSync(filename, JSON.stringify(tabstrip.operTb.paper.data));
 }
 
-function msgbox(title, msg) {
+function msgbox(title, msg, no_ok=false) {
   var msgbox = document.getElementById("msgbox");
   document.getElementById("msgtitle").innerHTML = title;
   document.getElementById("msgcontent").innerHTML = msg;
+  if(no_ok)
+    msgbox.getElementsByClassName('okbtn')[0].style.display = "none";
+  else
+    msgbox.getElementsByClassName('okbtn')[0].style.display = null;
   msgbox.style.display = null;
 }
 
@@ -107,7 +111,10 @@ function play() {
     }, (seq[seq.length - 1]["time"] + seq[seq.length - 1]["duration"] + 3) * 1000);
   });*/
   //python.ex`print('fuck')`
-  python.ex`synth.gen(${seq})`
+  msgbox('訊息', '正在合成音訊請稍後..', true);
+  python`synth.gen(${seq})`.then(() => {
+    document.getElementById("msgbox").style.display = "none";
+  })
   python.ex`synth.play()`
 }
 
