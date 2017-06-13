@@ -117,11 +117,13 @@ function play() {
 function stop_record() {
   python.ex`manager.stopRecord()`;
 
+  msgbox('訊息', '正在計算...請稍後..', true);
   var bpm = parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]);
   python`manager.calc(bpm=${bpm})`.then(x => {
     tabstrip.operTb.paper.data = x;
     console.log(x)
     tabstrip.operTb.paper.render();
+    document.getElementById("msgbox").style.display = "none";
   });
   alert("YO");
 }
