@@ -100,22 +100,26 @@ const Soundfont = require("soundfont-player");
 function play() {
   var bpm = parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]);
   var seq = tabstrip.operTb.paper.outputSequence(bpm);
-  /*Soundfont.instrument(ac, "marimba", { soundfont: "MusyngKite" }).then(function(marimba) {
+  var ac = new AudioContext();
+  Soundfont.instrument(ac, "electric_guitar_clean", { soundfont: "FluidR3_GM" }).then(function(marimba) {
     tabstrip.operTb.paper.play(bpm, ac);
     seq.forEach(x => {
       marimba.play(x["note"], x["time"], { duration: x["duration"] });
     });
+    marimba.on('event', function (event, time, obj, opts) {
+      console.log(event, time, obj, opts)
+    })
     setTimeout(function() {
       console.log(ac.currentTime);
       ac.close();
     }, (seq[seq.length - 1]["time"] + seq[seq.length - 1]["duration"] + 3) * 1000);
-  });*/
+  });
   //python.ex`print('fuck')`
-  msgbox('訊息', '正在合成音訊請稍後..', true);
-  python`synth.gen(${seq})`.then(() => {
-    document.getElementById("msgbox").style.display = "none";
-  })
-  python.ex`synth.play()`
+  //msgbox('訊息', '正在合成音訊請稍後..', true);
+  //python`synth.gen(${seq})`.then(() => {
+  //  document.getElementById("msgbox").style.display = "none";
+  //})
+ //python.ex`synth.play()`
 }
 
 function stop_record() {
