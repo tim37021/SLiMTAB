@@ -105,7 +105,7 @@ class TabPaper {
   }
 
   isInserting() {
-    return this.data[this.cursor[0]][this.cursor[1]].length == 2;
+    return this.data[this.cursor[0]][this.cursor[1]][1] == -1;
   } 
   
   isInsertingTab() {
@@ -258,7 +258,7 @@ class TabPaper {
   kdEvent(e) {
     let oriline = Math.floor(this.cursor[0] / 4);
     var is_move_event = false;
-    var is_inserting = this.data[this.cursor[0]][this.cursor[1]].length == 2;
+    var is_inserting = this.data[this.cursor[0]][this.cursor[1]][1] == -1;
     var is_inserting_tab = this.data[this.cursor[0]].length == 1 && is_inserting;
     //if (!is_inserting) this.defaultNoteLength = this.data[this.cursor[0]][this.cursor[1]][0];
     switch (e.keyCode) {
@@ -583,8 +583,10 @@ class TabPaper {
     for(let i=0; i<this.data.length; i++) {
       for(let j=0; j<this.data[i].length; j++) {
         var sec = (this.beatLength / this.data[i][j][0]) * spb;
-        for(let k=1; k<this.data[i][j].length; k+=2) {
-          ret.push({'time':totaltime, 'duration':sec, 'note': midi_note(this.data[i][j][k], this.data[i][j][k+1])});
+        if(this.data[i][j][1] >= 1) {
+          for(let k=1; k<this.data[i][j].length; k+=2) {
+            ret.push({'time':totaltime, 'duration':sec, 'note': midi_note(this.data[i][j][k], this.data[i][j][k+1])});
+          }
         }
 
         totaltime += sec;

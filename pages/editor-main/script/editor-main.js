@@ -87,8 +87,8 @@ function checkPythonVersion() {
 }
 
 function record() {
-  python.ex`manager.setInputDevice(manager.getDefaultDevice()['input'])`;
-  python.ex`manager.startRecord()`;
+  //python.ex`manager.setInputDevice(manager.getDefaultDevice()['input'])`;
+  python.ex`manager.record()`;
 }
 
 const Soundfont = require("soundfont-player");
@@ -96,14 +96,11 @@ function play() {
   var bpm = parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]);
   var seq = tabstrip.operTb.paper.outputSequence(bpm);
   var ac = new AudioContext();
-  Soundfont.instrument(ac, "electric_guitar_clean", { soundfont: "FluidR3_GM" }).then(function(marimba) {
+  Soundfont.instrument(ac, "electric_guitar_clean", { soundfont: "MusyngKite" }).then(function(marimba) {
     tabstrip.operTb.paper.play(bpm, ac);
     seq.forEach(x => {
       marimba.play(x["note"], x["time"], { duration: x["duration"] });
     });
-    marimba.on('event', function (event, time, obj, opts) {
-      console.log(event, time, obj, opts)
-    })
     setTimeout(function() {
       console.log(ac.currentTime);
       ac.close();
@@ -122,7 +119,8 @@ function stop_record() {
 
   var bpm = parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]);
   python`manager.calc(bpm=${bpm})`.then(x => {
-    console.log(x);
+    this.operTb.paper.data = x;
+    this.operTb.paper.render();
   });
   alert("YO");
 }
