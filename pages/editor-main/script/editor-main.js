@@ -119,8 +119,9 @@ function stop_record() {
 
   var bpm = parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]);
   python`manager.calc(bpm=${bpm})`.then(x => {
-    this.operTb.paper.data = x;
-    this.operTb.paper.render();
+    tabstrip.operTb.paper.data = x;
+    console.log(x)
+    tabstrip.operTb.paper.render();
   });
   alert("YO");
 }
