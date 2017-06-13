@@ -98,7 +98,7 @@ class TabPaper {
         ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
       }
       ix = oix + section_width;
-      if (beats != this.beatPerSection) this.drawAlert.call(vobj, ix - section_width, iy, section_width, pos);
+      if (beats != this.beatPerSection && this.cursor[0] != i ) this.drawAlert.call(vobj, ix - section_width, iy, section_width, pos);
       if (i % 4 != 3) this.drawBar.call(vobj, ix, iy);
     }
     targetElement.innerHTML = vobj.vHTML;
@@ -191,7 +191,7 @@ class TabPaper {
         ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
       }
       ix = oix + section_width;
-      if (beats != this.beatPerSection) this.drawAlert(ix - section_width, iy, section_width, pos);
+      if (beats != this.beatPerSection && this.cursor[0] != i) this.drawAlert(ix - section_width, iy, section_width, pos);
       if (i % 4 != 3) this.drawBar(ix, iy);
       if (i % 4 == 3 || i == this.data.length - 1) this.vHTML += "</svg>";
       if (i % 4 == 3) {
@@ -248,6 +248,7 @@ class TabPaper {
       this.cursor = [section, pos, this.data[section][pos][1 + 2 * id]];
       this.partialRender(Math.floor(oldsection / 4));
       this.partialRender(Math.floor(this.cursor[0] / 4));
+      if (this.event["move-cursor"] != null) this.event["move-cursor"](this);
     }
   }
 
@@ -258,6 +259,7 @@ class TabPaper {
   kdEvent(e) {
     let oriline = Math.floor(this.cursor[0] / 4);
     var is_move_event = false;
+    var is_cursor_moved = false;
     var is_inserting = this.data[this.cursor[0]][this.cursor[1]][1] == -1;
     var is_inserting_tab = this.data[this.cursor[0]].length == 1 && is_inserting;
     //if (!is_inserting) this.defaultNoteLength = this.data[this.cursor[0]][this.cursor[1]][0];
@@ -265,20 +267,24 @@ class TabPaper {
       case 87:
         this.cursor[2] -= 1;
         this.inputing = 0;
+        is_cursor_moved = true;
         break;
       case 83:
         this.cursor[2] += 1;
         this.inputing = 0;
+        is_cursor_moved = true;
         break;
       case 65:
         this.cursor[1] -= 1;
         is_move_event = true;
         this.inputing = 0;
+        is_cursor_moved = true;
         break;
       case 68:
         this.cursor[1] += 1;
         is_move_event = true;
         this.inputing = 0;
+        is_cursor_moved = true;
         break;
       case 107: // page up
         this.data[this.cursor[0]][this.cursor[1]][0] *= 2;
@@ -369,7 +375,7 @@ class TabPaper {
         }
       }
     }
-    if (is_move_event && this.event["move-cursor"] != null) this.event["move-cursor"](this);
+    if (is_cursor_moved && this.event["move-cursor"] != null) this.event["move-cursor"](this);
     let moveline = Math.floor(this.cursor[0] / 4);
     if (moveline != oriline) this.partialRender(oriline);
     this.partialRender(moveline);
@@ -424,14 +430,20 @@ class TabPaper {
   }
 
   drawAlert(x, y, sectionWidth, pos = -1) {
-    if (pos == -1)
-      this.vHTML =
-        `<rect class="no-print" x='${x}' y='${y}' width='${sectionWidth}' height='70' style="fill: rgba(193, 39, 45, 0.7)"></rect>` + this.vHTML;
-    else
-      this.vHTML =
-        this.vHTML.slice(0, pos + 1) +
-        `<rect class="no-print" x='${x}' y='${y}' width='${sectionWidth}' height='70' style="fill: rgba(193, 39, 45, 0.7)"></rect>` +
-        this.vHTML.slice(pos);
+    var src = "";
+    if (pos == -1) {
+      for (let i = 0; i < 6; i++) {
+        src += `<line class="no-print" x1='${x}' y1='${y + i * 14}' x2='${x + sectionWidth}' y2='${y + i * 14}'
+          style="stroke:red;stroke-width:1.5"></line>`;
+      }
+      this.vHTML = src + this.vHTML;
+    } else {
+      for (let i = 0; i < 6; i++) {
+        src += `<line class="no-print" x1='${x}' y1='${y + i * 14}' x2='${x + sectionWidth}' y2='${y + i * 14}'
+          style="stroke:red;stroke-width:1.5"></line>`;
+      }
+      this.vHTML =this.vHTML.slice(0, pos + 1) + src +this.vHTML.slice(pos);
+    }
   }
 
   drawPlayingCursor(x, y) {
