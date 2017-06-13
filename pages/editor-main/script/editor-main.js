@@ -96,10 +96,10 @@ function play() {
   var bpm = parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]);
   var seq = tabstrip.operTb.paper.outputSequence(bpm);
   var ac = new AudioContext();
-  Soundfont.instrument(ac, "electric_guitar_clean", { soundfont: "MusyngKite" }).then(function(marimba) {
+  Soundfont.instrument(ac, "./soundfont/electric_guitar_clean.js").then(function(instrument) {
     tabstrip.operTb.paper.play(bpm, ac);
     seq.forEach(x => {
-      marimba.play(x["note"], x["time"], { duration: x["duration"] });
+      instrument.play(x["note"], x["time"], { duration: x["duration"] });
     });
     setTimeout(function() {
       console.log(ac.currentTime);
