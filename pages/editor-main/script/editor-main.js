@@ -83,13 +83,8 @@ function checkPythonVersion() {
 }
 
 function record() {
-  var device = document.getElementById("comDeviceSelection").parentElement.children[0].innerHTML;
-  python`SlimTabDriver.SliMTABDriver(${device}).check()`.then(x => {
-    if (x) {
-      python.ex`manager.setInputDevice(2)`;
-      python.ex`manager.record()`;
-    } else msgbox("錯誤", "沒有權限存取裝置或者裝置不存在");
-  });
+  python.ex`manager.setInputDevice(manager.getDefaultDevice()['input'])`;
+  python.ex`manager.startRecord()`;
 }
 
 const Soundfont = require("soundfont-player");
@@ -113,7 +108,11 @@ function play() {
 
 function stop_record() {
   python.ex`manager.stopRecord()`;
-  python.ex`manager.saveCurrentRecordData()`;
+
+  var bpm = parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]);
+  python`manager.calc(bpm=${bpm})`.then(x => {
+    console.log(x);
+  });
   alert("YO");
 }
 
