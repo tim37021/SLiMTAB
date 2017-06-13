@@ -109,7 +109,7 @@ class TabPaper {
   } 
   
   isInsertingTab() {
-    return this.data[this.cursor[0]].length == 1 && isInserting();
+    return this.data[this.cursor[0]].length == 1 && this.isInserting();
   }
 
   render() {
@@ -234,11 +234,17 @@ class TabPaper {
   }
 
   ckEvent(e) {
-    if (e.target.getAttribute("data-type") == "nt" && !this.isInserting()) {
+    if (e.target.getAttribute("data-type") == "nt") {
       var section = parseInt(e.target.getAttribute("section"));
       var pos = parseInt(e.target.getAttribute("pos"));
       var id = parseInt(e.target.getAttribute("i"));
       var oldsection = this.cursor[0];
+      if(this.isInserting()) {
+        if(this.isInsertingTab())
+          this.data.splice(this.cursor[0], 1);
+        else
+          this.data[this.cursor[0]].splice(this.cursor[1], 1);
+      }
       this.cursor = [section, pos, this.data[section][pos][1 + 2 * id]];
       this.partialRender(Math.floor(oldsection / 4));
       this.partialRender(Math.floor(this.cursor[0] / 4));
