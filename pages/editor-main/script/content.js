@@ -320,6 +320,7 @@ class TabPaper {
           this.cursor[1] = -1;
           is_inserting = true;
           is_move_event = true;
+          is_cursor_moved = true;
         }
         break;
       case 190: // .
@@ -328,6 +329,7 @@ class TabPaper {
           this.cursor[1] = this.data[this.cursor[0]].length;
           is_inserting = true;
           is_move_event = true;
+          is_cursor_moved = true;
         }
         break;
     }
