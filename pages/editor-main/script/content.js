@@ -60,6 +60,7 @@ class TabPaper {
       iy = Number(targetElement.getAttribute("iy"));
 
     let notes_four_sections = 0;
+    var tie_begin_ix = -1
     var calc_beats = function(beatLength, arr) {
       var ret = 0;
       for (let i = 0; i < arr.length; i++) ret += beatLength / arr[i][0];
@@ -95,6 +96,13 @@ class TabPaper {
         if (i == this.cursor[0] && j == this.cursor[1] && !this.hideCursor) this.drawCursor.call(vobj, ix, iy);
         if (i == this.playingCursor[0] && j == this.playingCursor[1] && this.hideCursor) this.drawPlayingCursor.call(vobj, ix, iy);
         this.drawNote.call(vobj, ix, iy, i, j, this.data[i][j][0], this.data[i][j].slice(1));
+        if(this.data[i][j][this.data[i][j].length-1]=='c' && tie_begin_ix==-1) {
+          tie_begin_ix = ix;
+        }
+        if(this.data[i][j][this.data[i][j].length-1]=='e') {
+          this.drawTiePath.call(vobj, tie_begin_ix, ix, iy);
+          tie_begin_ix = -1;
+        }
         ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
       }
       ix = oix + section_width;
@@ -150,6 +158,7 @@ class TabPaper {
     var note_distance = 80;
     var distance_ratio = 1.0;
     var notes_four_sections = 0;
+    var tie_begin_ix = -1;
     var calc_beats = function(beatLength, arr) {
       var ret = 0;
       for (let i = 0; i < arr.length; i++) ret += beatLength / arr[i][0];
@@ -190,6 +199,13 @@ class TabPaper {
         if (i == this.cursor[0] && j == this.cursor[1] && !this.hideCursor) this.drawCursor(ix, iy);
         if (i == this.playingCursor[0] && j == this.playingCursor[1] && this.hideCursor) this.drawPlayingCursor(ix, iy);
         this.drawNote(ix, iy, i, j, this.data[i][j][0], this.data[i][j].slice(1));
+        if(this.data[i][j][this.data[i][j].length-1]=='c' && tie_begin_ix==-1) {
+          tie_begin_ix = ix;
+        }
+        if(this.data[i][j][this.data[i][j].length-1]=='e') {
+          this.drawTiePath(tie_begin_ix, ix, iy);
+          tie_begin_ix = -1;
+        }
         ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
       }
       ix = oix + section_width;
@@ -455,6 +471,10 @@ class TabPaper {
     this.defaultNoteLength = length;
     this.event['change-length'](this, length);
     this.partialRender(Math.floor(this.cursor[0] / 4));
+  }
+
+  drawTiePath(x1, x2, y) {
+    this.vHTML += `<path style="stroke-width: 1; fill: none;" d="M ${x1},${y+105} S ${(x1+x2)/2},${y+120},${x2},${y+105}"/>`;
   }
 
   load(data) {
