@@ -582,7 +582,7 @@ class TabPaper {
       }
     }
     this.hideCursor = true;
-    //this.render();
+    this.render();
     this.func = setInterval(repeat.bind(this), 10);
   }
 
