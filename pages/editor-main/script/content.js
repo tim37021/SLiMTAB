@@ -100,6 +100,8 @@ class TabPaper {
           tie_begin_ix = ix;
         }
         if(this.data[i][j][this.data[i][j].length-1]=='e') {
+          if(tie_begin_ix == -1)
+            tie_begin_ix = ix;
           this.drawTiePath.call(vobj, tie_begin_ix, ix, iy);
           tie_begin_ix = -1;
         }
@@ -203,6 +205,8 @@ class TabPaper {
           tie_begin_ix = ix;
         }
         if(this.data[i][j][this.data[i][j].length-1]=='e') {
+          if(tie_begin_ix == -1)
+            tie_begin_ix = ix;
           this.drawTiePath(tie_begin_ix, ix, iy);
           tie_begin_ix = -1;
         }
@@ -443,7 +447,7 @@ class TabPaper {
       var res = -1;
       var ins_pos = 0;
       if (d.length != 1) {
-        for (let i = 0; i < d.length / 2; i++) {
+        for (let i = 0; i < Math.floor(d.length / 2); i++) {
           if (d[i * 2] == this.cursor[2]) {
             res = i * 2;
             break;
@@ -454,8 +458,12 @@ class TabPaper {
           this.data[this.cursor[0]][this.cursor[1]][res + 2] = this.inputing*10+(e.key - "0");
           this.data[this.cursor[0]][this.cursor[1]][res + 2] = Math.clamp(this.data[this.cursor[0]][this.cursor[1]][res + 2], 0, 22)
         } else {
-          this.data[this.cursor[0]][this.cursor[1]].splice(this.data[this.cursor[0]][this.cursor[1]].length, 0, this.cursor[2]);
-          this.data[this.cursor[0]][this.cursor[1]].splice(this.data[this.cursor[0]][this.cursor[1]].length, 0, e.key - "0");
+          if(this.data[this.cursor[0]][this.cursor[1]][d.length]=='c' || this.data[this.cursor[0]][this.cursor[1]][d.length] == 'e') 
+            res = d.length;
+          else
+            res = d.length+1;
+          this.data[this.cursor[0]][this.cursor[1]].splice(res, 0, this.cursor[2]);
+          this.data[this.cursor[0]][this.cursor[1]].splice(res+1, 0, e.key - "0");
         }
       } else {
         this.data[this.cursor[0]][this.cursor[1]][1] = this.cursor[2];
@@ -547,7 +555,7 @@ class TabPaper {
     if (d.length == 1) {
       res = 0;
     } else {
-      for (let i = 0; i < d.length / 2; i++) {
+      for (let i = 0; i < Math.floor(d.length / 2); i++) {
         if (d[i * 2] == this.cursor[2]) {
           res = i * 2;
           break;
@@ -556,8 +564,10 @@ class TabPaper {
     }
     if (res != -1) {
       this.data[this.cursor[0]][this.cursor[1]].splice(res + 1, 2);
+      if(this.data[this.cursor[0]][this.cursor[1]].slice(-1)[0]=='c'||this.data[this.cursor[0]][this.cursor[1]].slice(-1)[0]=='e')
+        this.data[this.cursor[0]][this.cursor[1]].splice(-1, 2);
     }
-    if (this.data[this.cursor[0]][this.cursor[1]].length == 1) {
+    if (this.data[this.cursor[0]][this.cursor[1]].length <= 1) {
       this.data[this.cursor[0]].splice(this.cursor[1], 1);
     }
 

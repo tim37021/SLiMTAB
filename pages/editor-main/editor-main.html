@@ -20,7 +20,9 @@
       tabstrip.setTagDisplayer(document.getElementById("tabstrip"));
       let nt = new tabTag("test tag");
       nt.load([
-        [[4, 2, 4, 6, 3, 'c'],//length,chord,block,chord,block.......
+        [[4, 2, 4, 6, 3, 'c'],
+        [4, 2, 4, 6, 3, 'c'],
+        [4, 2, 4, 6, 3, 'c'],
         [4, 2, 4, 6, 3, 'e']],
       ]);
       tabstrip.addTag(nt);//the last tag you add will be set as active tag
