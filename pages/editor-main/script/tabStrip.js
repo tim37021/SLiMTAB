@@ -87,6 +87,10 @@ class tabStrip {
       this.container[i].paper.event = this.event;
     }
   }
+
+  getTabCount() {
+    return this.container.length;
+  }
 }
 
 class tabTag {
