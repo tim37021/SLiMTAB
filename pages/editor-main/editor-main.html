@@ -20,42 +20,10 @@
       tabstrip.setTagDisplayer(document.getElementById("tabstrip"));
       let nt = new tabTag("test tag");
       nt.load([
-        [[4, 2, 4, 6, 3],//length,chord,block,chord,block.......
-        [8, 1, 2, 2, 6, 3, 5],
-        [8, 1, 2, 2, 6, 3, 5],
-        [4, 2, 4, 6, 3],
-        [4, 2, 4, 6, 3]],
-
-        [[4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5],
-        [16, 3, 2],
-        [4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5],
-        [8, 1, 2, 2, 6, 3, 5],
-        [8, 3, 2]],
+        [[4, 2, 4, 6, 3, 'c'],//length,chord,block,chord,block.......
+        [4, 2, 4, 6, 3, 'e']],
       ]);
-      tabstrip.addTag(new tabTag());
-      tabstrip.addTag(new tabTag("123"));
       tabstrip.addTag(nt);//the last tag you add will be set as active tag
-      tabstrip.container[0].load([
-        [[4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5],
-        [16, 3, 2],
-        [4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5],
-        [8, 1, 2, 2, 6, 3, 5],
-        [8, 3, 2]],
-
-        [[4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5],
-        [16, 3, 2],
-        [4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5],
-        [16, 3, 2],
-        [4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5]]
-      ]);
-
       ele = document.getElementById('default-note');
       defaultnote = new MovingElement(ele, 5);
       defaultnote.moveTo(document.getElementById('sn4').offsetLeft+8, 0);

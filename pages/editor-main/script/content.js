@@ -546,7 +546,7 @@ class TabPaper {
 
   drawNoteBackground(x, y, data) {
     if (data.length != 1) {
-      for (let i = 0; i < data.length / 2; i++) {
+      for (let i = 0; i < Math.floor(data.length / 2); i++) {
         this.vHTML += `<circle class="no-print notecircle" cx='${x}' cy='${y + 14 * (data[i * 2] - 1)}' r='5'
 			fill='white' stroke-width='0' stroke='black' style='cursor:pointer;'></circle>`;
       }
@@ -563,7 +563,7 @@ class TabPaper {
       // [x -1] is blank, means inserting...
       if (data[0] == -1) is_blank = true;
     } else {
-      for (let i = 0; i < data.length / 2; i++) {
+      for (let i = 0; i < Math.floor(data.length / 2); i++) {
         this.vHTML += `<text class="notetext" data-type="nt" section="${section}" pos="${pos}" i="${i}" x='${x - 4}' y='${y +
           14 * (data[i * 2] - 1) +
           5}'>${data[i * 2 + 1]}</text>`;
@@ -640,16 +640,22 @@ class TabPaper {
     var totaltime = 0;
     for(let i=this.cursor[0]; i<this.data.length; i++) {
 		let j=0;
+    var acctime = 0;
 		if(i==this.cursor[0])j=this.cursor[1];
       for(; j<this.data[i].length; j++) {
         var sec = (this.beatLength / this.data[i][j][0]) * spb;
-        if(this.data[i][j][1] >= 1) {
+        acctime += sec;
+        if(this.data[i][j][1] >= 1 || this.data[i][j][this.data[i][j].length-1]=='e') {
           for(let k=1; k<this.data[i][j].length; k+=2) {
-            ret.push({'time':totaltime, 'duration':sec, 'note': midi_note(this.data[i][j][k], this.data[i][j][k+1])});
+            if(k == this.data[i][j].length-1)
+              break;
+            ret.push({'time':totaltime, 'duration': acctime, 'note': midi_note(this.data[i][j][k], this.data[i][j][k+1])});
           }
         }
-
-        totaltime += sec;
+        if(!(this.data[i][j][1] >= 1 && this.data[i][j][this.data[i][j].length-1]=='c')) {
+          totaltime += acctime;
+          acctime = 0;
+        }
       }
     }
 
