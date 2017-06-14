@@ -16,7 +16,7 @@ class TabPaper {
       return false;
     };
     this.defaultNoteLength = 4;
-    this.st = 0; //scroll top ,just record, will cause any effect if be changed
+    this.st = 0; //scroll top ,just record, will not cause any effect if be changed
     this.sl = 0; //scroll left
     this.content.setAttribute("tabindex", "1");
     this.content.addEventListener("click", this.ckEvent.bind(this));
@@ -214,6 +214,7 @@ class TabPaper {
 
   setDisplayer(e) {
     this.displayer = e;
+	this.displayer.addEventListener("scroll",this.scrollEvent.bind(this));
   }
 
   zoom() {

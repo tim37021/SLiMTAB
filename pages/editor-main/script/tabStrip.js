@@ -17,6 +17,12 @@ class tabStrip {
     this.tagWidth = 290;
     this.zooming = 1.0;
     document.addEventListener("mouseup", this.alignTag.bind(this));
+	this.mvfun=(function(e){
+		let dy=e.screenY-this.my;
+		let dx=e.screenX-this.mx;
+		this.paperDisplayer.scrollTop=this.st-dy;
+		this.paperDisplayer.scrollLeft=this.sl-dx;
+	}).bind(this);
   }
   addTag(tag) {
     for (let i = 0; i < this.container.length; i++) {
@@ -36,6 +42,13 @@ class tabStrip {
   }
   setPaperDisplayer(pd) {
     this.paperDisplayer = pd;
+	this.paperDisplayer.addEventListener("mousedown",(e)=>{
+		this.st=this.paperDisplayer.scrollTop;
+		this.sl=this.paperDisplayer.scrollLeft;
+		this.my=e.screenY;
+		this.mx=e.screenX;
+		this.paperDisplayer.addEventListener("mousemove",this.mvfun);
+	})
   }
   setTagDisplayer(pd) {
     this.tagDisplayer = pd;
@@ -61,6 +74,7 @@ class tabStrip {
       this.container[i].content.style.transition = "left 200ms linear";
       this.container[i].setX(i * this.tagWidth);
     }
+	this.paperDisplayer.removeEventListener("mousemove",this.mvfun);
   }
   setZooming(val) {
     this.operTp.setScale(val);
