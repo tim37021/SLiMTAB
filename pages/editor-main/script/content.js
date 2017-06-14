@@ -282,7 +282,7 @@ class TabPaper {
       count = Math.floor(section/4);
     else
     count = (Math.floor(section/4) - first_page_count) % page_count;
-    return pg.offsetTop - pg.parentElement.offsetTop + count * this.lineHeight;
+    return pg.offsetTop - pg.parentElement.offsetTop + count * this.lineHeight * this.scale;
   }
 
   setScale(s) {
