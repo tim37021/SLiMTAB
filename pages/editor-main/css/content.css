@@ -13,3 +13,6 @@ path{
         display: none !important;
     }
 }
+.tab_line text:hover{
+	stroke:#d17600;
+}
