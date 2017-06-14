@@ -449,7 +449,7 @@ class TabPaper {
   }
 
   drawPlayingCursor(x, y) {
-    this.vHTML += `<rect class="no-print" x='${x+10}' y='${y-10}' width='2' height='125' style="fill: #F39800"></rect>`;
+    this.vHTML += `<rect class="no-print" x='${x+10}' y='${y-10}' width='2' height='125' style="fill: #3333FF"></rect>`;
   }
 
   drawLine(x, y, first = false) {
@@ -556,7 +556,7 @@ class TabPaper {
   }
 
   play(bpm=120, ac) {
-    this.playingCursor = [0, 0];
+    this.playingCursor = [this.cursor[0], this.cursor[1]];
     var spb = 1.0/(bpm/60);
 
     this.playCursorTime = 0;
@@ -594,8 +594,10 @@ class TabPaper {
   
     var spb = 1.0/(bpm/60);
     var totaltime = 0;
-    for(let i=0; i<this.data.length; i++) {
-      for(let j=0; j<this.data[i].length; j++) {
+    for(let i=this.cursor[0]; i<this.data.length; i++) {
+		let j=0;
+		if(i==this.cursor[0])j=this.cursor[1];
+      for(; j<this.data[i].length; j++) {
         var sec = (this.beatLength / this.data[i][j][0]) * spb;
         if(this.data[i][j][1] >= 1) {
           for(let k=1; k<this.data[i][j].length; k+=2) {
