@@ -1,50 +1,86 @@
-.playicon {
-  background-image: url('./normal/normal_play.png');
+.arrowicon {
+  background-image: url('./normal/normal_arrow.png');
 }
-.playicon-disabled {
-  background-image: url('./disable/disable_play.png');
+.arrowicon:active {
+  background-image: url('./pressed/pressed_arrow.png');
 }
-.playicon:hover {
-  background-image: url('./hover/hover_play.png');
+.arrowdownicon {
+  background-image: url('./normal/normal_arrowdown.png');
 }
-.playicon:active {
-  background-image: url('./pressed/pressed_play.png');
+.arrowdownicon:hover {
+  background-image: url('./hover/hover_arrowdown.png');
 }
-.openicon {
-  background-image: url('./normal/normal_open.png');
+.arrowdownicon:active {
+  background-image: url('./pressed/pressed_arrowdown.png');
 }
-.openicon-disabled {
-  background-image: url('./disable/disable_open.png');
+.arrowupicon {
+  background-image: url('./normal/normal_arrowup.png');
 }
-.openicon:hover {
-  background-image: url('./hover/hover_open.png');
+.arrowupicon:hover {
+  background-image: url('./hover/hover_arrowup.png');
 }
-.openicon:active {
-  background-image: url('./pressed/pressed_open.png');
+.arrowupicon:active {
+  background-image: url('./pressed/pressed_arrowup.png');
 }
-.stopicon {
-  background-image: url('./normal/normal_stop.png');
+.doticon {
+  background-image: url('./normal/normal_dot.png');
 }
-.stopicon-disabled {
-  background-image: url('./disable/disable_stop.png');
+.doticon-disabled {
+  background-image: url('./disable/disable_dot.png');
 }
-.stopicon:hover {
-  background-image: url('./hover/hover_stop.png');
+.doticon:hover {
+  background-image: url('./hover/hover_dot.png');
 }
-.stopicon:active {
-  background-image: url('./pressed/pressed_stop.png');
+.doticon:active {
+  background-image: url('./pressed/pressed_dot.png');
 }
-.shrinkicon {
-  background-image: url('./normal/normal_shrink.png');
+.escicon {
+  background-image: url('./normal/normal_esc.png');
 }
-.shrinkicon-disabled {
-  background-image: url('./disable/disable_shrink.png');
+.escicon:hover {
+  background-image: url('./hover/hover_esc.png');
 }
-.shrinkicon:hover {
-  background-image: url('./hover/hover_shrink.png');
+.fullicon {
+  background-image: url('./normal/normal_full.png');
 }
-.shrinkicon:active {
-  background-image: url('./pressed/pressed_shrink.png');
+.fullicon:hover {
+  background-image: url('./hover/hover_full.png');
+}
+.newicon {
+  background-image: url('./normal/normal_new.png');
+}
+.newicon-disabled {
+  background-image: url('./disable/disable_new.png');
+}
+.newicon:hover {
+  background-image: url('./hover/hover_new.png');
+}
+.newicon:active {
+  background-image: url('./pressed/pressed_new.png');
+}
+.note_eighthicon {
+  background-image: url('./normal/normal_note_eighth.png');
+}
+.note_eighthicon-disabled {
+  background-image: url('./disable/disable_note_eighth.png');
+}
+.note_eighthicon:hover {
+  background-image: url('./hover/hover_note_eighth.png');
+}
+.note_eighthicon:active {
+  background-image: url('./pressed/pressed_note_eighth.png');
+}
+.note_halficon {
+  background-image: url('./normal/normal_note_half.png');
+}
+.note_halficon-disabled {
+  background-image: url('./disable/disable_note_half.png');
+}
+.note_halficon:hover {
+  background-image: url('./hover/hover_note_half.png');
+}
+.note_halficon:active {
+  background-image: url('./pressed/pressed_note_half.png');
 }
 .note_quartericon {
   background-image: url('./normal/normal_note_quarter.png');
@@ -58,17 +94,137 @@
 .note_quartericon:active {
   background-image: url('./pressed/pressed_note_quarter.png');
 }
-.doticon {
-  background-image: url('./normal/normal_dot.png');
+.note_sixteenthicon {
+  background-image: url('./normal/normal_note_sixteenth.png');
 }
-.doticon-disabled {
-  background-image: url('./disable/disable_dot.png');
+.note_sixteenthicon-disabled {
+  background-image: url('./disable/disable_note_sixteenth.png');
 }
-.doticon:hover {
-  background-image: url('./hover/hover_dot.png');
+.note_sixteenthicon:hover {
+  background-image: url('./hover/hover_note_sixteenth.png');
 }
-.doticon:active {
-  background-image: url('./pressed/pressed_dot.png');
+.note_sixteenthicon:active {
+  background-image: url('./pressed/pressed_note_sixteenth.png');
+}
+.note_thirtysecondicon {
+  background-image: url('./normal/normal_note_thirtysecond.png');
+}
+.note_thirtysecondicon-disabled {
+  background-image: url('./disable/disable_note_thirtysecond.png');
+}
+.note_thirtysecondicon:hover {
+  background-image: url('./hover/hover_note_thirtysecond.png');
+}
+.note_thirtysecondicon:active {
+  background-image: url('./pressed/pressed_note_thirtysecond.png');
+}
+.note_wholeicon {
+  background-image: url('./normal/normal_note_whole.png');
+}
+.note_wholeicon-disabled {
+  background-image: url('./disable/disable_note_whole.png');
+}
+.note_wholeicon:hover {
+  background-image: url('./hover/hover_note_whole.png');
+}
+.note_wholeicon:active {
+  background-image: url('./pressed/pressed_note_whole.png');
+}
+.openicon {
+  background-image: url('./normal/normal_open.png');
+}
+.openicon-disabled {
+  background-image: url('./disable/disable_open.png');
+}
+.openicon:hover {
+  background-image: url('./hover/hover_open.png');
+}
+.openicon:active {
+  background-image: url('./pressed/pressed_open.png');
+}
+.playicon {
+  background-image: url('./normal/normal_play.png');
+}
+.playicon-disabled {
+  background-image: url('./disable/disable_play.png');
+}
+.playicon:hover {
+  background-image: url('./hover/hover_play.png');
+}
+.playicon:active {
+  background-image: url('./pressed/pressed_play.png');
+}
+.printicon {
+  background-image: url('./normal/normal_print.png');
+}
+.printicon-disabled {
+  background-image: url('./disable/disable_print.png');
+}
+.printicon:hover {
+  background-image: url('./hover/hover_print.png');
+}
+.printicon:active {
+  background-image: url('./pressed/pressed_print.png');
+}
+.recordicon {
+  background-image: url('./normal/normal_record.png');
+}
+.recordicon-disabled {
+  background-image: url('./disable/disable_record.png');
+}
+.recordicon:hover {
+  background-image: url('./hover/hover_record.png');
+}
+.recordicon:active {
+  background-image: url('./pressed/pressed_record.png');
+}
+.redoicon {
+  background-image: url('./normal/normal_redo.png');
+}
+.redoicon-disabled {
+  background-image: url('./disable/disable_redo.png');
+}
+.redoicon:hover {
+  background-image: url('./hover/hover_redo.png');
+}
+.redoicon:active {
+  background-image: url('./pressed/pressed_redo.png');
+}
+.rest_eighthicon {
+  background-image: url('./normal/normal_rest_eighth.png');
+}
+.rest_eighthicon-disabled {
+  background-image: url('./disable/disable_rest_eighth.png');
+}
+.rest_eighthicon:hover {
+  background-image: url('./hover/hover_rest_eighth.png');
+}
+.rest_eighthicon:active {
+  background-image: url('./pressed/pressed_rest_eighth.png');
+}
+.rest_halficon {
+  background-image: url('./normal/normal_rest_half.png');
+}
+.rest_halficon-disabled {
+  background-image: url('./disable/disable_rest_half.png');
+}
+.rest_halficon:hover {
+  background-image: url('./hover/hover_rest_half.png');
+}
+.rest_halficon:active {
+  background-image: url('./pressed/pressed_rest_half.png');
+}
+.rest_quartericon {
+  background-image: url('./normal/normal_rest_quarter.png');
+}
+.rest_quartericon-disabled {
+  background-image: url('./disable/disable_rest_quarter.png');
+}
+.rest_quartericon:hover {
+  background-image: url('./hover/hover_rest_quarter.png');
+}
+.rest_quartericon:active {
+  background-image: url('./pressed/pressed_rest_quarter.png');
 }
 .rest_sixteenthicon {
   background-image: url('./normal/normal_rest_sixteenth.png');
@@ -94,101 +250,17 @@
 .rest_thirtysecondicon:active {
   background-image: url('./pressed/pressed_rest_thirtysecond.png');
 }
-.arrowicon {
-  background-image: url('./normal/normal_arrow.png');
+.rest_wholeicon {
+  background-image: url('./normal/normal_rest_whole.png');
 }
-.arrowicon-disabled {
-  background-image: url('./disable/disable_arrow.png');
+.rest_wholeicon-disabled {
+  background-image: url('./disable/disable_rest_whole.png');
 }
-.arrowicon:hover {
-  background-image: url('./hover/hover_arrow.png');
+.rest_wholeicon:hover {
+  background-image: url('./hover/hover_rest_whole.png');
 }
-.arrowicon:active {
-  background-image: url('./pressed/pressed_arrow.png');
-}
-.newicon {
-  background-image: url('./normal/normal_new.png');
-}
-.newicon-disabled {
-  background-image: url('./disable/disable_new.png');
-}
-.newicon:hover {
-  background-image: url('./hover/hover_new.png');
-}
-.newicon:active {
-  background-image: url('./pressed/pressed_new.png');
-}
-.arrowupicon {
-  background-image: url('./normal/normal_arrowup.png');
-}
-.arrowupicon-disabled {
-  background-image: url('./disable/disable_arrowup.png');
-}
-.arrowupicon:hover {
-  background-image: url('./hover/hover_arrowup.png');
-}
-.arrowupicon:active {
-  background-image: url('./pressed/pressed_arrowup.png');
-}
-.printicon {
-  background-image: url('./normal/normal_print.png');
-}
-.printicon-disabled {
-  background-image: url('./disable/disable_print.png');
-}
-.printicon:hover {
-  background-image: url('./hover/hover_print.png');
-}
-.printicon:active {
-  background-image: url('./pressed/pressed_print.png');
-}
-.note_wholeicon {
-  background-image: url('./normal/normal_note_whole.png');
-}
-.note_wholeicon-disabled {
-  background-image: url('./disable/disable_note_whole.png');
-}
-.note_wholeicon:hover {
-  background-image: url('./hover/hover_note_whole.png');
-}
-.note_wholeicon:active {
-  background-image: url('./pressed/pressed_note_whole.png');
-}
-.fullicon {
-  background-image: url('./normal/normal_full.png');
-}
-.fullicon-disabled {
-  background-image: url('./disable/disable_full.png');
-}
-.fullicon:hover {
-  background-image: url('./hover/hover_full.png');
-}
-.fullicon:active {
-  background-image: url('./pressed/pressed_full.png');
-}
-.rest_halficon {
-  background-image: url('./normal/normal_rest_half.png');
-}
-.rest_halficon-disabled {
-  background-image: url('./disable/disable_rest_half.png');
-}
-.rest_halficon:hover {
-  background-image: url('./hover/hover_rest_half.png');
-}
-.rest_halficon:active {
-  background-image: url('./pressed/pressed_rest_half.png');
-}
-.undoicon {
-  background-image: url('./normal/normal_undo.png');
-}
-.undoicon-disabled {
-  background-image: url('./disable/disable_undo.png');
-}
-.undoicon:hover {
-  background-image: url('./hover/hover_undo.png');
-}
-.undoicon:active {
-  background-image: url('./pressed/pressed_undo.png');
+.rest_wholeicon:active {
+  background-image: url('./pressed/pressed_rest_whole.png');
 }
 .saveicon {
   background-image: url('./normal/normal_save.png');
@@ -202,135 +274,36 @@
 .saveicon:active {
   background-image: url('./pressed/pressed_save.png');
 }
-.arrowdownicon {
-  background-image: url('./normal/normal_arrowdown.png');
+.shrinkicon {
+  background-image: url('./normal/normal_shrink.png');
 }
-.arrowdownicon-disabled {
-  background-image: url('./disable/disable_arrowdown.png');
+.shrinkicon:hover {
+  background-image: url('./hover/hover_shrink.png');
 }
-.arrowdownicon:hover {
-  background-image: url('./hover/hover_arrowdown.png');
+.stopicon {
+  background-image: url('./normal/normal_stop.png');
 }
-.arrowdownicon:active {
-  background-image: url('./pressed/pressed_arrowdown.png');
+.stopicon-disabled {
+  background-image: url('./disable/disable_stop.png');
 }
-.rest_wholeicon {
-  background-image: url('./normal/normal_rest_whole.png');
+.stopicon:hover {
+  background-image: url('./hover/hover_stop.png');
 }
-.rest_wholeicon-disabled {
-  background-image: url('./disable/disable_rest_whole.png');
+.stopicon:active {
+  background-image: url('./pressed/pressed_stop.png');
 }
-.rest_wholeicon:hover {
-  background-image: url('./hover/hover_rest_whole.png');
+.stoprecordicon {
+  background-image: url('./normal/normal_stoprecord.png');
 }
-.rest_wholeicon:active {
-  background-image: url('./pressed/pressed_rest_whole.png');
+.undoicon {
+  background-image: url('./normal/normal_undo.png');
 }
-.escicon {
-  background-image: url('./normal/normal_esc.png');
+.undoicon-disabled {
+  background-image: url('./disable/disable_undo.png');
 }
-.escicon-disabled {
-  background-image: url('./disable/disable_esc.png');
+.undoicon:hover {
+  background-image: url('./hover/hover_undo.png');
 }
-.escicon:hover {
-  background-image: url('./hover/hover_esc.png');
-}
-.escicon:active {
-  background-image: url('./pressed/pressed_esc.png');
-}
-.note_eighthicon {
-  background-image: url('./normal/normal_note_eighth.png');
-}
-.note_eighthicon-disabled {
-  background-image: url('./disable/disable_note_eighth.png');
-}
-.note_eighthicon:hover {
-  background-image: url('./hover/hover_note_eighth.png');
-}
-.note_eighthicon:active {
-  background-image: url('./pressed/pressed_note_eighth.png');
-}
-.recordicon {
-  background-image: url('./normal/normal_record.png');
-}
-.recordicon-disabled {
-  background-image: url('./disable/disable_record.png');
-}
-.recordicon:hover {
-  background-image: url('./hover/hover_record.png');
-}
-.recordicon:active {
-  background-image: url('./pressed/pressed_record.png');
-}
-.note_halficon {
-  background-image: url('./normal/normal_note_half.png');
-}
-.note_halficon-disabled {
-  background-image: url('./disable/disable_note_half.png');
-}
-.note_halficon:hover {
-  background-image: url('./hover/hover_note_half.png');
-}
-.note_halficon:active {
-  background-image: url('./pressed/pressed_note_half.png');
-}
-.rest_quartericon {
-  background-image: url('./normal/normal_rest_quarter.png');
-}
-.rest_quartericon-disabled {
-  background-image: url('./disable/disable_rest_quarter.png');
-}
-.rest_quartericon:hover {
-  background-image: url('./hover/hover_rest_quarter.png');
-}
-.rest_quartericon:active {
-  background-image: url('./pressed/pressed_rest_quarter.png');
-}
-.note_sixteenthicon {
-  background-image: url('./normal/normal_note_sixteenth.png');
-}
-.note_sixteenthicon-disabled {
-  background-image: url('./disable/disable_note_sixteenth.png');
-}
-.note_sixteenthicon:hover {
-  background-image: url('./hover/hover_note_sixteenth.png');
-}
-.note_sixteenthicon:active {
-  background-image: url('./pressed/pressed_note_sixteenth.png');
-}
-.rest_eighthicon {
-  background-image: url('./normal/normal_rest_eighth.png');
-}
-.rest_eighthicon-disabled {
-  background-image: url('./disable/disable_rest_eighth.png');
-}
-.rest_eighthicon:hover {
-  background-image: url('./hover/hover_rest_eighth.png');
-}
-.rest_eighthicon:active {
-  background-image: url('./pressed/pressed_rest_eighth.png');
-}
-.note_thirtysecondicon {
-  background-image: url('./normal/normal_note_thirtysecond.png');
-}
-.note_thirtysecondicon-disabled {
-  background-image: url('./disable/disable_note_thirtysecond.png');
-}
-.note_thirtysecondicon:hover {
-  background-image: url('./hover/hover_note_thirtysecond.png');
-}
-.note_thirtysecondicon:active {
-  background-image: url('./pressed/pressed_note_thirtysecond.png');
-}
-.redoicon {
-  background-image: url('./normal/normal_redo.png');
-}
-.redoicon-disabled {
-  background-image: url('./disable/disable_redo.png');
-}
-.redoicon:hover {
-  background-image: url('./hover/hover_redo.png');
-}
-.redoicon:active {
-  background-image: url('./pressed/pressed_redo.png');
+.undoicon:active {
+  background-image: url('./pressed/pressed_undo.png');
 }
