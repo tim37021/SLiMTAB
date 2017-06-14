@@ -5,6 +5,9 @@ var assert = require("assert");
 var pythonBridge = require("python-bridge");
 const { ipcRenderer } = require("electron");
 
+Array.from(document.getElementsByClassName("new")).forEach(x =>{
+  x.addEventListener("click", newfile);
+});
 Array.from(document.getElementsByClassName("open")).forEach(x =>{
   x.addEventListener("click", openDialog);
 });
@@ -26,6 +29,9 @@ Array.from(document.getElementsByClassName("set-note-length")).forEach(function(
   x.addEventListener("click", set_note_length);
 });
 
+function newfile() {
+  tabstrip.addTag(new tabTag());
+}
 function openfile(filename) {
   console.log("FUCK");
   fs.readFile(filename, (err, data) => {
