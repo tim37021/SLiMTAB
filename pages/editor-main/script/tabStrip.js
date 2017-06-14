@@ -41,6 +41,20 @@ class tabStrip {
     this.tagDisplayer = pd;
     pd.appendChild(this.content);
   }
+
+  remove(idx=-1) {
+    if(idx==-1)
+      idx = this.container.indexOf(this.operTb);
+    this.container.splice(idx, 1);
+    this.content.removeChild(this.content.children[idx]);
+    this.paperDisplayer.removeChild(this.paperDisplayer.children[idx]);
+    if(this.container.length>=1) {
+      this.operTb = this.container[this.container.length-1];
+      this.container[this.container.length-1].active();
+    }
+    this.alignTag()
+  }
+
   alignTag() {
     for (let i = 0; i < this.container.length; i++) {
       if (this.container[i].x + this.tagWidth / 2 > (i + 1) * this.tagWidth || this.container[i].x + this.tagWidth / 2 < i * this.tagWidth) {

@@ -11,6 +11,9 @@ Array.from(document.getElementsByClassName("new")).forEach(x =>{
 Array.from(document.getElementsByClassName("open")).forEach(x =>{
   x.addEventListener("click", openDialog);
 });
+Array.from(document.getElementsByClassName("close")).forEach(x =>{
+  x.addEventListener("click", close_tab);
+});
 Array.from(document.getElementsByClassName("saveas")).forEach(x => {
   x.addEventListener("click", saveDialog);
 });
@@ -33,12 +36,15 @@ function newfile() {
   tabstrip.addTag(new tabTag());
 }
 function openfile(filename) {
-  console.log("FUCK");
   fs.readFile(filename, (err, data) => {
     tag = new tabTag(filename.split(/(\\|\/)/g).pop());
     tag.load(JSON.parse(data));
     tabstrip.addTag(tag);
   });
+}
+
+function close_tab() {
+  tabstrip.remove();
 }
 
 function openDialog() {
