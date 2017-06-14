@@ -113,12 +113,14 @@ class TabPaper {
   }
 
   render() {
+    var pgnum = 0;
     var checkY = function() {
       if (iy + 130 > this.height) {
         iy = 60;
-        this.vHTML += `</svg></div><div style="overflow:hidden;padding:3px;padding-top:20px;">
+        pgnum++;
+        this.vHTML += `</svg></div><div style="overflow:hidden;padding:3px;padding-top:20px;" id='pg${pgnum}'>
 				<svg width="${this.width}" height="${this.height}" 
-				style="background:#FFFFFF";>`;
+				style="background:#FFFFFF;">`;
       }
     }.bind(this);
     let nx = (this.width - this.lineWidth) / 2,
@@ -127,9 +129,9 @@ class TabPaper {
     if (!this.data) {
       this.drawLine(ix, iy);
       this.vHTML =
-        `<div style="overflow:hidden;padding:3px;padding-top:20px;">
+        `<div style="overflow:hidden;padding:3px;padding-top:20px;" id='pg0'>
 			<svg width="${this.width}" height="${this.height}" 
-			style="background:#FFFFFF";>` +
+			style="background:#FFFFFF">` +
         this.vHTML +
         "</svg></div>";
       this.content.innerHTML = this.vHTML;
@@ -137,9 +139,9 @@ class TabPaper {
       return;
     }
 
-    this.vHTML = `<div style="overflow:hidden;padding:3px;padding-top:20px;">
+    this.vHTML = `<div style="overflow:hidden;padding:3px;padding-top:20px;" id='pg0'>
 		<svg width="${this.width}" height="${this.height}" 
-		style="background:#FFFFFF";>`;
+		style="background:#FFFFFF">`;
     this.drawTitle(ix, iy);
     iy += 40;
     this.drawLine(ix, iy, true);
@@ -250,6 +252,37 @@ class TabPaper {
       this.partialRender(Math.floor(this.cursor[0] / 4));
       if (this.event["move-cursor"] != null) this.event["move-cursor"](this);
     }
+  }
+
+  getPageLineCount(idx) {
+    if(idx == 0)
+      return Math.ceil((this.height - 130 - 120) / this.lineHeight);
+    else
+      return Math.ceil((this.height - 130 - 60) / this.lineHeight);
+  }
+
+  getSectionPageIndex(idx) {
+    var first_page_count = this.getPageLineCount(0);
+    var page_count = this.getPageLineCount(1);
+    idx = Math.floor(idx/4);
+    if(idx < first_page_count)
+      return 0;
+    else {
+      return 1+Math.floor((idx-first_page_count)/page_count);
+    }
+  }
+
+  getSectionScroll(section) {
+    var idx = this.getSectionPageIndex(section);
+    var pg = document.getElementById(`pg${idx}`);
+    var first_page_count = this.getPageLineCount(0);
+    var page_count = this.getPageLineCount(1);
+    var count;
+    if(section/4 < first_page_count)
+      count = Math.floor(section/4);
+    else
+    count = (Math.floor(section/4) - first_page_count) % page_count;
+    return pg.offsetTop - pg.parentElement.offsetTop + count * this.lineHeight;
   }
 
   setScale(s) {
@@ -377,10 +410,15 @@ class TabPaper {
         }
       }
     }
-    if (is_cursor_moved && this.event["move-cursor"] != null) this.event["move-cursor"](this);
+    if (is_cursor_moved && this.event["move-cursor"] != null) {
+      this.event["move-cursor"](this);
+    }
     let moveline = Math.floor(this.cursor[0] / 4);
     if (moveline != oriline) this.partialRender(oriline);
     this.partialRender(moveline);
+    if(this.displayer.scrollTop < this.getSectionScroll(this.cursor[0]))
+      this.displayer.scrollTop = this.getSectionScroll(this.cursor[0]);
+
   }
 
   kpEvent(e) {
@@ -553,6 +591,12 @@ class TabPaper {
     }
     //}
     this.vHTML += "</svg>";
+  }
+
+  stop() {
+    clearInterval(this.func);
+    this.hideCursor = false;
+    this.partialRender(this.playingCursor[0]/4);
   }
 
   play(bpm=120, ac) {

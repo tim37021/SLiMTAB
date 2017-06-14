@@ -13,7 +13,7 @@ Array.from(document.getElementsByClassName("saveas")).forEach(x => {
 });
 document.querySelector("#recordbtn").addEventListener("click", record);
 document.querySelector("#playbtn").addEventListener("click", play);
-document.querySelector("#stopbtn").addEventListener("click", stop_record);
+document.querySelector("#stopbtn").addEventListener("click", stop);
 Array.from(document.getElementsByClassName("print")).forEach(function(x) {
   x.addEventListener("click", print);
 });
@@ -91,20 +91,26 @@ function record() {
   python.ex`manager.record()`;
 }
 
+let ac;
+let ins;
 const Soundfont = require("soundfont-player");
 function play() {
   var bpm = parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]);
   var seq = tabstrip.operTb.paper.outputSequence(bpm);
-  var ac = new AudioContext();
+  tabstrip.operTb.paper.event['play-finished'] = (x) => {
+    console.log('stop!')
+    ac.close();
+    ins.stop();
+    ac = null;
+    ins = null;
+  }
+  ac = new AudioContext();
   Soundfont.instrument(ac, "./soundfont/electric_guitar_clean.js").then(function(instrument) {
     tabstrip.operTb.paper.play(bpm, ac);
     seq.forEach(x => {
       instrument.play(x["note"], x["time"], { duration: x["duration"] });
     });
-    setTimeout(function() {
-      console.log(ac.currentTime);
-      ac.close();
-    }, (seq[seq.length - 1]["time"] + seq[seq.length - 1]["duration"] + 3) * 1000);
+    ins = instrument;
   });
   //python.ex`print('fuck')`
   //msgbox('訊息', '正在合成音訊請稍後..', true);
@@ -126,6 +132,17 @@ function stop_record() {
     document.getElementById("msgbox").style.display = "none";
   });
   alert("YO");
+}
+
+function stop() {
+  if(ins) {
+    ins.stop();
+    ac.close();
+    tabstrip.operTb.paper.stop();
+    ins = null;
+    ac = null;
+  }
+  tabstrip.operTb.paper.stop();
 }
 
 function print() {
