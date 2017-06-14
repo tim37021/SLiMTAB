@@ -66,6 +66,12 @@
         'change-length': function (paper, length) {
           defaultnote.moveTo(document.getElementById(`sn${paper.defaultNoteLength}`).offsetLeft+8, 0);
         },
+        'move-cursor': function(paper) {
+          var status = document.getElementById('status')
+          status.innerText = `Section: #${paper.cursor[0]+1} String: #${paper.cursor[2]}`;
+          status.style.color = "#808080";
+          window.scrollTo(0,0);
+        }
       });
 
       Array.from(document.getElementsByClassName('editable')).forEach(x => {
@@ -131,7 +137,7 @@
 
   <div class="header">
     <div class="title"></div>
-    <div class="menuroot" id="file_menu_root" onclick="showFileMenu(this, event)">檔案</div>
+    <div class="menuroot" id="file_menu_root" onclick="showFileMenu(this, event)">File</div>
     <div class="menuroot" id="edit_menu_root">編輯</div>
     <div class="menuroot">說明</div>
     <div class="btn_setting" title="設定" onclick="setting();"></div>
@@ -209,6 +215,7 @@
   </div>
   <div style="padding: 0px;overflow:auto;width:100%;height:calc(100% - 158px);background:#474747" id="tabpaper1"></div>
   <div class="footer">
+    <div style="position: absolute; left: 15px; top: 5px;" id="status"></div>
     <div class="slider">
       <img src="./ui/zoomout.png">
       <input class="bar" max=200 min=30 width="150" type="range" id="rangeinput" value="100" oninput="zooming(this.value,tabstrip.container)"
@@ -222,7 +229,6 @@
 </body>
 <script>
     require('./script/editor-main.js')
-
 </script>
 
 </html>

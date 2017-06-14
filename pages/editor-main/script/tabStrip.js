@@ -10,7 +10,6 @@ class tabStrip {
         if (this.container[i].paper)this.container[i].paper.content.innerHTML="";
         this.container[i].content.style.backgroundColor = "#252525";
         this.container[i].content.style.color = "#808080";
-        this.container[i].content.style.borderTop = "1px solid #474747";
       }
       this.operTb.active();
     });
@@ -24,7 +23,6 @@ class tabStrip {
       this.container[i].paper.content.innerHTML= "";
       this.container[i].content.style.backgroundColor = "#252525";
       this.container[i].content.style.color = "#808080";
-      this.container[i].content.style.borderTop = "1px solid #474747";
     }
     tag.setX(this.tagWidth * this.container.length);
     tag.paper.setDisplayer(this.paperDisplayer);
@@ -96,6 +94,7 @@ class tabTag {
       `
 			border-right:1px solid black;
 			border-left:1px solid black;
+      padding-top: 3px;
 			padding-left:9px;
 			line-height:27px;
 			height:26px;
@@ -115,8 +114,8 @@ class tabTag {
   active() {
     this.paper.render();
     this.content.style.backgroundColor = "#474747";
-    this.content.style.color = "cccccc";
-    this.content.style.borderTop = "1px solid #666666";
+    this.content.style.color = "#cccccc";
+    this.content.style.borderBottom = "1px solid black";
     this.paper.displayer.scrollTop = this.paper.st;
     this.paper.displayer.scrollLeft = this.paper.sl;
     this.manager.operTb = this;

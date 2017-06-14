@@ -87,13 +87,8 @@ function checkPythonVersion() {
 }
 
 function record() {
-  var device = document.getElementById("comDeviceSelection").parentElement.children[0].innerHTML;
-  python`SlimTabDriver.SliMTABDriver(${device}).check()`.then(x => {
-    if (x) {
-      python.ex`manager.setInputDevice(2)`;
-      python.ex`manager.record()`;
-    } else msgbox("錯誤", "沒有權限存取裝置或者裝置不存在");
-  });
+  //python.ex`manager.setInputDevice(manager.getDefaultDevice()['input'])`;
+  python.ex`manager.record()`;
 }
 
 const Soundfont = require("soundfont-player");
@@ -101,14 +96,11 @@ function play() {
   var bpm = parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]);
   var seq = tabstrip.operTb.paper.outputSequence(bpm);
   var ac = new AudioContext();
-  Soundfont.instrument(ac, "electric_guitar_clean", { soundfont: "FluidR3_GM" }).then(function(marimba) {
+  Soundfont.instrument(ac, "./soundfont/electric_guitar_clean.js").then(function(instrument) {
     tabstrip.operTb.paper.play(bpm, ac);
     seq.forEach(x => {
-      marimba.play(x["note"], x["time"], { duration: x["duration"] });
+      instrument.play(x["note"], x["time"], { duration: x["duration"] });
     });
-    marimba.on('event', function (event, time, obj, opts) {
-      console.log(event, time, obj, opts)
-    })
     setTimeout(function() {
       console.log(ac.currentTime);
       ac.close();
@@ -124,7 +116,15 @@ function play() {
 
 function stop_record() {
   python.ex`manager.stopRecord()`;
-  python.ex`manager.saveCurrentRecordData()`;
+
+  msgbox('訊息', '正在計算...請稍後..', true);
+  var bpm = parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]);
+  python`manager.calc(bpm=${bpm})`.then(x => {
+    tabstrip.operTb.paper.data = x;
+    console.log(x)
+    tabstrip.operTb.paper.render();
+    document.getElementById("msgbox").style.display = "none";
+  });
   alert("YO");
 }
 
