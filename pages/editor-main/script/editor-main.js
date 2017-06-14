@@ -11,7 +11,12 @@ Array.from(document.getElementsByClassName("open")).forEach(x =>{
 Array.from(document.getElementsByClassName("saveas")).forEach(x => {
   x.addEventListener("click", saveDialog);
 });
-document.querySelector("#recordbtn").addEventListener("click", record);
+Array.from(document.getElementsByClassName("record")).forEach(x => {
+  x.addEventListener("click", record);
+});
+Array.from(document.getElementsByClassName("stop-record")).forEach(x => {
+  x.addEventListener("click", stop_record);
+});
 document.querySelector("#playbtn").addEventListener("click", play);
 document.querySelector("#stopbtn").addEventListener("click", stop);
 Array.from(document.getElementsByClassName("print")).forEach(function(x) {
@@ -88,6 +93,8 @@ function checkPythonVersion() {
 
 function record() {
   //python.ex`manager.setInputDevice(manager.getDefaultDevice()['input'])`;
+  document.getElementById('recordbtn').style.display = "none";
+  document.getElementById('stoprecordbtn').style.display = null;
   python.ex`manager.record()`;
 }
 
@@ -121,6 +128,8 @@ function play() {
 }
 
 function stop_record() {
+  document.getElementById('recordbtn').style.display = null;
+  document.getElementById('stoprecordbtn').style.display = "none";
   python.ex`manager.stopRecord()`;
 
   msgbox('訊息', '正在計算...請稍後..', true);
@@ -131,7 +140,6 @@ function stop_record() {
     tabstrip.operTb.paper.render();
     document.getElementById("msgbox").style.display = "none";
   });
-  alert("YO");
 }
 
 function stop() {
