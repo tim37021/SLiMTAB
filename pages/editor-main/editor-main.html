@@ -20,42 +20,12 @@
       tabstrip.setTagDisplayer(document.getElementById("tabstrip"));
       let nt = new tabTag("test tag");
       nt.load([
-        [[4, 2, 4, 6, 3],//length,chord,block,chord,block.......
-        [8, 1, 2, 2, 6, 3, 5],
-        [8, 1, 2, 2, 6, 3, 5],
-        [4, 2, 4, 6, 3],
-        [4, 2, 4, 6, 3]],
-
-        [[4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5],
-        [16, 3, 2],
-        [4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5],
-        [8, 1, 2, 2, 6, 3, 5],
-        [8, 3, 2]],
+        [[4, 2, 4, 6, 3, 'c'],
+        [4, 2, 4, 6, 3, 'c'],
+        [4, 2, 4, 6, 3, 'c'],
+        [4, 2, 4, 6, 3, 'e']],
       ]);
-      tabstrip.addTag(new tabTag());
-      tabstrip.addTag(new tabTag("123"));
       tabstrip.addTag(nt);//the last tag you add will be set as active tag
-      tabstrip.container[0].load([
-        [[4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5],
-        [16, 3, 2],
-        [4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5],
-        [8, 1, 2, 2, 6, 3, 5],
-        [8, 3, 2]],
-
-        [[4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5],
-        [16, 3, 2],
-        [4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5],
-        [16, 3, 2],
-        [4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5]]
-      ]);
-
       ele = document.getElementById('default-note');
       defaultnote = new MovingElement(ele, 5);
       defaultnote.moveTo(document.getElementById('sn4').offsetLeft+8, 0);
@@ -70,7 +40,6 @@
           var status = document.getElementById('status')
           status.innerText = `Section: #${paper.cursor[0]+1} String: #${paper.cursor[2]}`;
           status.style.color = "#808080";
-          window.scrollTo(0,0);
         }
       });
 
@@ -150,41 +119,42 @@
   </div>
   <div class="menu" style="left: 155px; top: 45px; display: none;z-index:999" id="file_menu">
     <ul>
-      <li id="newfile">開新檔案</li>
+      <li class="new">開新檔案</li>
       <li class="open">開啟舊檔</li>
       <li class="save">儲存</li>
       <li class="saveas">另存新檔</li>
       <li class="print">列印</li>
-      <li>列印</li>
+      <li class="close">關閉</li>
     </ul>
   </div>
   <div class="functionbar">
-    <div class="btn newicon"></div>
+    <div class="btn newicon new"></div>
     <div class="btn openicon open"></div>
     <div class="btn saveicon save"></div>
     <div class="btn printicon print"></div>
-    <div class="btn undoicon"></div>
-    <div class="btn redoicon"></div>
+    <div class="btn undoicon edit-related"></div>
+    <div class="btn redoicon edit-related"></div>
     <img src="ui/line_vertical.png" style="margin: 7px 0px 4px 4px;">
-    <div class="btn doticon"></div>
-    <div style="transition: width 0.1s; position: absolute; top: 92px; z-index: 0; width: 16px; height: 2px; background: #F39800;"
+    <div class="btn doticon edit-related"></div>
+    <div class="edit-related" style="transition: width 0.1s; position: absolute; top: 92px; z-index: 0; width: 16px; height: 2px; background: #F39800;"
       id='default-note'></div>
-    <div class="btn note_wholeicon set-note-length" id='sn1'></div>
-    <div class="btn note_halficon set-note-length" id='sn2'></div>
-    <div class="btn note_quartericon set-note-length" id='sn4'></div>
-    <div class="btn note_eighthicon set-note-length" id='sn8'></div>
-    <div class="btn note_sixteenthicon set-note-length" id='sn16'></div>
-    <div class="btn note_thirtysecondicon set-note-length" id='sn32'></div>
-    <div class="btn rest_wholeicon set-note-length"></div>
-    <div class="btn rest_halficon set-note-length"></div>
-    <div class="btn rest_quartericon set-note-length"></div>
-    <div class="btn rest_eighthicon set-note-length"></div>
-    <div class="btn rest_sixteenthicon set-note-length"></div>
-    <div class="btn rest_thirtysecondicon set-note-length"></div>
-    <img src="ui/line_vertical.png" style="margin: 7px 0px 4px 4px;">
-    <div class="btn recordicon" style="width: 62px;" id="recordbtn"></div>
-    <div class="btn stopicon" id="stopbtn"></div>
-    <div class="btn playicon" id="playbtn"></div>
+    <div class="btn note_wholeicon set-note-length edit-related" id='sn1'></div>
+    <div class="btn note_halficon set-note-length edit-related" id='sn2'></div>
+    <div class="btn note_quartericon set-note-length edit-related" id='sn4'></div>
+    <div class="btn note_eighthicon set-note-length edit-related" id='sn8'></div>
+    <div class="btn note_sixteenthicon set-note-length edit-related" id='sn16'></div>
+    <div class="btn note_thirtysecondicon set-note-length edit-related" id='sn32'></div>
+    <div class="btn rest_wholeicon set-note-length edit-related"></div>
+    <div class="btn rest_halficon set-note-length edit-related"></div>
+    <div class="btn rest_quartericon set-note-length edit-related"></div>
+    <div class="btn rest_eighthicon set-note-length edit-related"></div>
+    <div class="btn rest_sixteenthicon set-note-length edit-related"></div>
+    <div class="btn rest_thirtysecondicon set-note-length edit-related"></div>
+    <img class="edit-related" src="ui/line_vertical.png" style="margin: 7px 0px 4px 4px;">
+    <div class="btn recordicon record edit-related" style="width: 62px;" id="recordbtn"></div>
+    <div class="btn stoprecordicon stop-record edit-related" style="width: 62px; display: none;" id="stoprecordbtn"></div>
+    <div class="btn stopicon play edit-related" style="display: none;" id="stopbtn"></div>
+    <div class="btn playicon stop edit-related" id="playbtn"></div>
     <div class="dropdown" style="width: 120px; height: 25px; margin: 13px 0px 10px 10px;">
       <div style="width: 100px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">TAB</div>
       <div class="dropdown-content" style="width: 120px; display: none;">

@@ -5,15 +5,26 @@ var assert = require("assert");
 var pythonBridge = require("python-bridge");
 const { ipcRenderer } = require("electron");
 
+Array.from(document.getElementsByClassName("new")).forEach(x =>{
+  x.addEventListener("click", newfile);
+});
 Array.from(document.getElementsByClassName("open")).forEach(x =>{
   x.addEventListener("click", openDialog);
+});
+Array.from(document.getElementsByClassName("close")).forEach(x =>{
+  x.addEventListener("click", close_tab);
 });
 Array.from(document.getElementsByClassName("saveas")).forEach(x => {
   x.addEventListener("click", saveDialog);
 });
-document.querySelector("#recordbtn").addEventListener("click", record);
+Array.from(document.getElementsByClassName("record")).forEach(x => {
+  x.addEventListener("click", record);
+});
+Array.from(document.getElementsByClassName("stop-record")).forEach(x => {
+  x.addEventListener("click", stop_record);
+});
 document.querySelector("#playbtn").addEventListener("click", play);
-document.querySelector("#stopbtn").addEventListener("click", stop_record);
+document.querySelector("#stopbtn").addEventListener("click", stop);
 Array.from(document.getElementsByClassName("print")).forEach(function(x) {
   x.addEventListener("click", print);
 });
@@ -21,13 +32,25 @@ Array.from(document.getElementsByClassName("set-note-length")).forEach(function(
   x.addEventListener("click", set_note_length);
 });
 
+function newfile() {
+  tabstrip.addTag(new tabTag());
+}
 function openfile(filename) {
-  console.log("FUCK");
   fs.readFile(filename, (err, data) => {
     tag = new tabTag(filename.split(/(\\|\/)/g).pop());
     tag.load(JSON.parse(data));
     tabstrip.addTag(tag);
   });
+}
+
+function close_tab() {
+  tabstrip.remove();
+  console.log(tabstrip.getTabCount())
+  if(tabstrip.getTabCount() == 0) {
+    Array.from(document.getElementsByClassName("edit-related")).forEach(x =>{
+      x.style.display = "none";
+    });
+  }
 }
 
 function openDialog() {
@@ -88,23 +111,29 @@ function checkPythonVersion() {
 
 function record() {
   //python.ex`manager.setInputDevice(manager.getDefaultDevice()['input'])`;
+  document.getElementById('recordbtn').style.display = "none";
+  document.getElementById('stoprecordbtn').style.display = null;
   python.ex`manager.record()`;
 }
 
+let ac;
+let ins;
 const Soundfont = require("soundfont-player");
 function play() {
+  document.getElementById('playbtn').style.display = "none";
+  document.getElementById('stopbtn').style.display = null;
   var bpm = parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]);
   var seq = tabstrip.operTb.paper.outputSequence(bpm);
-  var ac = new AudioContext();
+  tabstrip.operTb.paper.event['play-finished'] = (x) => {
+    stop();
+  }
+  ac = new AudioContext();
   Soundfont.instrument(ac, "./soundfont/electric_guitar_clean.js").then(function(instrument) {
     tabstrip.operTb.paper.play(bpm, ac);
     seq.forEach(x => {
       instrument.play(x["note"], x["time"], { duration: x["duration"] });
     });
-    setTimeout(function() {
-      console.log(ac.currentTime);
-      ac.close();
-    }, (seq[seq.length - 1]["time"] + seq[seq.length - 1]["duration"] + 3) * 1000);
+    ins = instrument;
   });
   //python.ex`print('fuck')`
   //msgbox('訊息', '正在合成音訊請稍後..', true);
@@ -115,6 +144,8 @@ function play() {
 }
 
 function stop_record() {
+  document.getElementById('recordbtn').style.display = null;
+  document.getElementById('stoprecordbtn').style.display = "none";
   python.ex`manager.stopRecord()`;
 
   msgbox('訊息', '正在計算...請稍後..', true);
@@ -125,7 +156,19 @@ function stop_record() {
     tabstrip.operTb.paper.render();
     document.getElementById("msgbox").style.display = "none";
   });
-  alert("YO");
+}
+
+function stop() {
+  document.getElementById('playbtn').style.display = null;
+  document.getElementById('stopbtn').style.display = "none";
+  if(ins) {
+    ins.stop();
+    ac.close();
+    tabstrip.operTb.paper.stop();
+    ins = null;
+    ac = null;
+  }
+  tabstrip.operTb.paper.stop();
 }
 
 function print() {

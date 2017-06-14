@@ -61,6 +61,7 @@ class TabPaper {
       iy = Number(targetElement.getAttribute("iy"));
 
     let notes_four_sections = 0;
+    var tie_begin_ix = -1
     var calc_beats = function(beatLength, arr) {
       var ret = 0;
       for (let i = 0; i < arr.length; i++) ret += beatLength / arr[i][0];
@@ -96,6 +97,15 @@ class TabPaper {
         if (i == this.cursor[0] && j == this.cursor[1] && !this.hideCursor) this.drawCursor.call(vobj, ix, iy);
         if (i == this.playingCursor[0] && j == this.playingCursor[1] && this.hideCursor) this.drawPlayingCursor.call(vobj, ix, iy);
         this.drawNote.call(vobj, ix, iy, i, j, this.data[i][j][0], this.data[i][j].slice(1));
+        if(this.data[i][j][this.data[i][j].length-1]=='c' && tie_begin_ix==-1) {
+          tie_begin_ix = ix;
+        }
+        if(this.data[i][j][this.data[i][j].length-1]=='e') {
+          if(tie_begin_ix == -1)
+            tie_begin_ix = ix;
+          this.drawTiePath.call(vobj, tie_begin_ix, ix, iy);
+          tie_begin_ix = -1;
+        }
         ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
       }
       ix = oix + section_width;
@@ -114,12 +124,14 @@ class TabPaper {
   }
 
   render() {
+    var pgnum = 0;
     var checkY = function() {
       if (iy + 130 > this.height) {
         iy = 60;
-        this.vHTML += `</svg></div><div style="overflow:hidden;padding:3px;padding-top:20px;">
+        pgnum++;
+        this.vHTML += `</svg></div><div style="overflow:hidden;padding:3px;padding-top:20px;" id='pg${pgnum}'>
 				<svg width="${this.width}" height="${this.height}" 
-				style="background:#FFFFFF";>`;
+				style="background:#FFFFFF;">`;
       }
     }.bind(this);
     let nx = (this.width - this.lineWidth) / 2,
@@ -128,9 +140,9 @@ class TabPaper {
     if (!this.data) {
       this.drawLine(ix, iy);
       this.vHTML =
-        `<div style="overflow:hidden;padding:3px;padding-top:20px;">
+        `<div style="overflow:hidden;padding:3px;padding-top:20px;" id='pg0'>
 			<svg width="${this.width}" height="${this.height}" 
-			style="background:#FFFFFF";>` +
+			style="background:#FFFFFF">` +
         this.vHTML +
         "</svg></div>";
       this.content.innerHTML = this.vHTML;
@@ -138,9 +150,9 @@ class TabPaper {
       return;
     }
 
-    this.vHTML = `<div style="overflow:hidden;padding:3px;padding-top:20px;">
+    this.vHTML = `<div style="overflow:hidden;padding:3px;padding-top:20px;" id='pg0'>
 		<svg width="${this.width}" height="${this.height}" 
-		style="background:#FFFFFF";>`;
+		style="background:#FFFFFF">`;
     this.drawTitle(ix, iy);
     iy += 40;
     this.drawLine(ix, iy, true);
@@ -149,6 +161,7 @@ class TabPaper {
     var note_distance = 80;
     var distance_ratio = 1.0;
     var notes_four_sections = 0;
+    var tie_begin_ix = -1;
     var calc_beats = function(beatLength, arr) {
       var ret = 0;
       for (let i = 0; i < arr.length; i++) ret += beatLength / arr[i][0];
@@ -189,6 +202,15 @@ class TabPaper {
         if (i == this.cursor[0] && j == this.cursor[1] && !this.hideCursor) this.drawCursor(ix, iy);
         if (i == this.playingCursor[0] && j == this.playingCursor[1] && this.hideCursor) this.drawPlayingCursor(ix, iy);
         this.drawNote(ix, iy, i, j, this.data[i][j][0], this.data[i][j].slice(1));
+        if(this.data[i][j][this.data[i][j].length-1]=='c' && tie_begin_ix==-1) {
+          tie_begin_ix = ix;
+        }
+        if(this.data[i][j][this.data[i][j].length-1]=='e') {
+          if(tie_begin_ix == -1)
+            tie_begin_ix = ix;
+          this.drawTiePath(tie_begin_ix, ix, iy);
+          tie_begin_ix = -1;
+        }
         ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
       }
       ix = oix + section_width;
@@ -251,6 +273,37 @@ class TabPaper {
       this.partialRender(Math.floor(this.cursor[0] / 4));
       if (this.event["move-cursor"] != null) this.event["move-cursor"](this);
     }
+  }
+
+  getPageLineCount(idx) {
+    if(idx == 0)
+      return Math.ceil((this.height - 130 - 120) / this.lineHeight);
+    else
+      return Math.ceil((this.height - 130 - 60) / this.lineHeight);
+  }
+
+  getSectionPageIndex(idx) {
+    var first_page_count = this.getPageLineCount(0);
+    var page_count = this.getPageLineCount(1);
+    idx = Math.floor(idx/4);
+    if(idx < first_page_count)
+      return 0;
+    else {
+      return 1+Math.floor((idx-first_page_count)/page_count);
+    }
+  }
+
+  getSectionScroll(section) {
+    var idx = this.getSectionPageIndex(section);
+    var pg = document.getElementById(`pg${idx}`);
+    var first_page_count = this.getPageLineCount(0);
+    var page_count = this.getPageLineCount(1);
+    var count;
+    if(section/4 < first_page_count)
+      count = Math.floor(section/4);
+    else
+    count = (Math.floor(section/4) - first_page_count) % page_count;
+    return pg.offsetTop - pg.parentElement.offsetTop + count * this.lineHeight * this.scale;
   }
 
   setScale(s) {
@@ -378,10 +431,15 @@ class TabPaper {
         }
       }
     }
-    if (is_cursor_moved && this.event["move-cursor"] != null) this.event["move-cursor"](this);
+    if (is_cursor_moved && this.event["move-cursor"] != null) {
+      this.event["move-cursor"](this);
+    }
     let moveline = Math.floor(this.cursor[0] / 4);
     if (moveline != oriline) this.partialRender(oriline);
     this.partialRender(moveline);
+    if(this.displayer.scrollTop < this.getSectionScroll(this.cursor[0]))
+      this.displayer.scrollTop = this.getSectionScroll(this.cursor[0]);
+
   }
 
   kpEvent(e) {
@@ -390,7 +448,7 @@ class TabPaper {
       var res = -1;
       var ins_pos = 0;
       if (d.length != 1) {
-        for (let i = 0; i < d.length / 2; i++) {
+        for (let i = 0; i < Math.floor(d.length / 2); i++) {
           if (d[i * 2] == this.cursor[2]) {
             res = i * 2;
             break;
@@ -401,8 +459,12 @@ class TabPaper {
           this.data[this.cursor[0]][this.cursor[1]][res + 2] = this.inputing*10+(e.key - "0");
           this.data[this.cursor[0]][this.cursor[1]][res + 2] = Math.clamp(this.data[this.cursor[0]][this.cursor[1]][res + 2], 0, 22)
         } else {
-          this.data[this.cursor[0]][this.cursor[1]].splice(this.data[this.cursor[0]][this.cursor[1]].length, 0, this.cursor[2]);
-          this.data[this.cursor[0]][this.cursor[1]].splice(this.data[this.cursor[0]][this.cursor[1]].length, 0, e.key - "0");
+          if(this.data[this.cursor[0]][this.cursor[1]][d.length]=='c' || this.data[this.cursor[0]][this.cursor[1]][d.length] == 'e') 
+            res = d.length;
+          else
+            res = d.length+1;
+          this.data[this.cursor[0]][this.cursor[1]].splice(res, 0, this.cursor[2]);
+          this.data[this.cursor[0]][this.cursor[1]].splice(res+1, 0, e.key - "0");
         }
       } else {
         this.data[this.cursor[0]][this.cursor[1]][1] = this.cursor[2];
@@ -418,6 +480,10 @@ class TabPaper {
     this.defaultNoteLength = length;
     this.event['change-length'](this, length);
     this.partialRender(Math.floor(this.cursor[0] / 4));
+  }
+
+  drawTiePath(x1, x2, y) {
+    this.vHTML += `<path style="stroke-width: 1; fill: none;" d="M ${x1},${y+105} S ${(x1+x2)/2},${y+120},${x2},${y+105}"/>`;
   }
 
   load(data) {
@@ -490,7 +556,7 @@ class TabPaper {
     if (d.length == 1) {
       res = 0;
     } else {
-      for (let i = 0; i < d.length / 2; i++) {
+      for (let i = 0; i < Math.floor(d.length / 2); i++) {
         if (d[i * 2] == this.cursor[2]) {
           res = i * 2;
           break;
@@ -499,8 +565,10 @@ class TabPaper {
     }
     if (res != -1) {
       this.data[this.cursor[0]][this.cursor[1]].splice(res + 1, 2);
+      if(this.data[this.cursor[0]][this.cursor[1]].slice(-1)[0]=='c'||this.data[this.cursor[0]][this.cursor[1]].slice(-1)[0]=='e')
+        this.data[this.cursor[0]][this.cursor[1]].splice(-1, 2);
     }
-    if (this.data[this.cursor[0]][this.cursor[1]].length == 1) {
+    if (this.data[this.cursor[0]][this.cursor[1]].length <= 1) {
       this.data[this.cursor[0]].splice(this.cursor[1], 1);
     }
 
@@ -509,7 +577,7 @@ class TabPaper {
 
   drawNoteBackground(x, y, data) {
     if (data.length != 1) {
-      for (let i = 0; i < data.length / 2; i++) {
+      for (let i = 0; i < Math.floor(data.length / 2); i++) {
         this.vHTML += `<circle class="no-print notecircle" cx='${x}' cy='${y + 14 * (data[i * 2] - 1)}' r='5'
 			fill='white' stroke-width='0' stroke='black' style='cursor:pointer;'></circle>`;
       }
@@ -526,7 +594,7 @@ class TabPaper {
       // [x -1] is blank, means inserting...
       if (data[0] == -1) is_blank = true;
     } else {
-      for (let i = 0; i < data.length / 2; i++) {
+      for (let i = 0; i < Math.floor(data.length / 2); i++) {
         this.vHTML += `<text class="notetext" data-type="nt" section="${section}" pos="${pos}" i="${i}" x='${x - 4}' y='${y +
           14 * (data[i * 2] - 1) +
           5}'>${data[i * 2 + 1]}</text>`;
@@ -554,6 +622,12 @@ class TabPaper {
     }
     //}
     this.vHTML += "</svg>";
+  }
+
+  stop() {
+    clearInterval(this.func);
+    this.hideCursor = false;
+    this.partialRender(this.playingCursor[0]/4);
   }
 
   play(bpm=120, ac) {
@@ -597,16 +671,22 @@ class TabPaper {
     var totaltime = 0;
     for(let i=this.cursor[0]; i<this.data.length; i++) {
 		let j=0;
+    var acctime = 0;
 		if(i==this.cursor[0])j=this.cursor[1];
       for(; j<this.data[i].length; j++) {
         var sec = (this.beatLength / this.data[i][j][0]) * spb;
-        if(this.data[i][j][1] >= 1) {
+        acctime += sec;
+        if(this.data[i][j][1] >= 1 || this.data[i][j][this.data[i][j].length-1]=='e') {
           for(let k=1; k<this.data[i][j].length; k+=2) {
-            ret.push({'time':totaltime, 'duration':sec, 'note': midi_note(this.data[i][j][k], this.data[i][j][k+1])});
+            if(k == this.data[i][j].length-1)
+              break;
+            ret.push({'time':totaltime, 'duration': acctime, 'note': midi_note(this.data[i][j][k], this.data[i][j][k+1])});
           }
         }
-
-        totaltime += sec;
+        if(!(this.data[i][j][1] >= 1 && this.data[i][j][this.data[i][j].length-1]=='c')) {
+          totaltime += acctime;
+          acctime = 0;
+        }
       }
     }
 
