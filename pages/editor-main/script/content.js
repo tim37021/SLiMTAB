@@ -11,6 +11,7 @@ class TabPaper {
     this.content = document.createElement("div");
     this.content.style.outline = "none";
     this.inputing = 0;
+	this.displayer=null;
     this.content.onselectstart = function() {
       return false;
     };
@@ -213,7 +214,6 @@ class TabPaper {
 
   setDisplayer(e) {
     this.displayer = e;
-    this.displayer.addEventListener("scroll", this.scrollEvent.bind(this));
   }
 
   zoom() {
