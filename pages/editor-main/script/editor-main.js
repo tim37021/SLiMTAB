@@ -102,14 +102,12 @@ let ac;
 let ins;
 const Soundfont = require("soundfont-player");
 function play() {
+  document.getElementById('playbtn').style.display = "none";
+  document.getElementById('stopbtn').style.display = null;
   var bpm = parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]);
   var seq = tabstrip.operTb.paper.outputSequence(bpm);
   tabstrip.operTb.paper.event['play-finished'] = (x) => {
-    console.log('stop!')
-    ac.close();
-    ins.stop();
-    ac = null;
-    ins = null;
+    stop();
   }
   ac = new AudioContext();
   Soundfont.instrument(ac, "./soundfont/electric_guitar_clean.js").then(function(instrument) {
@@ -143,6 +141,8 @@ function stop_record() {
 }
 
 function stop() {
+  document.getElementById('playbtn').style.display = null;
+  document.getElementById('stopbtn').style.display = "none";
   if(ins) {
     ins.stop();
     ac.close();
