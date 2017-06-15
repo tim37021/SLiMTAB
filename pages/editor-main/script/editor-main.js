@@ -45,12 +45,6 @@ function openfile(filename) {
 
 function close_tab() {
   tabstrip.remove();
-  console.log(tabstrip.getTabCount())
-  if(tabstrip.getTabCount() == 0) {
-    Array.from(document.getElementsByClassName("edit-related")).forEach(x =>{
-      x.style.display = "none";
-    });
-  }
 }
 
 function openDialog() {

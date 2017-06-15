@@ -72,17 +72,20 @@ class tabStrip {
     pd.appendChild(this.content);
   }
 
-  remove(idx=-1) {
-    if(idx==-1)
-      idx = this.container.indexOf(this.operTb);
+  remove(child) {
+    if(child==null) {
+      child = this.operTb;
+    }
+  
+    var idx = this.container.indexOf(child);
     this.container.splice(idx, 1);
     this.content.removeChild(this.content.children[idx]);
-    this.paperDisplayer.removeChild(this.paperDisplayer.children[idx]);
+    this.paperDisplayer.removeChild(child.paper.content);
     if(this.container.length>=1) {
       this.operTb = this.container[this.container.length-1];
       this.container[this.container.length-1].active();
     }
-    this.alignTag()
+    this.alignTag();
   }
 
   alignTag() {
@@ -170,7 +173,10 @@ class tabTag {
     node.appendChild(textnode);
     this.content.appendChild(node);
 
-    node.onclick = function() {tabStrip.remove(this.content)};
+    var that = this;
+    node.addEventListener('click', function() {
+      that.manager.remove(that);
+    });
 
     this.content.addEventListener("click", () => {
       this.manager.operTb = this;
