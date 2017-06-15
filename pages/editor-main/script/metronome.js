@@ -47,6 +47,7 @@ let tab_metro={
 	stop:function(){
 		clearInterval(this.tickInt);
 		clearInterval(this.tockInt);
+		this.playing=false;
 		this.content.children[3].style.transform="translateX(0px)";
 	}
 };
