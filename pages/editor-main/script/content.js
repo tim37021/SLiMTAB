@@ -264,6 +264,36 @@ class TabPaper {
     }
   }
 
+  insertNotes(lst, pos=null) {
+    if(pos == null)
+      pos = this.cursor;
+    if(this.isInserting()) {
+      this.data[pos[0]].splice(pos[1], 1);
+    }
+    // calc current beat length
+    var current_beats = 0;
+    for(let i=0; i<this.data[pos[0]].length; i++) {
+      if(i<pos[1])
+        current_beats += this.beatLength / this.data[pos[0]][i][0]
+      else
+        lst.push(this.data[pos[0]][i])
+    }
+    this.data[pos[0]].splice(pos[1], this.data[pos[0]].length)
+    var current_section = pos[0];
+    for(let i=0; i<lst.length; i++) {
+      current_beats += this.beatLength / lst[i][0];
+      this.data[current_section].splice(this.data[current_section].length, 0, lst[i]);
+      if(current_beats >= this.beatPerSection) {
+        current_section+=1;
+        current_beats=0;
+        this.data.splice(current_section, 0, []);
+      }
+    }
+    if(this.data[current_section].length == 0)
+      this.data.splice(current_section, 1);
+    this.render();
+  }
+
   ckEvent(e) {
     if (e.target.getAttribute("data-type") == "nt") {
       var section = parseInt(e.target.getAttribute("section"));
@@ -280,6 +310,7 @@ class TabPaper {
         }
       }
       this.cursor = [section, pos, this.data[section][pos][1 + 2 * id]];
+      //this.selectedNotes = [[section, pos, this.data[section][pos][1 + 2 * id], this.data[section][pos][0]], this.data[section][pos][1 + 2 * id]]
       this.partialRender(Math.floor(oldsection / 4));
       this.partialRender(Math.floor(this.cursor[0] / 4));
       if (this.event["move-cursor"] != null) this.event["move-cursor"](this);
@@ -316,15 +347,6 @@ class TabPaper {
               pos = this.cursor[1]<pos?pos-1:pos;
           }
         }
-        if(Math.abs(dx) > 20 && !this.isInsertingTab()) {
-          if(dx < 0 || this.isInsertingTab()) {
-            this.data[this.cursor[0]].splice(pos, 0, [4, -1]);
-          } else {
-            this.data[this.cursor[0]].splice(pos+1, 0, [4, -1]);
-            pos = pos+1;
-          }
-
-        }
         this.cursor[0] = section;
         this.cursor[1] = pos;
         this.cursor[2] = string + dstring;
@@ -357,15 +379,19 @@ class TabPaper {
   }
 
   muEvent(e) {
-    if(e.button==0) {
+    if(e.button==0&&this.dragStart!=null) {
       var startx = this.selectAreaRect.getAttribute('x');
       var starty = this.selectAreaRect.getAttribute('y');
       var width = this.selectAreaRect.getAttribute('width');
       var height = this.selectAreaRect.getAttribute('height');
+      this.selectedNotes = []
       Array.from(document.getElementsByClassName('notetext')).forEach(x => {
-        if(x.getAttribute('x')>=startx && x.getAttribute('x')-startx<width) {
-          if(x.getAttribute('y')>=starty && x.getAttribute('y')-starty<height) {
-            console.log(x);
+        if(!x.classList.contains('fake')) {
+          if(x.getAttribute('x')>=startx && x.getAttribute('x')-startx<width) {
+            if(x.getAttribute('y')>=starty && x.getAttribute('y')-starty<height) {
+              this.selectedNotes.push([parseInt(x.getAttribute('section')), parseInt(x.getAttribute('pos')), parseInt(x.getAttribute('string')), 
+              parseFloat(x.getAttribute('length')), parseInt(x.innerHTML)])
+            }
           }
         }
       });
@@ -401,6 +427,30 @@ class TabPaper {
         this.inputing = 0;
         is_cursor_moved = true;
         break;
+      case 67:
+        if(e.ctrlKey) {
+          // ctrl c
+          if(this.event['copy-notes']!=null) {
+            this.event['copy-notes'](this, this.getSelectedNotes());
+          }
+        }
+        break;
+      case 88:
+        if(e.ctrlKey) {
+          // ctrl c
+          if(this.event['copy-notes']!=null) {
+            this.event['copy-notes'](this, this.getSelectedNotes());
+          }
+          this.deleteNotes();
+        }
+        break;
+      case 86:
+        if(e.ctrlKey) {
+          if(this.event['paste-notes']!=null) {
+            this.insertNotes(this.event['paste-notes'](this));
+          }
+        }
+        break;
       case 68:
         this.cursor[1] += 1;
         is_move_event = true;
@@ -408,6 +458,7 @@ class TabPaper {
         is_cursor_moved = true;
         break;
       case 107: // page up
+      case 187:
         this.data[this.cursor[0]][this.cursor[1]][0] *= 2;
         this.data[this.cursor[0]][this.cursor[1]][0] = Math.clamp(this.data[this.cursor[0]][this.cursor[1]][0], 1, 32);
         this.defaultNoteLength = Math.clamp(this.data[this.cursor[0]][this.cursor[1]][0], 1, 32);
@@ -416,6 +467,7 @@ class TabPaper {
         }
         break;
       case 109: // page down
+      case 189:
         this.data[this.cursor[0]][this.cursor[1]][0] /= 2;
         this.data[this.cursor[0]][this.cursor[1]][0] = Math.clamp(this.data[this.cursor[0]][this.cursor[1]][0], 1, 32);
         this.defaultNoteLength = Math.clamp(this.data[this.cursor[0]][this.cursor[1]][0], 1, 32);
@@ -425,8 +477,8 @@ class TabPaper {
         break;
       case 46: // delete
       case 8: // backspace
-        this.deleteNote();
-        break;
+        this.deleteNotes();
+        return;
       case 73: //insert I
         if (!is_inserting) {
           this.data[this.cursor[0]].splice(this.cursor[1], 0, [this.defaultNoteLength, -1]);
@@ -541,6 +593,10 @@ class TabPaper {
       this.partialRender(Math.floor(this.cursor[0] / 4));
     }
   }
+  
+  cpEvent(e) {
+    console.log('fuck')
+  }
 
   setNoteLength(length) {
     this.data[this.cursor[0]][this.cursor[1]][0] = length;
@@ -615,31 +671,80 @@ class TabPaper {
 			fill='#F39800' stroke-width='0' stroke='black'></circle>`;
   }
 
-  deleteNote() {
-    var is_inserting = this.data[this.cursor[0]][this.cursor[1]].length == 2;
-    if (is_inserting) return;
-    var d = this.data[this.cursor[0]][this.cursor[1]].slice(1);
+  deleteNote(target=null, no_render=false) {
+    if(target==null)
+      target = this.cursor;
+    //var is_inserting = this.data[target[0]][target[1]].length == 2;
+    //f (is_inserting) return;
+    var d = this.data[target[0]][target[1]].slice(1);
     var res = -1;
     if (d.length == 1) {
       res = 0;
     } else {
       for (let i = 0; i < Math.floor(d.length / 2); i++) {
-        if (d[i * 2] == this.cursor[2]) {
+        if (d[i * 2] == target[2]) {
           res = i * 2;
           break;
         }
       }
     }
     if (res != -1) {
-      this.data[this.cursor[0]][this.cursor[1]].splice(res + 1, 2);
-      if(this.data[this.cursor[0]][this.cursor[1]].slice(-1)[0]=='c'||this.data[this.cursor[0]][this.cursor[1]].slice(-1)[0]=='e')
-        this.data[this.cursor[0]][this.cursor[1]].splice(-1, 2);
+      this.data[target[0]][target[1]].splice(res + 1, 2);
+      if(this.data[target[0]][target[1]].slice(-1)[0]=='c'||this.data[target[0]][target[1]].slice(-1)[0]=='e')
+        this.data[target[0]][target[1]].splice(-1, 2);
     }
-    if (this.data[this.cursor[0]][this.cursor[1]].length <= 1) {
-      this.data[this.cursor[0]].splice(this.cursor[1], 1);
+    if (this.data[target[0]][target[1]].length <= 1) {
+      this.data[target[0]].splice(target[1], 1);
     }
+    if(!no_render)
+      this.partialRender(Math.floor(target[0] / 4));
+  }
 
-    this.partialRender(Math.floor(this.cursor[0] / 4));
+  getSelectedNotes() {
+    var ret = []
+    var last_section = -1;
+    var last_pos = -1;
+    var acc = [0];
+    // section pos string length block
+    for(let i=0; i<this.selectedNotes.length; i++) {
+      if(this.selectedNotes[i][0]!=last_section || this.selectedNotes[i][1]!=last_pos) {
+        if(last_pos!=-1) {
+          ret.push(acc);
+          acc = [0];
+        }
+      }
+      acc[0] = this.selectedNotes[i][3];
+      acc.push(this.selectedNotes[i][2]);
+      acc.push(this.selectedNotes[i][4]);
+      last_pos = this.selectedNotes[i][1];
+      last_section = this.selectedNotes[i][0];
+    }
+    ret.push(acc);
+    return ret;
+  }
+
+  deleteNotes(lst=null, no_render=false) {
+    if(lst==null)
+      lst = this.selectedNotes;
+    for(let i=lst.length-1; i>=0; i--) {
+      this.deleteNote([lst[i][0], lst[i][1], lst[i][2]], true);
+    }
+    for(let i=this.data.length-1; i>=0; i--) {
+      if(this.data[i].length==0)
+        this.data.splice(i, 1);
+    }
+    if(this.data.length == 0) {
+      this.data = [[[4, -1]]];
+      this.cursor = [0, 0, 1];
+    }
+    if(this.cursor[0]>=this.data.length) {
+      this.cursor[0] = this.data.length-1;
+      this.cursor[1] = this.data[this.cursor[0]].length-1;
+    }
+    if(this.cursor[1] >= this.data[this.cursor[0]].length) {
+      this.cursor[1] = this.data[this.cursor[0]].length-1;
+    }
+    this.render();
   }
 
   switchType(type) {
@@ -662,7 +767,7 @@ class TabPaper {
   }
 
   drawFakeElement(x, y, section) {
-    this.vHTML += `<text class="notetext" section="${section}" pos="${0}" string="1" x='${x - 4}' y='${y+5}' style="display: none;">1</text>`;
+    this.vHTML += `<text class="notetext fake" section="${section}" pos="${0}" string="1" x='${x - 4}' y='${y+5}' style="display: none;">1</text>`;
   }
 
   drawNote(x, y, section, pos, length, data) {
@@ -676,7 +781,7 @@ class TabPaper {
       if (data[0] == -1) is_blank = true;
     } else {
       for (let i = 0; i < Math.floor(data.length / 2); i++) {
-        this.vHTML += `<text class="notetext" data-type="nt" section="${section}" pos="${pos}" string="${data[i * 2]}" i="${i}" x='${x - 4}' y='${y +
+        this.vHTML += `<text class="notetext" data-type="nt" length="${length}" section="${section}" pos="${pos}" string="${data[i * 2]}" i="${i}" x='${x - 4}' y='${y +
           14 * (data[i * 2] - 1) +
           5}'>${data[i * 2 + 1]}</text>`;
         if(i==0)

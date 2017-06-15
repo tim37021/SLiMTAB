@@ -14,6 +14,7 @@
   <script>
     let tabstrip;
     let defaultnote;
+    let copyeddata;
     window.onload = function () {
       tabstrip = new tabStrip();
       tabstrip.setPaperDisplayer(document.getElementById("tabpaper1"));//must do this before addTag
@@ -29,6 +30,7 @@
       ele = document.getElementById('default-note');
       defaultnote = new MovingElement(ele, 5);
       defaultnote.moveTo(document.getElementById('sn4').offsetLeft+8, 0);
+      
       tabstrip.setEventListener({
         'insert': function (paper) {
           defaultnote.moveTo(document.getElementById(`sn${paper.defaultNoteLength}`).offsetLeft+8, 0);
@@ -40,6 +42,13 @@
           var status = document.getElementById('status')
           status.innerText = `Section: #${paper.cursor[0]+1} String: #${paper.cursor[2]}`;
           status.style.color = "#808080";
+        },
+        'copy-notes': function(paper, data) {
+          copyeddata = data;
+          console.log(data);
+        },
+        'paste-notes': function(paper) {
+          return copyeddata;
         }
       });
 
