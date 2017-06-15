@@ -477,7 +477,10 @@ class TabPaper {
         break;
       case 46: // delete
       case 8: // backspace
-        this.deleteNotes();
+        if(this.selectedNotes == null || this.selectedNotes.length==0)
+          this.deleteNotes([[this.cursor[0], this.cursor[1], this.cursor[2]]]);
+        else
+          this.deleteNotes();
         return;
       case 73: //insert I
         if (!is_inserting) {
