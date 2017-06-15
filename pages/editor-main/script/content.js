@@ -233,7 +233,7 @@ class TabPaper {
     }
 	this.vHTML = `<div style="overflow:hidden;padding:3px;padding-top:20px;" id='pg0'>
 		<svg width="${this.width}" height="${this.height}" 
-		style="background:#FFFFFF" id="svg_container"><rect id="select-area" width="0" height="0" style="fill:blue;stroke:pink;stroke-width:5;fill-opacity:0.1;stroke-opacity:0.9"></rect>`+this.vHTML+"</svg></div>";
+		style="background:#FFFFFF" id="svg_container">`+this.vHTML+`<rect id="select-area" width="0" height="0" style="fill:#F39800; fill-opacity:0.5;"></rect>`+"</svg></div>";
     this.content.innerHTML = this.vHTML;
     this.selectAreaRect = document.getElementById('select-area');
     this.zoom();
