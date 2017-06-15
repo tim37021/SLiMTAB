@@ -110,6 +110,7 @@ function checkPythonVersion() {
 }
 
 function record() {
+  document.getElementById('metronome').innerHTML = '';
   document.getElementById('metronome').style.display = null;
   tab_metro.setUp(parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]), document.getElementById('metronome'))
   //python.ex`manager.setInputDevice(manager.getDefaultDevice()['input'])`;
@@ -148,6 +149,7 @@ function play() {
 }
 
 function stop_record() {
+  tab_metro.stop();
   document.getElementById('metronome').style.display = "none";
   document.getElementById('recordbtn').style.display = null;
   document.getElementById('stoprecordbtn').style.display = "none";
