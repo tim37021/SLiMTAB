@@ -33,6 +33,7 @@ class TabPaper {
         };
     this.data = null;
     this.title = title;
+    this.selectedNotes = null;
     this.cursor = [0, 0, 1];
     this.playingCursor = [0, 0];
     this.check();
@@ -96,6 +97,7 @@ class TabPaper {
       }
 
       var pos = vobj.vHTML.length - 1;
+      this.drawFakeElement.call(vobj, ix, iy, i);
       for (let j = 0; j < this.data[i].length; j++) {
         ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
         if (i == this.cursor[0] && j == this.cursor[1] && !this.hideCursor) this.drawCursor.call(vobj, ix, iy);
@@ -195,8 +197,11 @@ class TabPaper {
         tix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
       }
 
+
+
       var pos = this.vHTML.length - 1;
 
+      this.drawFakeElement(ix, iy, i);
       for (let j = 0; j < this.data[i].length; j++) {
         ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
         if (i == this.cursor[0] && j == this.cursor[1] && !this.hideCursor) this.drawCursor(ix, iy);
@@ -267,21 +272,72 @@ class TabPaper {
       if(this.isInserting()) {
         if(this.isInsertingTab())
           this.data.splice(this.cursor[0], 1);
-        else
+        else {
           this.data[this.cursor[0]].splice(this.cursor[1], 1);
+          if(section==this.cursor[0])
+            pos = this.cursor[1]<pos?pos-1:pos;
+        }
       }
       this.cursor = [section, pos, this.data[section][pos][1 + 2 * id]];
       this.partialRender(Math.floor(oldsection / 4));
       this.partialRender(Math.floor(this.cursor[0] / 4));
       if (this.event["move-cursor"] != null) this.event["move-cursor"](this);
+    } else {
+      var pg0 = this.content.children[0];
+      var abs_x = (e.clientX-pg0.offsetLeft) / this.scale;
+      var abs_y = (e.clientY-pg0.offsetTop-20+this.displayer.scrollTop) / this.scale;
+      // find which note is nearby and insert
+      var nearest = null;
+      var dist_n = 0;
+      Array.from(document.getElementsByClassName('notetext')).forEach(note => {
+        var x = note.getAttribute('x');
+        var y = note.getAttribute('y');
+        var dist = (x-abs_x)*(x-abs_x)+(y-abs_y)*(y-abs_y);
+        if(nearest==null || dist < dist_n) {
+          nearest = note;
+          dist_n = dist;
+        }
+      });
+      var dx = abs_x - nearest.getAttribute('x');
+      var dy = abs_y - nearest.getAttribute('y');
+      var dstring = Math.ceil(dy/14);
+      var string = parseInt(nearest.getAttribute('string'));
+      var pos = parseInt(nearest.getAttribute('pos'));
+      if(string+dstring>=1 && string+dstring<=6) {
+        if(this.isInserting()) {
+          if(this.isInsertingTab())
+            this.data.splice(this.cursor[0], 1);
+          else {
+            this.data[this.cursor[0]].splice(this.cursor[1], 1);
+            if(parseInt(nearest.getAttribute("section"))==this.cursor[0])
+              pos = this.cursor[1]<pos?pos-1:pos;
+          }
+        }
+        if(Math.abs(dx) > 20) {
+          if(dx < 0) {
+            this.data[this.cursor[0]].splice(pos, 0, [4, -1]);
+          } else {
+            this.data[this.cursor[0]].splice(pos+1, 0, [4, -1]);
+            pos = pos+1;
+          }
+
+        }
+        this.cursor[0] = parseInt(nearest.getAttribute("section"));
+        this.cursor[1] = pos;
+        this.cursor[2] = string + dstring;
+
+        this.partialRender(Math.floor(this.cursor[0]/4));
+      }
     }
   }
 
   mdEvent(e) {
-    var pg0 = this.content.children[0];
-    this.dragStart = [e.clientX-pg0.offsetLeft, e.clientY-pg0.offsetTop-20+this.displayer.scrollTop];
-    this.selectAreaRect.setAttribute('width', `0`);
-    this.selectAreaRect.setAttribute('height', `0`);
+    if(e.button==0) {
+      var pg0 = this.content.children[0];
+      this.dragStart = [e.clientX-pg0.offsetLeft, e.clientY-pg0.offsetTop-20+this.displayer.scrollTop];
+      this.selectAreaRect.setAttribute('width', `0`);
+      this.selectAreaRect.setAttribute('height', `0`);
+    }
   }
 
   mvEvent(e) {
@@ -298,7 +354,20 @@ class TabPaper {
   }
 
   muEvent(e) {
-    this.dragStart = null;
+    if(e.button==0) {
+      var startx = this.selectAreaRect.getAttribute('x');
+      var starty = this.selectAreaRect.getAttribute('y');
+      var width = this.selectAreaRect.getAttribute('width');
+      var height = this.selectAreaRect.getAttribute('height');
+      Array.from(document.getElementsByClassName('notetext')).forEach(x => {
+        if(x.getAttribute('x')>=startx && x.getAttribute('x')-startx<width) {
+          if(x.getAttribute('y')>=starty && x.getAttribute('y')-starty<height) {
+            console.log(x);
+          }
+        }
+      });
+      this.dragStart = null;
+    }
   }
 
   setScale(s) {
@@ -517,7 +586,7 @@ class TabPaper {
   drawLine(x, y, first = false) {
     this.vHTML += '<svg stroke-linecap="square" >';
     for (let i = 0; i < 6; i++) {
-      this.vHTML += `<line x1='${x}' y1='${y + i * 14}' x2='${x + this.lineWidth}' y2='${y + i * 14}'
+      this.vHTML += `<line class="line" x1='${x}' y1='${y + i * 14}' x2='${x + this.lineWidth}' y2='${y + i * 14}'
 				style="stroke:black;stroke-width:1"
 			></line>`;
     }
@@ -540,7 +609,7 @@ class TabPaper {
 
   drawCursor(x, y) {
     this.vHTML += `<circle class="no-print notecircle" cx='${x}' cy='${y + 14 * (this.cursor[2] - 1)}' r='8'
-			fill='#F39800' stroke-width='0' stroke='black' style='cursor:pointer;'></circle>`;
+			fill='#F39800' stroke-width='0' stroke='black'></circle>`;
   }
 
   deleteNote() {
@@ -579,6 +648,10 @@ class TabPaper {
     }
   }
 
+  drawFakeElement(x, y, section, visible=false) {
+    this.vHTML += `<text class="notetext" section="${section}" pos="${0}" string="1" x='${x - 4}' y='${y+5}'></text>`;
+  }
+
   drawNote(x, y, section, pos, length, data) {
     this.vHTML += "<svg>";
     var is_blank = false;
@@ -590,7 +663,7 @@ class TabPaper {
       if (data[0] == -1) is_blank = true;
     } else {
       for (let i = 0; i < Math.floor(data.length / 2); i++) {
-        this.vHTML += `<text class="notetext" data-type="nt" section="${section}" pos="${pos}" i="${i}" x='${x - 4}' y='${y +
+        this.vHTML += `<text class="notetext" data-type="nt" section="${section}" pos="${pos}" string="${data[i * 2]}" i="${i}" x='${x - 4}' y='${y +
           14 * (data[i * 2] - 1) +
           5}'>${data[i * 2 + 1]}</text>`;
         if(i==0)
