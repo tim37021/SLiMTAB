@@ -97,7 +97,8 @@ class TabPaper {
       }
 
       var pos = vobj.vHTML.length - 1;
-      this.drawFakeElement.call(vobj, ix, iy, i);
+      if(this.data[i] == [[4, -1]])
+        this.drawFakeElement.call(vobj, ix, iy, i);
       for (let j = 0; j < this.data[i].length; j++) {
         ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
         if (i == this.cursor[0] && j == this.cursor[1] && !this.hideCursor) this.drawCursor.call(vobj, ix, iy);
@@ -292,7 +293,7 @@ class TabPaper {
       Array.from(document.getElementsByClassName('notetext')).forEach(note => {
         var x = note.getAttribute('x');
         var y = note.getAttribute('y');
-        var dist = (x-abs_x)*(x-abs_x)+(y-abs_y)*(y-abs_y);
+        var dist = (x-abs_x)*(x-abs_x);
         if(nearest==null || dist < dist_n) {
           nearest = note;
           dist_n = dist;

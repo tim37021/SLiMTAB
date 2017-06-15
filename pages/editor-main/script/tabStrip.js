@@ -8,7 +8,7 @@ class tabStrip {
 	this.grab=false;//judge if the paper can be grabed
     this.content.addEventListener("click", () => {
       for (let i = 0; i < this.container.length; i++) {
-        if (this.container[i].paper)this.container[i].paper.content.innerHTML="";
+        if (this.container[i]!=this.operTb)this.container[i].paper.content.innerHTML="";
         this.container[i].content.style.backgroundColor = "#252525";
         this.container[i].content.style.color = "#808080";
       }
