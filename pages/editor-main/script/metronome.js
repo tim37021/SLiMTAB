@@ -6,6 +6,7 @@
 //Use like :document.addEventListener('click',function(){ tab_metor.play(); })
 let tab_metro={
 	bpm:120,
+	playing:false,
 	setUp:function(b=120,e=null){
 		this.bpm=b;
 		this.content=document.createElement('div');
@@ -32,13 +33,21 @@ let tab_metro={
 		this.content.children[0].innerHTML=this.bpm;
 	},
 	play:function(){
+		if(this.playing)return;
+		this.playing=true;
 		let spb=60000/this.bpm;
 		this.content.children[3].style.transition=`transform ${spb}ms linear`;
 		this.content.children[3].style.transform="translateX(390px)";
 		setTimeout(()=>{
 			this.content.children[3].style.transform="translateX(0px)";
-			setInterval(this.tick,spb*2);
+			this.tickInt=setInterval(this.tick,spb*2);
 		},spb);
-		setInterval(this.tock,spb*2);
+		this.tockInt=setInterval(this.tock,spb*2);
+	},
+	stop:function(){
+		clearInterval(this.tickInt);
+		clearInterval(this.tockInt);
+		this.playing=false;
+		this.content.children[3].style.transform="translateX(0px)";
 	}
 };
