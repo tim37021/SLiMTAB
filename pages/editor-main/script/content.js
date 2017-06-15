@@ -122,7 +122,9 @@ class TabPaper {
   isInsertingTab() {
     return this.data[this.cursor[0]].length == 1 && this.isInserting();
   }
-
+  drawSectionMark(ix,iy,s){
+	  this.vHTML+=`<text x="${ix}" y="${iy}" fill="black" font-size="12">section ${s}</text>`;
+  }
   render() {
     var checkY = function() {
       if (iy + 130 > this.height) {
@@ -133,6 +135,7 @@ class TabPaper {
       ix = nx,
       iy = 80;
     if (!this.data) {
+	  this.drawSectionMark(ix,iy-10,1);
       this.drawLine(ix, iy);
       this.vHTML =
         `<div style="overflow:hidden;padding:3px;padding-top:20px;" id='pg0'>
@@ -144,9 +147,10 @@ class TabPaper {
       this.zoom();
       return;
     }
-
+	
     this.drawTitle(ix, iy);
     iy += 40;
+	this.drawSectionMark(ix,iy-10,1);
     this.drawLine(ix, iy, true);
     ix += 80;
 
@@ -212,6 +216,7 @@ class TabPaper {
       if (i % 4 == 3) {
         (ix = nx), (iy += this.lineHeight);
         checkY();
+		this.drawSectionMark(ix,iy-10,i+2);
         this.drawLine(ix, iy);
         ix += 80;
       }
