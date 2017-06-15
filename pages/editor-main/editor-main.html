@@ -11,6 +11,7 @@
   <script type="text/javascript" src="script/content.js"></script>
   <script type="text/javascript" src="script/tabStrip.js"></script>
   <script type="text/javascript" src="script/animation.js"></script>
+  <script type="text/javascript" src="script/metronome.js"></script>
   <script>
     let tabstrip;
     let defaultnote;
@@ -112,7 +113,6 @@
     </div>
 
   </div>
-
   <div class="header">
     <div class="title"></div>
 	
@@ -194,6 +194,7 @@
     <div style="margin: 20px 40px 15px 40px; height: 28px; color: #f2f2f2;" id="msgcontent">內文</div>
     <div class="okbtn" onclick="this.parentElement.style.display='none'">確定</div>
   </div>
+  <div id="metronome" style="position: absolute; z-index: 999; bottom: 0; display: none;"></div>
   <div style="padding: 0px;overflow:auto;width:100%;height:calc(100% - 158px);background:#474747" id="tabpaper1"></div>
   <div class="footer">
     <div style="position: absolute; left: 15px; top: 5px;" id="status"></div>

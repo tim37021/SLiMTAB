@@ -110,10 +110,14 @@ function checkPythonVersion() {
 }
 
 function record() {
+  document.getElementById('metronome').style.display = null;
+  tab_metro.setUp(parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]), document.getElementById('metronome'))
   //python.ex`manager.setInputDevice(manager.getDefaultDevice()['input'])`;
   document.getElementById('recordbtn').style.display = "none";
   document.getElementById('stoprecordbtn').style.display = null;
-  python.ex`manager.record()`;
+  python`manager.record()`.then(x => {
+    tab_metro.play();
+  });
 }
 
 let ac;
@@ -144,6 +148,7 @@ function play() {
 }
 
 function stop_record() {
+  document.getElementById('metronome').style.display = "none";
   document.getElementById('recordbtn').style.display = null;
   document.getElementById('stoprecordbtn').style.display = "none";
   python.ex`manager.stopRecord()`;
