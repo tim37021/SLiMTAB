@@ -38,8 +38,8 @@ body {
 }
 .btn_esc {
   position: absolute;
-  right: 1%;
-  top: 12px;
+  right: 20px;
+  top: 15px;
   width: 16px;
   height: 16px;
   background: url("../img/normal_esc.png");
@@ -49,8 +49,8 @@ body {
   }
 .btn_full {
   position: absolute;
-  right: 4.3%;
-  top: 12px;
+  right: 60px;
+  top: 15px;
   width: 16px;
   height: 16px;
   background: url("../img/normal_full.png");
@@ -60,8 +60,8 @@ body {
   }
 .btn_shrink {
   position: absolute;
-  right: 8%;
-  top: 12px;
+  right:100px;
+  top: 15px;
   width: 16px;
   height: 16px;
   background: url("../img/normal_shrink.png");
@@ -71,8 +71,8 @@ body {
   }
 .btn_setting {
   position: absolute;
-  right: 12%;
-  top: 12px;
+  right: 155px;
+  top: 15px;
   width: 17px;
   height: 17px;
   background: url("../img/normal_setting.png");
@@ -299,7 +299,7 @@ li:hover {
   border-bottom: 1px solid #000;
   border-top: 1px solid #474747;
   display: flex;
-  height: 28px;
+  height: 29.8px;
   padding: 0;
 }
 .title {

@@ -11,11 +11,12 @@ class TabPaper {
     this.content = document.createElement("div");
     this.content.style.outline = "none";
     this.inputing = 0;
+	this.displayer=null;
     this.content.onselectstart = function() {
       return false;
     };
     this.defaultNoteLength = 4;
-    this.st = 0; //scroll top ,just record, will cause any effect if be changed
+    this.st = 0; //scroll top ,just record, will not cause any effect if be changed
     this.sl = 0; //scroll left
     this.content.setAttribute("tabindex", "1");
     this.content.addEventListener("click", this.ckEvent.bind(this));
@@ -121,22 +122,20 @@ class TabPaper {
   isInsertingTab() {
     return this.data[this.cursor[0]].length == 1 && this.isInserting();
   }
-
+  drawSectionMark(ix,iy,s){
+	  this.vHTML+=`<text x="${ix}" y="${iy}" fill="black" font-size="12">section ${s}</text>`;
+  }
   render() {
-    var pgnum = 0;
     var checkY = function() {
       if (iy + 130 > this.height) {
-        iy = 60;
-        pgnum++;
-        this.vHTML += `</svg></div><div style="overflow:hidden;padding:3px;padding-top:20px;" id='pg${pgnum}'>
-				<svg width="${this.width}" height="${this.height}" 
-				style="background:#FFFFFF;">`;
+		this.height+=this.lineHeight;
       }
     }.bind(this);
     let nx = (this.width - this.lineWidth) / 2,
       ix = nx,
       iy = 80;
     if (!this.data) {
+	  this.drawSectionMark(ix,iy-10,1);
       this.drawLine(ix, iy);
       this.vHTML =
         `<div style="overflow:hidden;padding:3px;padding-top:20px;" id='pg0'>
@@ -148,12 +147,10 @@ class TabPaper {
       this.zoom();
       return;
     }
-
-    this.vHTML = `<div style="overflow:hidden;padding:3px;padding-top:20px;" id='pg0'>
-		<svg width="${this.width}" height="${this.height}" 
-		style="background:#FFFFFF">`;
+	
     this.drawTitle(ix, iy);
     iy += 40;
+	this.drawSectionMark(ix,iy-10,1);
     this.drawLine(ix, iy, true);
     ix += 80;
 
@@ -219,11 +216,14 @@ class TabPaper {
       if (i % 4 == 3) {
         (ix = nx), (iy += this.lineHeight);
         checkY();
+		this.drawSectionMark(ix,iy-10,i+2);
         this.drawLine(ix, iy);
         ix += 80;
       }
     }
-    this.vHTML += "</svg></div>";
+	this.vHTML = `<div style="overflow:hidden;padding:3px;padding-top:20px;" id='pg0'>
+		<svg width="${this.width}" height="${this.height}" 
+		style="background:#FFFFFF">`+this.vHTML+"</svg></div>";
     this.content.innerHTML = this.vHTML;
     this.zoom();
     this.vHTML = "";
@@ -235,17 +235,15 @@ class TabPaper {
 
   setDisplayer(e) {
     this.displayer = e;
-    this.displayer.addEventListener("scroll", this.scrollEvent.bind(this));
+	this.displayer.addEventListener("scroll",this.scrollEvent.bind(this));
   }
 
   zoom() {
-    for (let i = 0; i < this.content.children.length; i++) {
-      this.content.children[i].style.width = this.width * this.scale + 6 + "px";
-      this.content.children[i].style.height = this.height * this.scale + 6 + "px";
-      this.content.children[i].style.margin = "auto";
-      this.content.children[i].children[0].style.transformOrigin = "0% 0%";
-      this.content.children[i].children[0].style.transform = `scale(${this.scale},${this.scale})`;
-    }
+      this.content.children[0].style.width = this.width * this.scale + 6 + "px";
+      this.content.children[0].style.height = this.height * this.scale + 6 + "px";
+      this.content.children[0].style.margin = "auto";
+      this.content.children[0].children[0].style.transformOrigin = "0% 0%";
+      this.content.children[0].children[0].style.transform = `scale(${this.scale},${this.scale})`;
   }
 
   scrollEvent() {
@@ -272,37 +270,6 @@ class TabPaper {
       this.partialRender(Math.floor(this.cursor[0] / 4));
       if (this.event["move-cursor"] != null) this.event["move-cursor"](this);
     }
-  }
-
-  getPageLineCount(idx) {
-    if(idx == 0)
-      return Math.ceil((this.height - 130 - 120) / this.lineHeight);
-    else
-      return Math.ceil((this.height - 130 - 60) / this.lineHeight);
-  }
-
-  getSectionPageIndex(idx) {
-    var first_page_count = this.getPageLineCount(0);
-    var page_count = this.getPageLineCount(1);
-    idx = Math.floor(idx/4);
-    if(idx < first_page_count)
-      return 0;
-    else {
-      return 1+Math.floor((idx-first_page_count)/page_count);
-    }
-  }
-
-  getSectionScroll(section) {
-    var idx = this.getSectionPageIndex(section);
-    var pg = document.getElementById(`pg${idx}`);
-    var first_page_count = this.getPageLineCount(0);
-    var page_count = this.getPageLineCount(1);
-    var count;
-    if(section/4 < first_page_count)
-      count = Math.floor(section/4);
-    else
-    count = (Math.floor(section/4) - first_page_count) % page_count;
-    return pg.offsetTop - pg.parentElement.offsetTop + count * this.lineHeight * this.scale;
   }
 
   setScale(s) {
@@ -434,11 +401,11 @@ class TabPaper {
       this.event["move-cursor"](this);
     }
     let moveline = Math.floor(this.cursor[0] / 4);
-    if (moveline != oriline) this.partialRender(oriline);
     this.partialRender(moveline);
-    if(this.displayer.scrollTop < this.getSectionScroll(this.cursor[0]))
-      this.displayer.scrollTop = this.getSectionScroll(this.cursor[0]);
-
+	if (moveline != oriline){
+		this.partialRender(oriline);
+		this.displayer.scrollTop+=this.lineHeight*(moveline-oriline)*this.scale;
+	}
   }
 
   kpEvent(e) {
