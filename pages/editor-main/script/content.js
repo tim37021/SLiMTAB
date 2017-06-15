@@ -401,11 +401,11 @@ class TabPaper {
       this.event["move-cursor"](this);
     }
     let moveline = Math.floor(this.cursor[0] / 4);
-    if (moveline != oriline){
+    this.partialRender(moveline);
+	if (moveline != oriline){
 		this.partialRender(oriline);
 		this.displayer.scrollTop+=this.lineHeight*(moveline-oriline)*this.scale;
 	}
-    this.partialRender(moveline);
   }
 
   kpEvent(e) {
