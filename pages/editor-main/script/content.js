@@ -20,9 +20,10 @@ class TabPaper {
     this.sl = 0; //scroll left
     this.dragStart = null;
     this.content.setAttribute("tabindex", "1");
-    //this.content.addEventListener("mousedown", this.mdEvent.bind(this));
-    //this.content.addEventListener("mousemove", this.mvEvent.bind(this));
-    //this.content.addEventListener("mouseup", this.muEvent.bind(this));
+    this.content.addEventListener("mousedown", this.mdEvent.bind(this));
+    this.content.addEventListener("mousemove", this.mvEvent.bind(this));
+    this.content.addEventListener("mouseup", this.muEvent.bind(this));
+    this.content.addEventListener("click", this.ckEvent.bind(this));
     this.content.addEventListener("keydown", this.kdEvent.bind(this));
     this.content.addEventListener("keypress", this.kpEvent.bind(this));
     this.event = event != null
@@ -279,10 +280,12 @@ class TabPaper {
   mdEvent(e) {
     var pg0 = this.content.children[0];
     this.dragStart = [e.clientX-pg0.offsetLeft, e.clientY-pg0.offsetTop-20];
+    this.selectAreaRect.setAttribute('width', `0`);
+    this.selectAreaRect.setAttribute('height', `0`);
   }
 
   mvEvent(e) {
-    if(this.dragStart!=null) {/*
+    if(this.dragStart!=null) {
       var pg0 = this.content.children[0];
       var pos = [e.clientX-pg0.offsetLeft, e.clientY-pg0.offsetTop-20];
       var left_top = [Math.min(pos[0], this.dragStart[0]), Math.min(pos[1], this.dragStart[1])]
@@ -290,7 +293,7 @@ class TabPaper {
       this.selectAreaRect.setAttribute('x', `${left_top[0]/this.scale}`);
       this.selectAreaRect.setAttribute('y', `${left_top[1]/this.scale}`);
       this.selectAreaRect.setAttribute('width', `${(right_bottom[0]-left_top[0])/this.scale}`);
-      this.selectAreaRect.setAttribute('height', `${(right_bottom[1]-left_top[1])/this.scale}`);*/
+      this.selectAreaRect.setAttribute('height', `${(right_bottom[1]-left_top[1])/this.scale}`);
     }
   }
 
