@@ -180,6 +180,11 @@ function print() {
 
 function set_note_length() {
   tabstrip.operTb.paper.setNoteLength(parseInt(this.id.slice(2)));
+  if(this.id.substring(0, 2)=='sn')
+    tabstrip.operTb.paper.switchType('n');
+  else
+    tabstrip.operTb.paper.switchType('r');
+  tabstrip.operTb.active();
 }
 
 

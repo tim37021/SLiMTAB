@@ -642,6 +642,16 @@ class TabPaper {
     this.partialRender(Math.floor(this.cursor[0] / 4));
   }
 
+  switchType(type) {
+    if(type=='n') {
+      this.data[this.cursor[0]][this.cursor[1]] = [this.data[this.cursor[0]][this.cursor[1]][0], -1];
+    }
+    if(type=='r') {
+      this.data[this.cursor[0]][this.cursor[1]] = [this.data[this.cursor[0]][this.cursor[1]][0], 0];
+    }
+    this.partialRender(Math.floor(this.cursor[0]/4));
+  }
+
   drawNoteBackground(x, y, data) {
     if (data.length != 1) {
       for (let i = 0; i < Math.floor(data.length / 2); i++) {
