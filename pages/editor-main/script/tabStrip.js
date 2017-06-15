@@ -79,11 +79,12 @@ class tabStrip {
   
     var idx = this.container.indexOf(child);
     this.container.splice(idx, 1);
-    this.content.removeChild(this.content.children[idx]);
+    this.content.removeChild(child.content);
     this.paperDisplayer.removeChild(child.paper.content);
-    if(this.container.length>=1) {
+    if(child!=this.operTb&&this.container.length>=1) {
       this.operTb = this.container[this.container.length-1];
       this.container[this.container.length-1].active();
+      this.operTb.paper.render();
     }
     this.alignTag();
   }
