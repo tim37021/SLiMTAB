@@ -18,8 +18,11 @@ class TabPaper {
     this.defaultNoteLength = 4;
     this.st = 0; //scroll top ,just record, will not cause any effect if be changed
     this.sl = 0; //scroll left
+    this.dragStart = null;
     this.content.setAttribute("tabindex", "1");
-    this.content.addEventListener("click", this.ckEvent.bind(this));
+    //this.content.addEventListener("mousedown", this.mdEvent.bind(this));
+    //this.content.addEventListener("mousemove", this.mvEvent.bind(this));
+    //this.content.addEventListener("mouseup", this.muEvent.bind(this));
     this.content.addEventListener("keydown", this.kdEvent.bind(this));
     this.content.addEventListener("keypress", this.kpEvent.bind(this));
     this.event = event != null
@@ -223,8 +226,9 @@ class TabPaper {
     }
 	this.vHTML = `<div style="overflow:hidden;padding:3px;padding-top:20px;" id='pg0'>
 		<svg width="${this.width}" height="${this.height}" 
-		style="background:#FFFFFF">`+this.vHTML+"</svg></div>";
+		style="background:#FFFFFF" id="svg_container"><rect id="select-area" width="100" height="100" style="fill:blue;stroke:pink;stroke-width:5;fill-opacity:0.1;stroke-opacity:0.9"></rect>`+this.vHTML+"</svg></div>";
     this.content.innerHTML = this.vHTML;
+    this.selectAreaRect = document.getElementById('select-area');
     this.zoom();
     this.vHTML = "";
     this.content.focus();
@@ -270,6 +274,28 @@ class TabPaper {
       this.partialRender(Math.floor(this.cursor[0] / 4));
       if (this.event["move-cursor"] != null) this.event["move-cursor"](this);
     }
+  }
+
+  mdEvent(e) {
+    var pg0 = this.content.children[0];
+    this.dragStart = [e.clientX-pg0.offsetLeft, e.clientY-pg0.offsetTop-20];
+  }
+
+  mvEvent(e) {
+    if(this.dragStart!=null) {/*
+      var pg0 = this.content.children[0];
+      var pos = [e.clientX-pg0.offsetLeft, e.clientY-pg0.offsetTop-20];
+      var left_top = [Math.min(pos[0], this.dragStart[0]), Math.min(pos[1], this.dragStart[1])]
+      var right_bottom = [Math.max(pos[0], this.dragStart[0]), Math.max(pos[1], this.dragStart[1])]
+      this.selectAreaRect.setAttribute('x', `${left_top[0]/this.scale}`);
+      this.selectAreaRect.setAttribute('y', `${left_top[1]/this.scale}`);
+      this.selectAreaRect.setAttribute('width', `${(right_bottom[0]-left_top[0])/this.scale}`);
+      this.selectAreaRect.setAttribute('height', `${(right_bottom[1]-left_top[1])/this.scale}`);*/
+    }
+  }
+
+  muEvent(e) {
+    this.dragStart = null;
   }
 
   setScale(s) {
