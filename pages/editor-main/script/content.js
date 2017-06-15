@@ -219,7 +219,7 @@ class TabPaper {
       if (i % 4 == 3) {
         (ix = nx), (iy += this.lineHeight);
         checkY();
-		this.drawSectionMark(ix,iy-10,i+2);
+		if(i%8==7)this.drawSectionMark(ix,iy-10,i+2);
         this.drawLine(ix, iy);
         ix += 80;
       }
