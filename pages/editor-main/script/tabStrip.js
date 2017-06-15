@@ -5,6 +5,7 @@ class tabStrip {
     this.content.style.position = "relative";
     this.content.style.width = "100%";
     this.content.style.height = "28px";
+	this.grab=false;//judge if the paper can be grabed
     this.content.addEventListener("click", () => {
       for (let i = 0; i < this.container.length; i++) {
         if (this.container[i].paper)this.container[i].paper.content.innerHTML="";
@@ -44,13 +45,27 @@ class tabStrip {
   setPaperDisplayer(pd) {
     this.paperDisplayer = pd;
 	this.paperDisplayer.addEventListener("mousedown",(e)=>{
-		this.st=this.paperDisplayer.scrollTop;
-		this.sl=this.paperDisplayer.scrollLeft;
-		this.paperDisplayer.style.cursor="-webkit-grab";
-		this.my=e.screenY;
-		this.mx=e.screenX;
-		this.paperDisplayer.addEventListener("mousemove",this.mvfun);
-	})
+		if(this.grab){
+			this.st=this.paperDisplayer.scrollTop;
+			this.sl=this.paperDisplayer.scrollLeft;
+			this.my=e.screenY;
+			this.mx=e.screenX;
+			this.paperDisplayer.addEventListener("mousemove",this.mvfun);
+		}
+	});
+	this.paperDisplayer.addEventListener('keydown',(e)=>{
+		if(e.keyCode==17){//press Ctrl
+			if(!this.grab)this.paperDisplayer.style.cursor="-webkit-grab";
+			this.grab=true;
+		}
+	});
+	this.paperDisplayer.addEventListener('keyup',(e)=>{
+		if(e.keyCode==17){
+			this.grab=false;
+			this.paperDisplayer.style.cursor="initial";
+			this.paperDisplayer.removeEventListener("mousemove",this.mvfun);
+		}
+	});
   }
   setTagDisplayer(pd) {
     this.tagDisplayer = pd;
@@ -90,7 +105,7 @@ class tabStrip {
       this.container[i].content.style.transition = "left 200ms linear";
       this.container[i].setX(i * this.tagWidth);
     }
-	this.paperDisplayer.style.cursor="initial";
+	if(this.grab)this.paperDisplayer.style.cursor="-webkit-grab";
 	this.paperDisplayer.removeEventListener("mousemove",this.mvfun);
   }
   setZooming(val) {
