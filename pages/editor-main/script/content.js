@@ -301,20 +301,22 @@ class TabPaper {
       var dx = abs_x - nearest.getAttribute('x');
       var dy = abs_y - nearest.getAttribute('y');
       var dstring = Math.ceil(dy/14);
+      var section = parseInt(nearest.getAttribute("section"));
       var string = parseInt(nearest.getAttribute('string'));
       var pos = parseInt(nearest.getAttribute('pos'));
       if(string+dstring>=1 && string+dstring<=6) {
         if(this.isInserting()) {
-          if(this.isInsertingTab())
+          if(this.isInsertingTab()) {
+            if(section != this.cursor[0])
             this.data.splice(this.cursor[0], 1);
-          else {
+          } else {
             this.data[this.cursor[0]].splice(this.cursor[1], 1);
-            if(parseInt(nearest.getAttribute("section"))==this.cursor[0])
+            if(section==this.cursor[0])
               pos = this.cursor[1]<pos?pos-1:pos;
           }
         }
-        if(Math.abs(dx) > 20) {
-          if(dx < 0) {
+        if(Math.abs(dx) > 20 && !this.isInsertingTab()) {
+          if(dx < 0 || this.isInsertingTab()) {
             this.data[this.cursor[0]].splice(pos, 0, [4, -1]);
           } else {
             this.data[this.cursor[0]].splice(pos+1, 0, [4, -1]);
@@ -322,7 +324,7 @@ class TabPaper {
           }
 
         }
-        this.cursor[0] = parseInt(nearest.getAttribute("section"));
+        this.cursor[0] = section;
         this.cursor[1] = pos;
         this.cursor[2] = string + dstring;
 
@@ -648,8 +650,8 @@ class TabPaper {
     }
   }
 
-  drawFakeElement(x, y, section, visible=false) {
-    this.vHTML += `<text class="notetext" section="${section}" pos="${0}" string="1" x='${x - 4}' y='${y+5}'></text>`;
+  drawFakeElement(x, y, section) {
+    this.vHTML += `<text class="notetext" section="${section}" pos="${0}" string="1" x='${x - 4}' y='${y+5}' style="display: none;">1</text>`;
   }
 
   drawNote(x, y, section, pos, length, data) {
