@@ -749,7 +749,8 @@ class TabPaper {
 
   switchType(type) {
     if(type=='n') {
-      this.data[this.cursor[0]][this.cursor[1]] = [this.data[this.cursor[0]][this.cursor[1]][0], -1];
+      if(this.data[this.cursor[0]][this.cursor[1]]==2)
+        this.data[this.cursor[0]][this.cursor[1]] = [this.data[this.cursor[0]][this.cursor[1]][0], -1];
     }
     if(type=='r') {
       this.data[this.cursor[0]][this.cursor[1]] = [this.data[this.cursor[0]][this.cursor[1]][0], 0];
