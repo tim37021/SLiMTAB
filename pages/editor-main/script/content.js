@@ -149,7 +149,7 @@ class TabPaper {
       this.vHTML =
         `<div style="overflow:hidden;padding:3px;padding-top:20px;" id='pg0'>
 			<svg width="${this.width}" height="${this.height}" 
-			style="background:#FFFFFF">` +
+			style="background:#FFFFFF">${note_svg.notes}` +
         this.vHTML +
         "</svg></div>";
       this.content.innerHTML = this.vHTML;
@@ -235,7 +235,7 @@ class TabPaper {
     }
 	this.vHTML = `<div style="overflow:hidden;padding:3px;padding-top:20px;" id='pg0'>
 		<svg width="${this.width}" height="${this.height}" 
-		style="background:#FFFFFF" id="svg_container">`+this.vHTML+`<rect id="select-area" width="0" height="0" style="fill:#F39800; fill-opacity:0.4;"></rect>`+"</svg></div>";
+		style="background:#FFFFFF" id="svg_container">${note_svg.notes}`+this.vHTML+`<rect id="select-area" width="0" height="0" style="fill:#F39800; fill-opacity:0.4;"></rect>`+"</svg></div>";
     this.content.innerHTML = this.vHTML;
     this.selectAreaRect = document.getElementById('select-area');
     this.zoom();
@@ -886,22 +886,44 @@ class TabPaper {
           last = Math.max(14 * (data[i * 2] - 1) + 8, last);
       }
     }
-
+	if(data[0]==0){
+		switch(length){
+			case 4:
+				this.vHTML+=note_svg.rest_quarter(x,y);
+			break;
+			case 8:
+				this.vHTML+=note_svg.rest_eighth(x,y);
+			break;
+			case 16:
+				this.vHTML+=note_svg.rest_sixteenth(x,y);
+			break;
+			case 32:
+				this.vHTML+=note_svg.rest_thirtysecong(x,y);
+			break;
+			case 1:
+				this.vHTML+=note_svg.rest_whole(x,y);
+			break;
+			case 2:
+				this.vHTML+=note_svg.rest_second(x,y);
+			break;
+		}
+	}else{
     //if(!is_blank) {
-    if (length > 1) {
-      if (length == 2) this.vHTML += `<path d='M${x} ${y + 88} l0 15' stroke-width='1'></path>`;
-      if (length >= 4) this.vHTML += `<path d='M${x} ${y + last} l0 ${102 - last}' stroke-width='1'></path>`;
-      if (length > 4) {
-        this.vHTML += `<path d='M${x} ${y + 102} l6 1' stroke-width='2'></path>`;
-      }
-      if (length > 8) {
-        var j = 1;
-        for (let i = 8; i < length; i *= 2) {
-          this.vHTML += `<path d='M${x} ${y + 102 - 4 * j} l6 1' stroke-width='1'></path>`;
-          j++;
-        }
-      }
-    }
+		if (length > 1) {
+		  if (length == 2) this.vHTML += `<path d='M${x} ${y + 88} l0 15' stroke-width='1'></path>`;
+		  if (length >= 4) this.vHTML += `<path d='M${x} ${y + last} l0 ${102 - last}' stroke-width='1'></path>`;
+		  if (length > 4) {
+			this.vHTML += `<path d='M${x} ${y + 102} l6 1' stroke-width='2'></path>`;
+		  }
+		  if (length > 8) {
+			var j = 1;
+			for (let i = 8; i < length; i *= 2) {
+			  this.vHTML += `<path d='M${x} ${y + 102 - 4 * j} l6 1' stroke-width='1'></path>`;
+			  j++;
+			}
+		  }
+		}
+	}
     //}
     this.vHTML += "</svg>";
   }
