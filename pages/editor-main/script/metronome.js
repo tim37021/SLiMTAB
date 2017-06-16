@@ -68,6 +68,7 @@ let tab_metro={
 		clearInterval(this.tickInt);
 		clearInterval(this.tockInt);
 		this.playing=false;
+		this.start = null;
 		this.content.children[3].style.transform="translateX(0px)";
 		this.shouldStop = true;
 	}
