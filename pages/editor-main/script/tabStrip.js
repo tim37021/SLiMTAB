@@ -162,18 +162,14 @@ class tabTag {
     node.setAttribute("class","xbtn");
     node.setAttribute("style",
     `
-			height:20px;
-			width:20px;
-            line-height: 15px;
+			height:12px;
+			width:12px;
+      line-height: 15px;
 			position:absolute;
-			right: 3px;
-            top: 5px;
-            color:#808080;
-            font-size:18px;
+			right: 10px;
+      top: 9px;
 		`
     );
-    var textnode = document.createTextNode("x");
-    node.appendChild(textnode);
     this.content.appendChild(node);
 
     var that = this;
