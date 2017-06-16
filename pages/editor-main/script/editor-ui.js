@@ -99,6 +99,7 @@ var window = remote.getCurrentWindow();
 
 function setting() {
     document.getElementById("myModal").style.display = "block";
+    document.getElementById("setting_btn").click();
 }
 
 function cancel_setting() {
@@ -106,20 +107,17 @@ function cancel_setting() {
 }
 
 
-function addclose(){
-		var node = document.createElement('div');
-		node.setAttribute("style",`
-			height:20px;
-			width:20px;
-            line-height: 15px;
-			position:absolute;
-			right: 5px;
-            top: 2px;
-            color:white;
-            font-size:15px;
-		`);
-        node.setAttribute("class","close")
-    var textnode = document.createTextNode("x");
-    node.appendChild(textnode);
-	document.querySelector(".page").appendChild(node);
+function change_set(evt,setname) {
+    var i, modalcontent, tablinks;
+    modalcontent = document.getElementsByClassName("modal_content");
+    for (i = 0; i < modalcontent.length; i++) {
+        modalcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("setbtn");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(setname).style.display = "block";
+    evt.currentTarget.className += " active";
 }
+

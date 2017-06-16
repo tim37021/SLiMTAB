@@ -93,6 +93,8 @@
         }
       });
     }
+
+  
   </script>
 </head>
 
@@ -101,28 +103,141 @@
   <div id="myModal" class="modal">
 
     <!-- Modal content -->
-    <div class="modal-content">
+    <div class="modal-content draggable2">  <!-- can't drag -->
       <div class="modal-header">
-        <h2>裝置設定</h2>
+        Preferences
       </div>
       <div class="modal-body">
-        <div class="modal_content">
-          音訊輸出:
-          <div class="dropdown" style="width: 250px; height: 25px; margin: 13px 0px 10px 10px;">
+        <div class="setbtn" id="setting_btn" onclick="change_set(event,'setting_content')" >裝置</div>
+        <div class="setbtn" id="tunning_btn" onclick="change_set(event,'tunning_content')">調音</div>
+        <div class="setbtn" id="beats_btn" onclick="change_set(event,'beats_content')">拍號</div>
+        <div class="modal_content" id="setting_content">   <!-- Setting content -->
+          <p></p>
+          音訊輸出 :
+          <div class="dropdown" style="width: 250px; height: 25px; position:absolute; top:20px; left:120px">
             <div style="width: 220px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">Built-in Output</div>
             <div class="dropdown-content" style="width: 250px; display: none;">
               <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Built-in Output</a>
               <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Built-in Output2</a>
             </div>
           </div>
-          <p>音訊輸入:</p>
-          <div class="dropdown" style="width: 250px; height: 25px; margin: 13px 0px 10px 10px;">
+          <p>音訊輸入 :</p>
+          <div class="dropdown" style="width: 250px; height: 25px; position:absolute; top:65px; left:120px;">
             <div style="width: 220px; margin-left: 8px; margin-top: 2px; font-size: 18px;" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">Steinberg UR12</div>
             <div class="dropdown-content" style="width: 250px; display: none;" id="input_device_selection">
             </div>
           </div>
-          <p>取樣頻率: 44100HZ</p>
-        </div>
+          <p>取樣頻率 : &nbsp;&nbsp;44100HZ</p>
+        </div>    <!-- Setting content -->
+
+        <div class="modal_content" id="tunning_content">    <!-- tunning content -->
+            <div class="dropdown" style="width: 50px; height: 25px; position:absolute; top:20px; left:85px">
+            <div style="width: 50px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">E</div>
+            <div class="dropdown-content" style="width: 50px; display: none;">
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">C</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">D</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">E</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">F</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">G</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">A</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">B</a>
+            </div>
+          </div>
+
+          <div class="dropdown" style="width: 50px; height: 25px; position:absolute; top:70px; left:85px">
+            <div style="width: 50px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">A</div>
+            <div class="dropdown-content" style="width: 50px; display: none;">
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">C</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">D</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">E</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">F</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">G</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">A</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">B</a>
+            </div>
+          </div>
+
+          <div class="dropdown" style="width: 50px; height: 25px; position:absolute; top:120px; left:85px">
+            <div style="width: 50px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">D</div>
+            <div class="dropdown-content" style="width: 50px; display: none;">
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">C</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">D</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">E</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">F</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">G</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">A</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">B</a>
+            </div>
+          </div>
+
+
+          <div class="dropdown" style="width: 50px; height: 25px; position:absolute; top:20px; left:260px">
+            <div style="width: 50px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">G</div>
+            <div class="dropdown-content" style="width: 50px; display: none;">
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">C</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">D</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">E</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">F</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">G</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">A</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">B</a>
+            </div>
+          </div>
+
+          <div class="dropdown" style="width: 50px; height: 25px; position:absolute; top:70px; left:260px">
+            <div style="width: 50px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">B</div>
+            <div class="dropdown-content" style="width: 50px; display: none;">
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">C</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">D</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">E</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">F</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">G</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">A</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">B</a>
+            </div>
+          </div>
+
+          <div class="dropdown" style="width: 50px; height: 25px; position:absolute; top:120px; left:260px">
+            <div style="width: 50px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">E</div>
+            <div class="dropdown-content" style="width: 50px; display: none;">
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">C</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">D</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">E</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">F</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">G</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">A</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">B</a>
+            </div>
+          </div>
+
+        </div>    <!-- tunning content -->
+
+        <div class="modal_content" id="beats_content">      <!-- beats content -->
+            <div class="dropdown" style="width: 50px; height: 25px; position:absolute; top:50px; left:125px">
+            <div style="width: 50px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">1</div>
+            <div class="dropdown-content" style="width: 50px; display: none;">
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">1</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">2</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">4</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">8</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">16</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">32</a>
+            </div>
+          </div>
+          <div style="position:absolute; top:42px; left:190px;"> / </div>
+          <div class="dropdown" style="width: 50px; height: 25px; position:absolute; top:50px; left:225px">
+            <div style="width: 50px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">1</div>
+            <div class="dropdown-content" style="width: 50px; display: none;">
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">1</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">2</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">4</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">8</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">16</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">32</a>
+            </div>
+          </div>
+        </div>    <!-- beats content -->
+
       </div>
       <div class="cancel_btn" onclick="cancel_setting();"> 取消</div>
       <div class="done_btn" onclick="cancel_setting();"> 確定</div>
