@@ -39,6 +39,12 @@
             tabstrip.operTb.paper.event['copy-notes'](tabstrip.operTb.paper, tabstrip.operTb.paper.getSelectedNotes());
           }
 	  }));
+	  tab_ctxmenu.addItem("剪下",(function(){
+		if(tabstrip.operTb.paper.event['copy-notes']!=null) {
+            tabstrip.operTb.paper.event['copy-notes'](tabstrip.operTb.paper, tabstrip.operTb.paper.getSelectedNotes());
+          }
+      tabstrip.operTb.paper.deleteNotes();
+	  }));
 	  tab_ctxmenu.addItem("貼上",(function(){
 		  if(tabstrip.operTb.paper.event['paste-notes']!=null) {
 			tabstrip.operTb.paper.insertNotes(tabstrip.operTb.paper.event['paste-notes'](tabstrip.operTb.paper));
