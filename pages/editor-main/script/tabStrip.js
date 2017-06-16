@@ -35,6 +35,7 @@ class tabStrip {
     tag.setX(this.tagWidth * this.container.length);
     tag.paper.setDisplayer(this.paperDisplayer);
     tag.manager = this;
+	tag.paper.manager=this;
     tag.paper.event = this.event;
     this.operTb = tag;
     this.container.push(tag);
@@ -128,6 +129,7 @@ class tabStrip {
 class tabTag {
   constructor(tabname = "New Tab", paper = null) {
     this.paper = paper;
+	this.manager=null;
     if (!paper) {
       this.paper = new TabPaper(tabname);
       this.paper.load([[[4, -1]]]);
@@ -175,6 +177,7 @@ class tabTag {
     this.content.addEventListener("click", () => {
       this.manager.operTb = this;
     });
+	
     this.content.addEventListener("mousedown", this.startDrag.bind(this));
     this.moveTag = e => {
       this.setX(this.x + e.screenX - this.mx);
