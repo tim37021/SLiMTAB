@@ -12,11 +12,14 @@
   <script type="text/javascript" src="script/tabStrip.js"></script>
   <script type="text/javascript" src="script/animation.js"></script>
   <script type="text/javascript" src="script/metronome.js"></script>
+  <script type="text/javascript" src="script/contextmenu.js"></script>
   <script>
     let tabstrip;
     let defaultnote;
     let copyeddata;
     window.onload = function () {
+	tab_ctxmenu.init(document.getElementById("tabpaper1"));
+	
       tabstrip = new tabStrip();
       tabstrip.setPaperDisplayer(document.getElementById("tabpaper1"));//must do this before addTag
       tabstrip.setTagDisplayer(document.getElementById("tabstrip"));

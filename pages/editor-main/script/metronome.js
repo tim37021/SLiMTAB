@@ -2,8 +2,6 @@
 //tab_metro.setUp(bpm , the element you want to attach metronome);<=must do this
 //tab_metor.play();
 //you can use setBpm to change bpm, and attachTo() to attach metronome on more element
-//Don't use like :document.addEventListener('click',tab_metor.play)
-//Use like :document.addEventListener('click',function(){ tab_metor.play(); })
 let tab_metro={
 	bpm:120,
 	playing:false,
@@ -14,8 +12,10 @@ let tab_metro={
 			width:420px;height:250px;
 			background:URL('./img/tick_bg.png') #565656;
 			text-align:center;
-			position:relative;`);
-		this.content.innerHTML=`<div style="font-size:120px;margin-top:30px;margin-left:30px;color:#DDD;display:inline-block">${this.bpm}</div>
+			position:relative;
+			border-radius:8px`);
+		this.content.innerHTML=`<div style="font-size:120px;margin-top:30px;margin-left:20px;
+			color:#DDD;display:inline-block">${this.bpm}</div>
 			<div style="font-size:18px;display:inline-block;color:#DDD;">bpm</div>
 			<img src="./img/tickbar.png" style="position:absolute;top:190px;left:13px"/>
 			<img id="tickdot" src="./img/tickdot.png" 
