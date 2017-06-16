@@ -107,9 +107,9 @@ function record() {
   document.getElementById('metronome').innerHTML = '';
   document.getElementById('metronome').style.display = null;
   tab_metro.setUp(parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]), document.getElementById('metronome'))
-  //python.ex`manager.setInputDevice(manager.getDefaultDevice()['input'])`;
   document.getElementById('recordbtn').style.display = "none";
   document.getElementById('stoprecordbtn').style.display = null;
+  python.ex`manager.setInputDevice(${parseInt(document.getElementById("input_device_selection").innerHTML.split(':')[1])})`;
   python`manager.record()`.then(x => {
     tab_metro.play();
   });
