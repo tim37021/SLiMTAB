@@ -38,8 +38,8 @@ body {
 }
 .btn_esc {
   position: absolute;
-  right: 20px;
-  top: 15px;
+  right: 25px;
+  top: 12px;
   width: 16px;
   height: 16px;
   background: url("../img/normal_esc.png");
@@ -49,8 +49,8 @@ body {
   }
 .btn_full {
   position: absolute;
-  right: 60px;
-  top: 15px;
+  right: 66px;
+  top: 12px;
   width: 16px;
   height: 16px;
   background: url("../img/normal_full.png");
@@ -60,8 +60,8 @@ body {
   }
 .btn_shrink {
   position: absolute;
-  right:100px;
-  top: 15px;
+  right: 107px;
+  top: 12px;
   width: 16px;
   height: 16px;
   background: url("../img/normal_shrink.png");
@@ -72,7 +72,7 @@ body {
 .btn_setting {
   position: absolute;
   right: 155px;
-  top: 15px;
+  top: 12px;
   width: 17px;
   height: 17px;
   background: url("../img/normal_setting.png");
@@ -100,10 +100,11 @@ body {
 /* Modal Content */
 .modal-content {
     position: fixed;
-    top: 30%;
-    left: 25%;
+    top: 20%;
+    left: 35%;
     background-color: #565656;
-    width: 50%;
+    height: 480px;
+    width: 450px;
     -webkit-animation-name: slideIn;
     -webkit-animation-duration: 0.4s;
     animation-name: slideIn;
@@ -114,34 +115,63 @@ body {
 /* The Close Button */
 .cancel_btn {
   position: absolute;
-  right: 28%;
+  right: 30%;
   top: 85%;
-  width:15%;
-  height: 8%;
-  background-color: #808080;
+  width:75px;
+  height: 35px;
+  text-align: center;
+  background-color: #5D5D5D;
   color: #f2f2f2;
   border: 2px solid #333333;
-  font-size: 22px;
+  font-size: 25px;
+  font-family:Microsoft JhengHei; 
+}
+.cancel_btn:hover {
+  position: absolute;
+  right: 30%;
+  top: 85%;
+  width:75px;
+  height: 35px;
+  text-align: center;
+  background-color: #999999;
+  color: #f2f2f2;
+  border: 2px solid #333333;
+  font-size: 25px;
   font-family:Microsoft JhengHei; 
 }
 .done_btn {
   position: absolute;
   right: 8%;
   top: 85%;
-  width:15%;
-  height: 8%;
-  background-color: #808080;
+  width:75px;
+  height: 35px;
+  text-align: center;
+  background-color: #5D5D5D;
   color: #f2f2f2;
   border: 2px solid #333333;
-  font-size: 22px;
+  font-size: 25px;
+  font-family:Microsoft JhengHei; 
+}
+.done_btn:hover {
+  position: absolute;
+  right: 8%;
+  top: 85%;
+  width:75px;
+  height: 35px;
+  text-align: center;
+  background-color: #999999;
+  color: #f2f2f2;
+  border: 2px solid #333333;
+  font-size: 25px;
   font-family:Microsoft JhengHei; 
 }
 .modal-header {
-    padding: 10px 70px;
-    background-color: #f2f2f2;
-    color: black;
+    padding: 2px;
+    background: linear-gradient(to bottom, #E6E6E6 0%,#CCCCCC 100%);
+    color: #333333;
     border-top-left-radius:30px;
     border-top-right-radius:30px;
+    text-align: center;
 }
 
 .modal-body {
@@ -151,8 +181,8 @@ body {
 .modal_content {
   position: absolute;
   top: 25%;
-  left: 20%;
-  border: 2px solid #333333;
+  left: 10%;
+  border: 2px solid #494949;
   padding: 10px 20px;
   margin-left: 8%;
   font-size: 22px;
@@ -182,10 +212,14 @@ body {
 }
 
 /*End of setting*/
+.xbtn:hover {
+  color: #BF7600;
+  cursor: hand;
+}
 
 .menuroot {
   margin-left: 24px;
-  margin-top: 10px;
+  margin-top: 13px;
   margin-bottom: 8px;
   width: 34px;
   height: 27px;
