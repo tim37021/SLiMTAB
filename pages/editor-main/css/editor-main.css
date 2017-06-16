@@ -302,6 +302,7 @@ li:hover {
 .dropdown-content {
   position: absolute;
   padding-top: 4px;
+  z-index: 100;
 }
 .dropdown-content a {
     color: black;
@@ -330,26 +331,10 @@ li:hover {
 .tabstrip {
   background-color: #252525;
   border-bottom: 1px solid #000;
-  border-top: 1px solid #000;
-  display: flex;
-  height: 28px;
-  padding: 0;
-}
-.tab {
-  background-color: #252525;
-  border: 1px solid #000;
   border-top: 1px solid #474747;
-  color: #CCCCCC;
-  padding-top: 2px;
-  padding-left:8px;
-  width: 280px;
-}
-.inactivetab {
-  display: none;
-}
-.tabediting {
-	border-top: 1px solid #666666;
-  background-color: #474747;
+  display: flex;
+  height: 29.8px;
+  padding: 0;
 }
 .title {
   -webkit-app-region: drag;
@@ -400,6 +385,7 @@ li:hover {
   width:100%;
   height: 29px;
   bottom:0;
+  border-top: 1px solid black;
 }
 .slider {
   float: right;

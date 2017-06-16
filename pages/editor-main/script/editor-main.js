@@ -5,32 +5,72 @@ var assert = require("assert");
 var pythonBridge = require("python-bridge");
 const { ipcRenderer } = require("electron");
 
-document.querySelector("#openfile").addEventListener("click", openDialog);
-document.querySelector("#saveas").addEventListener("click", saveDialog);
-document.querySelector("#recordbtn").addEventListener("click", record);
-document.querySelector("#stopbtn").addEventListener("click", stop_record);
-document.querySelectorAll("#printbtn").forEach(function(x) {
+Array.from(document.getElementsByClassName("new")).forEach(x =>{
+  x.addEventListener("click", newfile);
+});
+Array.from(document.getElementsByClassName("open")).forEach(x =>{
+  x.addEventListener("click", openDialog);
+});
+Array.from(document.getElementsByClassName("close")).forEach(x =>{
+  x.addEventListener("click", close_tab);
+});
+Array.from(document.getElementsByClassName("saveas")).forEach(x => {
+  x.addEventListener("click", saveDialog);
+});
+Array.from(document.getElementsByClassName("record")).forEach(x => {
+  x.addEventListener("click", record);
+});
+Array.from(document.getElementsByClassName("stop-record")).forEach(x => {
+  x.addEventListener("click", stop_record);
+});
+document.querySelector("#playbtn").addEventListener("click", play);
+document.querySelector("#stopbtn").addEventListener("click", stop);
+Array.from(document.getElementsByClassName("print")).forEach(function(x) {
   x.addEventListener("click", print);
 });
+Array.from(document.getElementsByClassName("set-note-length")).forEach(function(x) {
+  x.addEventListener("click", set_note_length);
+});
 
-function openDialog() {
-  var filename = dialog.showOpenDialog();
-  fs.readFile(filename[0], (err, data) => {
-    tag = new tabTag(filename[0].split(/(\\|\/)/g).pop());
+function newfile() {
+  tabstrip.addTag(new tabTag());
+}
+function openfile(filename) {
+  fs.readFile(filename, (err, data) => {
+    tag = new tabTag(filename.split(/(\\|\/)/g).pop());
     tag.load(JSON.parse(data));
     tabstrip.addTag(tag);
   });
 }
 
-function saveDialog() {
-  dialog.showSaveDialog();
-  alert("OK");
+function close_tab() {
+  tabstrip.remove();
+  console.log(tabstrip.getTabCount())
+  if(tabstrip.getTabCount() == 0) {
+    Array.from(document.getElementsByClassName("edit-related")).forEach(x =>{
+      x.style.display = "none";
+    });
+  }
 }
 
-function msgbox(title, msg) {
+function openDialog() {
+  var filename = dialog.showOpenDialog();
+  openfile(filename[0]);
+}
+
+function saveDialog() {
+  var filename = dialog.showSaveDialog();
+  fs.writeFileSync(filename, JSON.stringify(tabstrip.operTb.paper.data));
+}
+
+function msgbox(title, msg, no_ok=false) {
   var msgbox = document.getElementById("msgbox");
   document.getElementById("msgtitle").innerHTML = title;
   document.getElementById("msgcontent").innerHTML = msg;
+  if(no_ok)
+    msgbox.getElementsByClassName('okbtn')[0].style.display = "none";
+  else
+    msgbox.getElementsByClassName('okbtn')[0].style.display = null;
   msgbox.style.display = null;
 }
 
@@ -59,7 +99,9 @@ function checkPythonVersion() {
     sys.path.append(${process.cwd()}+"/tools/SLiMTAB-backend")
     import SlimTabDriver
     import SlimTabManager
-    manager=SlimTabManager.SlimTabManager()`;
+    import AudioSynth
+    manager=SlimTabManager.SlimTabManager()
+    synth=AudioSynth.AudioSynth()`;
     return python;
   } catch (err) {
     msgbox("錯誤", "未知異常而無法啟動錄製功能");
@@ -68,19 +110,72 @@ function checkPythonVersion() {
 }
 
 function record() {
-  var device = document.getElementById("comDeviceSelection").parentElement.children[0].innerHTML;
-  python`SlimTabDriver.SliMTABDriver(${device}).check()`.then(x => {
-    if (x) {
-      python.ex`manager.setInputDevice(2)`;
-      python.ex`manager.record()`;
-    } else msgbox("錯誤", "沒有權限存取裝置或者裝置不存在");
+  document.getElementById('metronome').innerHTML = '';
+  document.getElementById('metronome').style.display = null;
+  tab_metro.setUp(parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]), document.getElementById('metronome'))
+  //python.ex`manager.setInputDevice(manager.getDefaultDevice()['input'])`;
+  document.getElementById('recordbtn').style.display = "none";
+  document.getElementById('stoprecordbtn').style.display = null;
+  python`manager.record()`.then(x => {
+    tab_metro.play();
   });
 }
 
+let ac;
+let ins;
+const Soundfont = require("soundfont-player");
+function play() {
+  document.getElementById('playbtn').style.display = "none";
+  document.getElementById('stopbtn').style.display = null;
+  var bpm = parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]);
+  var seq = tabstrip.operTb.paper.outputSequence(bpm);
+  tabstrip.operTb.paper.event['play-finished'] = (x) => {
+    stop();
+  }
+  ac = new AudioContext();
+  Soundfont.instrument(ac, "./soundfont/electric_guitar_clean.js").then(function(instrument) {
+    tabstrip.operTb.paper.play(bpm, ac);
+    seq.forEach(x => {
+      instrument.play(x["note"], x["time"], { duration: x["duration"] });
+    });
+    ins = instrument;
+  });
+  //python.ex`print('fuck')`
+  //msgbox('訊息', '正在合成音訊請稍後..', true);
+  //python`synth.gen(${seq})`.then(() => {
+  //  document.getElementById("msgbox").style.display = "none";
+  //})
+ //python.ex`synth.play()`
+}
+
 function stop_record() {
+  tab_metro.stop();
+  document.getElementById('metronome').style.display = "none";
+  document.getElementById('recordbtn').style.display = null;
+  document.getElementById('stoprecordbtn').style.display = "none";
   python.ex`manager.stopRecord()`;
-  python.ex`manager.saveCurrentRecordData()`;
-  alert("YO");
+
+  msgbox('訊息', '正在計算...請稍後..', true);
+  var bpm = parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]);
+  python`manager.calc(bpm=${bpm})`.then(x => {
+    tabstrip.operTb.paper.data = x;
+    console.log(x)
+    tabstrip.operTb.paper.render();
+    document.getElementById("msgbox").style.display = "none";
+  });
+}
+
+function stop() {
+  document.getElementById('playbtn').style.display = null;
+  document.getElementById('stopbtn').style.display = "none";
+  if(ins) {
+    ins.stop();
+    ac.close();
+    tabstrip.operTb.paper.stop();
+    ins = null;
+    ac = null;
+  }
+  tabstrip.operTb.paper.stop();
 }
 
 function print() {
@@ -90,6 +185,22 @@ function print() {
   cont = null;
 }
 
+function set_note_length() {
+  tabstrip.operTb.paper.setNoteLength(parseInt(this.id.slice(2)));
+  if(this.id.substring(0, 2)=='sn')
+    tabstrip.operTb.paper.switchType('n');
+  else
+    tabstrip.operTb.paper.switchType('r');
+  tabstrip.operTb.active();
+}
+
+
+ipcRenderer.on("open", function(event, args) {
+  console.log(args.split('///')[1]);
+  openfile(args.split('///')[1]);
+})
+
+/*
 var checkDevices = setInterval(function() {
   if (python != null) {
     var audio = document.getElementById("audioDeviceSelection");
@@ -113,4 +224,4 @@ var checkDevices = setInterval(function() {
       });
     } else clearInterval(checkDevices);
   }
-}, 1000);
+}, 1000);*/

@@ -5,114 +5,121 @@
   <link rel="stylesheet" type="text/css" href="ui/buttons/icon.css">
   <link rel="stylesheet" type="text/css" href="fonts/fonts.css">
   <link rel="stylesheet" type="text/css" href="css/editor-main.css">
+  <link rel="stylesheet" type="text/css" href="css/content.css">
   <script type="text/javascript" src="script/interact.min.js"></script>
   <script type="text/javascript" src="script/editor-ui.js"></script>
   <script type="text/javascript" src="script/content.js"></script>
   <script type="text/javascript" src="script/tabStrip.js"></script>
+  <script type="text/javascript" src="script/animation.js"></script>
+  <script type="text/javascript" src="script/metronome.js"></script>
+  <script type="text/javascript" src="script/contextmenu.js"></script>
   <script>
     let tabstrip;
+    let defaultnote;
+    let copyeddata;
     window.onload = function () {
+	tab_ctxmenu.init(document.getElementById("tabpaper1"));
+	
       tabstrip = new tabStrip();
       tabstrip.setPaperDisplayer(document.getElementById("tabpaper1"));//must do this before addTag
       tabstrip.setTagDisplayer(document.getElementById("tabstrip"));
       let nt = new tabTag("test tag");
       nt.load([
-        [[4, 2, 4, 6, 3],//length,chord,block,chord,block.......
-        [8, 1, 2, 2, 6, 3, 5],
-        [8, 1, 2, 2, 6, 3, 5],
-        [4, 2, 4, 6, 3],
-        [4, 2, 4, 6, 3]],
-
-        [[4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5],
-        [16, 3, 2],
-        [4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5],
-        [8, 1, 2, 2, 6, 3, 5],
-        [8, 3, 2]],
-
-        [[4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5],
-        [16, 3, 2],
-        [4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5],
-        [16, 3, 2],
-        [4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5]],
-
-        [[4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5],
-        [8, 1, 2, 2, 6, 3, 5],
-        [4, 2, 4, 6, 3],
-        [4, 2, 4, 6, 3]],
-
-        [[16, 3, 2],
-        [4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5]]
+        [[4, 2, 4, 6, 3, 'c'],
+        [4, 2, 4, 6, 3, 'c'],
+        [4, 2, 4, 6, 3, 'c'],
+        [4, 2, 4, 6, 3, 'e']],
       ]);
-      tabstrip.addTag(new tabTag());
-      tabstrip.addTag(new tabTag("123"));
       tabstrip.addTag(nt);//the last tag you add will be set as active tag
-      tabstrip.container[0].load([
-        [[4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5],
-        [16, 3, 2],
-        [4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5],
-        [8, 1, 2, 2, 6, 3, 5],
-        [8, 3, 2]],
+      ele = document.getElementById('default-note');
+      defaultnote = new MovingElement(ele, 5);
+      defaultnote.moveTo(document.getElementById('sn4').offsetLeft+8, 0);
+      
+      tabstrip.setEventListener({
+        'insert': function (paper) {
+          defaultnote.moveTo(document.getElementById(`sn${paper.defaultNoteLength}`).offsetLeft+8, 0);
+        },
+        'change-length': function (paper, length) {
+          defaultnote.moveTo(document.getElementById(`sn${paper.defaultNoteLength}`).offsetLeft+8, 0);
+        },
+        'move-cursor': function(paper) {
+          var status = document.getElementById('status')
+          status.innerText = `Section: #${paper.cursor[0]+1} String: #${paper.cursor[2]}`;
+          status.style.color = "#808080";
+        },
+        'copy-notes': function(paper, data) {
+          copyeddata = data;
+          console.log(data);
+        },
+        'paste-notes': function(paper) {
+          return copyeddata;
+        }
+      });
 
-        [[4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5],
-        [16, 3, 2],
-        [4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5],
-        [16, 3, 2],
-        [4, 2, 4, 6, 3],
-        [8, 1, 2, 2, 6, 3, 5]]
-      ]);
+      Array.from(document.getElementsByClassName('editable')).forEach(x => {
+        x.addEventListener('dblclick', function (event) {
+          event.target.contentEditable = true;
+          event.target.innerHTML = "";
+        })
+        x.addEventListener('keydown', function (event) {
+          if (event.keyCode == 13) {
+            eval(x.getAttribute('onfinish'));
+            event.target.contentEditable = false;
+          }
+        })
+        if (x.classList.contains('numberonly')) {
+          x.addEventListener('keypress', function (event) {
+            if (event.key < '0' || event.key > '9') {
+              event.preventDefault();
+              return false;
+            }
+            return true;
+          })
+        }
+      });
     }
   </script>
 </head>
 
 <body onclick="hideMenus(event)">
-    <!-- The Modal-->
-<div id="myModal" class="modal">
+  <!-- The Modal-->
+  <div id="myModal" class="modal">
 
-  <!-- Modal content -->
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2>裝置設定</h2>
-    </div>
-    <div class="modal-body">
-      <div class="modal_content">
-      音訊輸出:<div class="dropdown" style="width: 250px; height: 25px; margin: 13px 0px 10px 10px;">
-        <div style="width: 220px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">Built-in Output</div>
-        <div class="dropdown-content" style="width: 250px; display: none;">
-          <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Built-in Output</a>
-          <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Built-in Output2</a>
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>裝置設定</h2>
+      </div>
+      <div class="modal-body">
+        <div class="modal_content">
+          音訊輸出:
+          <div class="dropdown" style="width: 250px; height: 25px; margin: 13px 0px 10px 10px;">
+            <div style="width: 220px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">Built-in Output</div>
+            <div class="dropdown-content" style="width: 250px; display: none;">
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Built-in Output</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Built-in Output2</a>
+            </div>
+          </div>
+          <p>音訊輸入:</p>
+          <div class="dropdown" style="width: 250px; height: 25px; margin: 13px 0px 10px 10px;">
+            <div style="width: 220px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">Steinberg UR12</div>
+            <div class="dropdown-content" style="width: 250px; display: none;">
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Steinberg UR12</a>
+              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Steinberg UR12</a>
+            </div>
+          </div>
+          <p>取樣頻率: 44100HZ</p>
         </div>
       </div>
-      <p>音訊輸入:</p>
-      <div class="dropdown" style="width: 250px; height: 25px; margin: 13px 0px 10px 10px;">
-        <div style="width: 220px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">Steinberg UR12</div>
-        <div class="dropdown-content" style="width: 250px; display: none;">
-          <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Steinberg UR12</a>
-          <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Steinberg UR12</a>
-        </div>
-      </div>
-      <p>取樣頻率: 44100HZ</p>
-      </div>
+      <div class="cancel_btn" onclick="cancel_setting();"> 取消</div>
+      <div class="done_btn" onclick="cancel_setting();"> 確定</div>
     </div>
-    <div class="cancel_btn" onclick="cancel_setting();" >  取消</div>
-    <div class="done_btn" onclick="cancel_setting();">  確定</div>
+
   </div>
-
-</div>  
-
   <div class="header">
     <div class="title"></div>
-    <div class="menuroot" id="file_menu_root" onclick="showFileMenu(this, event)">檔案</div>
+	
+    <div class="menuroot" id="file_menu_root" onclick="showFileMenu(this, event)">File</div>
     <div class="menuroot" id="edit_menu_root">編輯</div>
     <div class="menuroot">說明</div>
     <div class="btn_setting" title="設定" onclick="setting();"></div>   
@@ -123,39 +130,42 @@
   </div>
   <div class="menu" style="left: 155px; top: 45px; display: none;z-index:999" id="file_menu">
     <ul>
-      <li id="newfile">開新檔案</li>
-      <li id="openfile">開啟舊檔</li>
-      <li id="savefile">儲存</li>
-      <li id="saveas">另存新檔</li>
-      <li id='printbtn'>列印</li>
-      <li>列印</li>
+      <li class="new">開新檔案</li>
+      <li class="open">開啟舊檔</li>
+      <li class="save">儲存</li>
+      <li class="saveas">另存新檔</li>
+      <li class="print">列印</li>
+      <li class="close">關閉</li>
     </ul>
   </div>
   <div class="functionbar">
-    <div class="btn newicon"></div>
-    <div class="btn openicon"></div>
-    <div class="btn saveicon"></div>
-    <div class="btn printicon" id="printbtn"></div>
-    <div class="btn undoicon"></div>
-    <div class="btn redoicon"></div>
+    <div class="btn newicon new"></div>
+    <div class="btn openicon open"></div>
+    <div class="btn saveicon save"></div>
+    <div class="btn printicon print"></div>
+    <div class="btn undoicon edit-related"></div>
+    <div class="btn redoicon edit-related"></div>
     <img src="ui/line_vertical.png" style="margin: 7px 0px 4px 4px;">
-    <div class="btn doticon"></div>
-    <div class="btn note_wholeicon"></div>
-    <div class="btn note_halficon"></div>
-    <div class="btn note_quartericon"></div>
-    <div class="btn note_eighthicon"></div>
-    <div class="btn note_sixteenthicon"></div>
-    <div class="btn note_thirtysecondicon"></div>
-    <div class="btn rest_wholeicon"></div>
-    <div class="btn rest_halficon"></div>
-    <div class="btn rest_quartericon"></div>
-    <div class="btn rest_eighthicon"></div>
-    <div class="btn rest_sixteenthicon"></div>
-    <div class="btn rest_thirtysecondicon"></div>
-    <img src="ui/line_vertical.png" style="margin: 7px 0px 4px 4px;">
-    <div class="btn recordicon" style="width: 62px;" id="recordbtn"></div>
-    <div class="btn stopicon" id="stopbtn"></div>
-    <div class="btn playicon"></div>
+    <div class="btn doticon edit-related"></div>
+    <div class="edit-related" style="transition: width 0.1s; position: absolute; top: 92px; z-index: 0; width: 16px; height: 2px; background: #F39800;"
+      id='default-note'></div>
+    <div class="btn note_wholeicon set-note-length edit-related" id='sn1'></div>
+    <div class="btn note_halficon set-note-length edit-related" id='sn2'></div>
+    <div class="btn note_quartericon set-note-length edit-related" id='sn4'></div>
+    <div class="btn note_eighthicon set-note-length edit-related" id='sn8'></div>
+    <div class="btn note_sixteenthicon set-note-length edit-related" id='sn16'></div>
+    <div class="btn note_thirtysecondicon set-note-length edit-related" id='sn32'></div>
+    <div class="btn rest_wholeicon set-note-length edit-related" id="rt1"></div>
+    <div class="btn rest_halficon set-note-length edit-related" id="rt2"></div>
+    <div class="btn rest_quartericon set-note-length edit-related" id="rt4"></div>
+    <div class="btn rest_eighthicon set-note-length edit-related" id="rt8"></div>
+    <div class="btn rest_sixteenthicon set-note-length edit-related" id="rt16"></div>
+    <div class="btn rest_thirtysecondicon set-note-length edit-related" id="rt32"></div>
+    <img class="edit-related" src="ui/line_vertical.png" style="margin: 7px 0px 4px 4px;">
+    <div class="btn recordicon record edit-related" style="width: 62px;" id="recordbtn"></div>
+    <div class="btn stoprecordicon stop-record edit-related" style="width: 62px; display: none;" id="stoprecordbtn"></div>
+    <div class="btn stopicon play edit-related" style="display: none;" id="stopbtn"></div>
+    <div class="btn playicon stop edit-related" id="playbtn"></div>
     <div class="dropdown" style="width: 120px; height: 25px; margin: 13px 0px 10px 10px;">
       <div style="width: 100px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">TAB</div>
       <div class="dropdown-content" style="width: 120px; display: none;">
@@ -163,9 +173,18 @@
         <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">SHEET</a>
       </div>
     </div>
-    <div class="dropdown" style="width: 200px; height: 25px; margin: 13px 0px 10px 10px;">
-      <div style="width: 100px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()"></div>
-      <div class="dropdown-content" style="width: 120px; display: none;" id="audioDeviceSelection">
+    <div class="dropdown" style="width: 120px; height: 25px; margin: 13px 0px 10px 10px;">
+      <div class="editable numberonly" style="width: 100px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="bpm_selection"
+        onclick="this.nextElementSibling.style.display=null; event.stopPropagation()" onfinish="this.innerHTML+=' bpm'; hideMenus()">120 bpm</div>
+      <div class="dropdown-content" style="width: 120px; display: none;">
+        <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">70 bpm</a>
+        <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">80 bpm</a>
+        <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">90 bpm</a>
+        <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">100 bpm</a>
+        <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">110 bpm</a>
+        <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">120 bpm</a>
+        <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">120 bpm</a>
+        <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">130 bpm</a>
       </div>
     </div>
   </div>
@@ -177,8 +196,10 @@
     <div style="margin: 20px 40px 15px 40px; height: 28px; color: #f2f2f2;" id="msgcontent">內文</div>
     <div class="okbtn" onclick="this.parentElement.style.display='none'">確定</div>
   </div>
+  <div id="metronome" style="position: absolute; z-index: 999; bottom: 0; display: none;"></div>
   <div style="padding: 0px;overflow:auto;width:100%;height:calc(100% - 158px);background:#474747" id="tabpaper1"></div>
   <div class="footer">
+    <div style="position: absolute; left: 15px; top: 5px;" id="status"></div>
     <div class="slider">
       <img src="./ui/zoomout.png">
       <input class="bar" max=200 min=30 width="150" type="range" id="rangeinput" value="100" oninput="zooming(this.value,tabstrip.container)"
@@ -191,7 +212,7 @@
   </div>
 </body>
 <script>
-  require('./script/editor-main.js')
+    require('./script/editor-main.js')
 </script>
 
 </html>
