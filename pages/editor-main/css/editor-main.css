@@ -103,90 +103,195 @@ body {
     top: 20%;
     left: 35%;
     background-color: #565656;
-    height: 480px;
+    height: 275px;
     width: 450px;
     -webkit-animation-name: slideIn;
     -webkit-animation-duration: 0.4s;
     animation-name: slideIn;
     animation-duration: 0.4s;
-    border-radius: 30px;
+    border-radius: 10px;
 }
 
 /* The Close Button */
 .cancel_btn {
   position: absolute;
-  right: 30%;
-  top: 85%;
-  width:75px;
-  height: 35px;
+  right: 150px;
+  top: 238px;
+  width:100px;
+  height: 25px;
   text-align: center;
   background-color: #5D5D5D;
   color: #f2f2f2;
   border: 2px solid #333333;
-  font-size: 25px;
+  font-size: 18px;
   font-family:Microsoft JhengHei; 
 }
 .cancel_btn:hover {
   position: absolute;
-  right: 30%;
-  top: 85%;
-  width:75px;
-  height: 35px;
+  right: 150px;
+  top: 238px;
+  width:100px;
+  height: 25px;
   text-align: center;
   background-color: #999999;
   color: #f2f2f2;
   border: 2px solid #333333;
-  font-size: 25px;
+  font-size: 18px;
   font-family:Microsoft JhengHei; 
 }
 .done_btn {
   position: absolute;
-  right: 8%;
-  top: 85%;
-  width:75px;
-  height: 35px;
+  right: 25px;
+  top: 238px;
+  width:100px;
+  height: 25px;
   text-align: center;
   background-color: #5D5D5D;
   color: #f2f2f2;
   border: 2px solid #333333;
-  font-size: 25px;
+  font-size: 18px;
   font-family:Microsoft JhengHei; 
 }
 .done_btn:hover {
   position: absolute;
-  right: 8%;
-  top: 85%;
-  width:75px;
-  height: 35px;
+  right: 25px;
+  top: 238px;
+  width:100px;
+  height: 25px;
   text-align: center;
   background-color: #999999;
   color: #f2f2f2;
   border: 2px solid #333333;
-  font-size: 25px;
+  font-size: 18px;
   font-family:Microsoft JhengHei; 
 }
 .modal-header {
     padding: 2px;
     background: linear-gradient(to bottom, #E6E6E6 0%,#CCCCCC 100%);
     color: #333333;
-    border-top-left-radius:30px;
-    border-top-right-radius:30px;
+    border-top-left-radius:10px;
+    border-top-right-radius:10px;
     text-align: center;
+    font-family:Microsoft JhengHei; 
 }
 
 .modal-body {
-    padding: 200px 65px;
+    height: 245px;
     color :#f2f2f2;
+}
+#setting_btn {
+  height: 25px;
+  width: 50px;
+  position: absolute;
+  top:45px;
+  left: 148px;
+  text-align: center;
+  background-color: #5D5D5D;
+  border: 2px solid #333333;
+  z-index: 1;
+}
+#setting_btn:hover {
+  height: 25px;
+  width: 50px;
+  position: absolute;
+  top:45px;
+  left: 148px;
+  text-align: center;
+  background-color: #808080;
+  border: 2px solid #333333;
+  z-index: 1;
+}
+#setting_btn.active {
+  height: 25px;
+  width: 50px;
+  position: absolute;
+  top:45px;
+  left: 148px;
+  text-align: center;
+  background-color: #333333;
+  border: 2px solid #333333;
+  z-index: 1;
+}
+#tunning_btn {
+  height: 25px;
+  width: 50px;
+  position: absolute;
+  top:45px;
+  left: 200px;
+  text-align: center;
+  background-color: #5D5D5D;
+  border: 2px solid #333333;
+  z-index: 1;
+}
+#tunning_btn:hover {
+  height: 25px;
+  width: 50px;
+  position: absolute;
+  top:45px;
+  left: 200px;
+  text-align: center;
+  background-color: #808080;
+  border: 2px solid #333333;
+  z-index: 1;
+}
+#tunning_btn.active {
+  height: 25px;
+  width: 50px;
+  position: absolute;
+  top:45px;
+  left: 200px;
+  text-align: center;
+  background-color: #333333;
+  border: 2px solid #333333;
+  z-index: 1;
+}
+#beats_btn {
+  height: 25px;
+  width: 50px;
+  position: absolute;
+  top:45px;
+  left: 252px;
+  text-align: center;
+  background-color: #5D5D5D;
+  border: 2px solid #333333;
+  z-index: 1;
+}
+#beats_btn:hover {
+  height: 25px;
+  width: 50px;
+  position: absolute;
+  top:45px;
+  left: 252px;
+  text-align: center;
+  background-color: #808080;
+  border: 2px solid #333333;
+  z-index: 1;
+}
+#beats_btn.active {
+  height: 25px;
+  width: 50px;
+  position: absolute;
+  top:45px;
+  left: 252px;
+  text-align: center;
+  background-color: #333333;
+  border: 2px solid #333333;
+  z-index: 1;
 }
 .modal_content {
   position: absolute;
-  top: 25%;
-  left: 10%;
-  border: 2px solid #494949;
-  padding: 10px 20px;
-  margin-left: 8%;
-  font-size: 22px;
+  top: 60px;
+  left: 25px;
+  height: 145px;
+  width: 375px;
+  padding-left:25px; 
+  padding-top: 3px;
+  border: 2px solid #333333;
+  font-size: 18px;
   font-family:Microsoft JhengHei; 
+}
+#beats_content {
+  font-size: 30px;
 }
 
 
@@ -212,9 +317,13 @@ body {
 }
 
 /*End of setting*/
+.xbtn {
+  background: url("../img/normal_cross.png");
+}
 .xbtn:hover {
-  color: #BF7600;
+  
   cursor: hand;
+  background: url("../img/hover_cross.png");
 }
 
 .menuroot {
@@ -267,7 +376,7 @@ li:hover {
 }
 .menuroot:hover {
   margin-left: 24px;
-  margin-top: 10px;
+  margin-top: 13px;
   margin-bottom: 8px;
   width: 34px;
   height: 27px;
@@ -277,7 +386,7 @@ li:hover {
 }
 .menuroot:active {
   margin-left: 24px;
-  margin-top: 10px;
+  margin-top: 13px;
   margin-bottom: 8px;
   width: 34px;
   height: 27px;
