@@ -13,6 +13,7 @@
   <script type="text/javascript" src="script/animation.js"></script>
   <script type="text/javascript" src="script/metronome.js"></script>
   <script type="text/javascript" src="script/contextmenu.js"></script>
+  <script type="text/javascript" src="script/note_svg.js"></script>
   <script>
     let tabstrip;
     let defaultnote;
@@ -27,6 +28,15 @@
         [4, 2, 4, 6, 3, 'c'],
         [4, 2, 4, 6, 3, 'c'],
         [4, 2, 4, 6, 3, 'e']],
+		
+		[[1, 0, 4]],
+		
+		[[2, 0, 4]],
+		
+		[[4, 0, 4],
+		[8, 0, 4],
+        [16, 0, 4],
+        [32, 0, 4]]
       ]);
       tabstrip.addTag(nt);//the last tag you add will be set as active tag
       ele = document.getElementById('default-note');
