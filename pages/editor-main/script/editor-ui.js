@@ -22,10 +22,8 @@ function hideMenus() {
 }
 var webview = document.querySelector("webview");
 function zooming(scale, tags) {
-  for (let i = 0; i < tags.length; i++) {
-    tags[i].paper.setScale(scale / 100);
-    tags[i].paper.zoom();
-  }
+  tabstrip.operTb.paper.setScale(scale/100);
+  tabstrip.operTb.paper.zoom();
   document.getElementById("rangevalue").innerHTML = scale + "%";
 }
 function dragMoveListener(event) {

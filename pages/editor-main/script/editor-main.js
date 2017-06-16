@@ -195,7 +195,7 @@ ipcRenderer.on("open", function(event, args) {
   openfile(args.split('///')[1]);
 })
 
-
+/*
 var checkDevices = setInterval(function() {
   if (python != null) {
     var audio = document.getElementById("input_device_selection").nextElementSibling;
@@ -220,3 +220,4 @@ var checkDevices = setInterval(function() {
     } else clearInterval(checkDevices);
   }
 }, 1000);
+*/
