@@ -194,10 +194,10 @@ ipcRenderer.on("open", function(event, args) {
   openfile(args.split('///')[1]);
 })
 
-/*
+
 var checkDevices = setInterval(function() {
   if (python != null) {
-    var audio = document.getElementById("audioDeviceSelection");
+    var audio = document.getElementById("input_device_selection");
     if (audio.style.display == "none") {
       audio.innerHTML = "";
       python.ex`import SlimTabManager`;
@@ -218,4 +218,4 @@ var checkDevices = setInterval(function() {
       });
     } else clearInterval(checkDevices);
   }
-}, 1000);*/
+}, 1000);
