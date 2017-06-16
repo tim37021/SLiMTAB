@@ -462,9 +462,8 @@ class TabPaper {
     }
   }
 
-
   breakSelectedTieNotes(no_render=false) {
-    for(let i=1; i<this.selectedNotes.length; i++) {
+    for(let i=0; i<this.selectedNotes.length; i++) {
       var d = this.data[this.selectedNotes[i][0]][this.selectedNotes[i][1]];
       if(d.slice(-1)=='e' || d.slice(-1)=='c') {
         d.splice(d.length-1, 1);
