@@ -35,15 +35,15 @@
       
 	  tab_ctxmenu.init(document.getElementById("tabpaper1"));
 	  tab_ctxmenu.addItem("複製",(function(){
-		if(this.event['copy-notes']!=null) {
-            this.event['copy-notes'](this, this.getSelectedNotes());
+		if(tabstrip.operTb.paper.event['copy-notes']!=null) {
+            tabstrip.operTb.paper.event['copy-notes'](tabstrip.operTb.paper, tabstrip.operTb.paper.getSelectedNotes());
           }
-	  }).bind(tabstrip.operTb.paper));
+	  }));
 	  tab_ctxmenu.addItem("貼上",(function(){
-		  if(this.event['paste-notes']!=null) {
-			this.insertNotes(this.event['paste-notes'](this));
+		  if(tabstrip.operTb.paper.event['paste-notes']!=null) {
+			tabstrip.operTb.paper.insertNotes(tabstrip.operTb.paper.event['paste-notes'](tabstrip.operTb.paper));
           }
-	  }).bind(tabstrip.operTb.paper));
+	  }));
       tabstrip.setEventListener({
         'insert': function (paper) {
           defaultnote.moveTo(document.getElementById(`sn${paper.defaultNoteLength}`).offsetLeft+8, 0);
@@ -111,10 +111,8 @@
           </div>
           <p>音訊輸入:</p>
           <div class="dropdown" style="width: 250px; height: 25px; margin: 13px 0px 10px 10px;">
-            <div style="width: 220px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">Steinberg UR12</div>
-            <div class="dropdown-content" style="width: 250px; display: none;">
-              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Steinberg UR12</a>
-              <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Steinberg UR12</a>
+            <div style="width: 220px; margin-left: 8px; margin-top: 2px; font-size: 18px;" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">Steinberg UR12</div>
+            <div class="dropdown-content" style="width: 250px; display: none;" id="input_device_selection">
             </div>
           </div>
           <p>取樣頻率: 44100HZ</p>
