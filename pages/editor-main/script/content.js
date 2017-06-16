@@ -12,6 +12,7 @@ class TabPaper {
     this.content.style.outline = "none";
     this.inputing = 0;
 	this.displayer=null;
+	this.manager=null;
     this.content.onselectstart = function() {
       return false;
     };
@@ -357,7 +358,7 @@ class TabPaper {
   }
 
   mdEvent(e) {
-    if(e.button==0) {
+    if(!this.manager.grab)if(e.button==0) {
       var pg0 = this.content.children[0];
       this.dragStart = [e.clientX-pg0.offsetLeft, e.clientY-pg0.offsetTop-20+this.displayer.scrollTop];
       this.selectAreaRect.setAttribute('width', `0`);

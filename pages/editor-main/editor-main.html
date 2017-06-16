@@ -18,8 +18,6 @@
     let defaultnote;
     let copyeddata;
     window.onload = function () {
-	tab_ctxmenu.init(document.getElementById("tabpaper1"));
-	
       tabstrip = new tabStrip();
       tabstrip.setPaperDisplayer(document.getElementById("tabpaper1"));//must do this before addTag
       tabstrip.setTagDisplayer(document.getElementById("tabstrip"));
@@ -35,6 +33,17 @@
       defaultnote = new MovingElement(ele, 5);
       defaultnote.moveTo(document.getElementById('sn4').offsetLeft+8, 0);
       
+	  tab_ctxmenu.init(document.getElementById("tabpaper1"));
+	  tab_ctxmenu.addItem("複製",(function(){
+		if(this.event['copy-notes']!=null) {
+            this.event['copy-notes'](this, this.getSelectedNotes());
+          }
+	  }).bind(tabstrip.operTb.paper));
+	  tab_ctxmenu.addItem("貼上",(function(){
+		  if(this.event['paste-notes']!=null) {
+			this.insertNotes(this.event['paste-notes'](this));
+          }
+	  }).bind(tabstrip.operTb.paper));
       tabstrip.setEventListener({
         'insert': function (paper) {
           defaultnote.moveTo(document.getElementById(`sn${paper.defaultNoteLength}`).offsetLeft+8, 0);
