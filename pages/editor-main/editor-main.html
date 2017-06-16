@@ -44,6 +44,12 @@
 			tabstrip.operTb.paper.insertNotes(tabstrip.operTb.paper.event['paste-notes'](tabstrip.operTb.paper));
           }
 	  }));
+	  tab_ctxmenu.addItem("加入連接記號",(function(){
+			tabstrip.operTb.paper.tieSelectedNotes();
+	  }));
+	  tab_ctxmenu.addItem("刪除連接記號",(function(){
+			tabstrip.operTb.paper.breakSelectedTieNotes();
+	  }));
       tabstrip.setEventListener({
         'insert': function (paper) {
           defaultnote.moveTo(document.getElementById(`sn${paper.defaultNoteLength}`).offsetLeft+8, 0);

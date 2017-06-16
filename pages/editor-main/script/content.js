@@ -419,6 +419,61 @@ class TabPaper {
     }
   }
 
+  hasEqualNotes(d1, d2) {
+    if(d1.length!=d2.length)
+      return false;
+    for(let i=0; i<d1.length; i++) {
+      if(d1[i]!=d2[i])
+        return false;
+    }
+    return true;
+  }
+
+  tieSelectedNotes(no_render = false) {
+    // section pos string length block
+    if(this.selectedNotes.length >= 2) {
+      var d = this.data[this.selectedNotes[0][0]][this.selectedNotes[0][1]];
+      var data;
+      if(d.slice(-1)!='e' && d.slice(-1)!='c') {
+        data = d.slice(1);
+        d.push('c');
+      }else {
+        data = d.slice(1, d.length-2);
+        d[d.length-1] = 'c';
+      }
+      let i;
+      for(i=1; i<this.selectedNotes.length; i++) {
+        d = this.data[this.selectedNotes[i][0]][this.selectedNotes[i][1]];
+        var notes;
+        if(d.slice(-1)!='e' && d.slice(-1)!='c') {
+          notes = d.slice(1);
+          d.push('')
+        } else
+          notes = d.slice(1, d.length-2);
+        if(this.hasEqualNotes(notes, data))
+          d[d.length-1] = 'c';
+        else {
+          break;
+        }
+      }
+      d[d.length-1] = 'e';
+      if(!no_render)
+        this.render();
+    }
+  }
+
+
+  breakSelectedTieNotes(no_render=false) {
+    for(let i=1; i<this.selectedNotes.length; i++) {
+      var d = this.data[this.selectedNotes[i][0]][this.selectedNotes[i][1]];
+      if(d.slice(-1)=='e' || d.slice(-1)=='c') {
+        d.splice(d.length-1, 1);
+      }
+    }
+    if(!no_render)
+      this.render();
+  }
+
   setScale(s) {
     if (s <= 2.0 && s >= 0.3) this.scale = s;
   }
