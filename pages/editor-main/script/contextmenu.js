@@ -11,13 +11,13 @@ let tab_ctxmenu={
 			this.content.style.left=e.clientX+'px';
 			this.content.style.top=e.clientY+'px';
 			this.content.style.clip=`rect(0px,300px,${30*this.itemNum+20}px,0px)`;
+			this.content.style.display = null;
 		});
-		document.addEventListener('click',()=>{this.close()});
 	},
-	addItem:function(name,fun){
+	addItem:function(name, cls){
 		this.itemNum++;
 		let newitem=document.createElement('li');
-		newitem.addEventListener('click',fun);
+		newitem.classList.add(cls);
 		newitem.innerHTML=name;
 		this.content.children[0].appendChild(newitem);
 	},

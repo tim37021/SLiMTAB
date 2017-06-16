@@ -45,12 +45,6 @@ function openfile(filename) {
 
 function close_tab() {
   tabstrip.remove();
-  console.log(tabstrip.getTabCount())
-  if(tabstrip.getTabCount() == 0) {
-    Array.from(document.getElementsByClassName("edit-related")).forEach(x =>{
-      x.style.display = "none";
-    });
-  }
 }
 
 function openDialog() {
@@ -113,9 +107,9 @@ function record() {
   document.getElementById('metronome').innerHTML = '';
   document.getElementById('metronome').style.display = null;
   tab_metro.setUp(parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]), document.getElementById('metronome'))
-  //python.ex`manager.setInputDevice(manager.getDefaultDevice()['input'])`;
   document.getElementById('recordbtn').style.display = "none";
   document.getElementById('stoprecordbtn').style.display = null;
+  python.ex`manager.setInputDevice(${parseInt(document.getElementById("input_device_selection").innerHTML.split(':')[1])})`;
   python`manager.record()`.then(x => {
     tab_metro.play();
   });
@@ -157,6 +151,7 @@ function stop_record() {
 
   msgbox('訊息', '正在計算...請稍後..', true);
   var bpm = parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]);
+  python.ex`manager.saveCurrentRecordData()`;
   python`manager.calc(bpm=${bpm})`.then(x => {
     tabstrip.operTb.paper.data = x;
     console.log(x)
@@ -200,10 +195,10 @@ ipcRenderer.on("open", function(event, args) {
   openfile(args.split('///')[1]);
 })
 
-/*
+
 var checkDevices = setInterval(function() {
   if (python != null) {
-    var audio = document.getElementById("audioDeviceSelection");
+    var audio = document.getElementById("input_device_selection").nextElementSibling;
     if (audio.style.display == "none") {
       audio.innerHTML = "";
       python.ex`import SlimTabManager`;
@@ -224,4 +219,4 @@ var checkDevices = setInterval(function() {
       });
     } else clearInterval(checkDevices);
   }
-}, 1000);*/
+}, 1000);

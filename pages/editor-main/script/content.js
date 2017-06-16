@@ -34,7 +34,8 @@ class TabPaper {
         };
     this.data = null;
     this.title = title;
-    this.selectedNotes = null;
+    this.selectedNotes = [];
+    this.selectedDoms = [];
     this.cursor = [0, 0, 1];
     this.playingCursor = [0, 0];
     this.check();
@@ -234,7 +235,7 @@ class TabPaper {
     }
 	this.vHTML = `<div style="overflow:hidden;padding:3px;padding-top:20px;" id='pg0'>
 		<svg width="${this.width}" height="${this.height}" 
-		style="background:#FFFFFF" id="svg_container"><rect id="select-area" width="0" height="0" style="fill:blue;stroke:pink;stroke-width:5;fill-opacity:0.1;stroke-opacity:0.9"></rect>`+this.vHTML+"</svg></div>";
+		style="background:#FFFFFF" id="svg_container">`+this.vHTML+`<rect id="select-area" width="0" height="0" style="fill:#F39800; fill-opacity:0.4;"></rect>`+"</svg></div>";
     this.content.innerHTML = this.vHTML;
     this.selectAreaRect = document.getElementById('select-area');
     this.zoom();
@@ -386,6 +387,11 @@ class TabPaper {
       var width = this.selectAreaRect.getAttribute('width');
       var height = this.selectAreaRect.getAttribute('height');
       this.selectedNotes = []
+      this.selectedDoms = [];
+      var minx = 9999;
+      var maxx = -1;
+      var miny = 9999;
+      var maxy = -1;
       Array.from(document.getElementsByClassName('notetext')).forEach(node => {
         if(!node.classList.contains('fake')) {
           var x = parseInt(node.getAttribute('x'));
@@ -394,12 +400,81 @@ class TabPaper {
             if(y>=starty && y-starty<height) {
               this.selectedNotes.push([parseInt(node.getAttribute('section')), parseInt(node.getAttribute('pos')), parseInt(node.getAttribute('string')), 
               parseFloat(node.getAttribute('length')), parseInt(node.innerHTML)])
+              this.selectedDoms.push(node);
+              minx = Math.min(x, minx);
+              maxx = Math.max(x, maxx);
+              miny = Math.min(y, miny);
+              maxy = Math.max(y, maxy);
             }
           }
+        }
+        if(maxx>=minx) {
+          this.selectAreaRect.setAttribute('x', `${minx}`);
+          this.selectAreaRect.setAttribute('y', `${miny-10}`);
+          this.selectAreaRect.setAttribute('width', `${maxx-minx+10}`);
+          this.selectAreaRect.setAttribute('height', `${maxy-miny+10}`);
         }
       });
       this.dragStart = null;
     }
+  }
+
+  hasEqualNotes(d1, d2) {
+    if(d1.length!=d2.length)
+      return false;
+    for(let i=0; i<d1.length; i++) {
+      if(d1[i]!=d2[i])
+        return false;
+    }
+    return true;
+  }
+
+  tieSelectedNotes(no_render = false) {
+    var lst = this.getSelectedNotes(true);
+    // section pos string length block
+    if(lst.length >= 2) {
+      var d = this.data[lst[0][1]][lst[0][2]];
+      var data;
+      if(d.slice(-1)!='e' && d.slice(-1)!='c') {
+        data = d.slice(1);
+        d.push('c');
+      }else {
+        data = d.slice(1, d.length-1);
+        d[d.length-1] = 'c';
+      }
+      let i;
+      for(i=1; i<lst.length; i++) {
+        d = this.data[lst[i][1]][lst[i][2]];
+        var notes;
+        if(d.slice(-1)!='e' && d.slice(-1)!='c') {
+          notes = d.slice(1);
+          d.push('')
+        } else
+          notes = d.slice(1, d.length-1);
+        if(this.hasEqualNotes(notes, data))
+          d[d.length-1] = 'c';
+        else {
+          this.data[lst[i-1][1]][lst[i-1][2]][this.data[lst[i-1][1]][lst[i-1][2]].length-1] = 'e';
+          break;
+        }
+      }
+      if(i==lst.length)
+        d[d.length-1] = 'e';
+      if(!no_render)
+        this.render();
+    }
+  }
+
+  breakSelectedTieNotes(no_render=false) {
+    var lst = this.getSelectedNotes(true);
+    for(let i=0; i<lst.length; i++) {
+      var d = this.data[lst[i][1]][lst[i][2]];
+      if(d.slice(-1)=='e' || d.slice(-1)=='c') {
+        d.splice(d.length-1, 1);
+      }
+    }
+    if(!no_render)
+      this.render();
   }
 
   setScale(s) {
@@ -446,6 +521,12 @@ class TabPaper {
           }
           this.deleteNotes();
         }
+        break;
+      case 32:
+        if(this.event['play']!=null) {
+          this.event['play'](this);
+        }
+        e.preventDefault();
         break;
       case 86:
         if(e.ctrlKey) {
@@ -706,7 +787,7 @@ class TabPaper {
       this.partialRender(Math.floor(target[0] / 4));
   }
 
-  getSelectedNotes() {
+  getSelectedNotes(with_pos=false) {
     var ret = []
     var last_section = -1;
     var last_pos = -1;
@@ -717,9 +798,17 @@ class TabPaper {
         if(last_pos!=-1) {
           ret.push(acc);
           acc = [0];
+          if(with_pos) {
+            acc.push(this.selectedNotes[i][0]);
+            acc.push(this.selectedNotes[i][1]);
+          }
         }
       }
       acc[0] = this.selectedNotes[i][3];
+      if(with_pos) {
+        acc[1] = this.selectedNotes[i][0];
+        acc[2] = this.selectedNotes[i][1];
+      }
       acc.push(this.selectedNotes[i][2]);
       acc.push(this.selectedNotes[i][4]);
       last_pos = this.selectedNotes[i][1];
