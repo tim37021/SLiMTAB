@@ -112,7 +112,8 @@ class tabTag {
     node.appendChild(textnode);
     this.content.appendChild(node);
 
-    node.onclick = function() {closetab(this)};
+    node.onclick = function() {tabStrip.remove(this.content)};
+
     this.content.addEventListener("click", () => {
       this.manager.operTb = this;
     });
