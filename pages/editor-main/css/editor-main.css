@@ -38,7 +38,7 @@ body {
 }
 .btn_esc {
   position: absolute;
-  right: 1%;
+  right: 25px;
   top: 12px;
   width: 16px;
   height: 16px;
@@ -49,7 +49,7 @@ body {
   }
 .btn_full {
   position: absolute;
-  right: 4.3%;
+  right: 66px;
   top: 12px;
   width: 16px;
   height: 16px;
@@ -60,7 +60,7 @@ body {
   }
 .btn_shrink {
   position: absolute;
-  right: 8%;
+  right: 107px;
   top: 12px;
   width: 16px;
   height: 16px;
@@ -71,7 +71,7 @@ body {
   }
 .btn_setting {
   position: absolute;
-  right: 12%;
+  right: 155px;
   top: 12px;
   width: 17px;
   height: 17px;
@@ -100,10 +100,11 @@ body {
 /* Modal Content */
 .modal-content {
     position: fixed;
-    top: 30%;
-    left: 25%;
+    top: 20%;
+    left: 35%;
     background-color: #565656;
-    width: 50%;
+    height: 500px;
+    width: 450px;
     -webkit-animation-name: slideIn;
     -webkit-animation-duration: 0.4s;
     animation-name: slideIn;
@@ -114,26 +115,54 @@ body {
 /* The Close Button */
 .cancel_btn {
   position: absolute;
-  right: 28%;
+  right: 30%;
   top: 85%;
-  width:15%;
-  height: 8%;
-  background-color: #808080;
+  width:75px;
+  height: 35px;
+  text-align: center;
+  background-color: #5D5D5D;
   color: #f2f2f2;
   border: 2px solid #333333;
-  font-size: 22px;
+  font-size: 25px;
+  font-family:Microsoft JhengHei; 
+}
+.cancel_btn:hover {
+  position: absolute;
+  right: 30%;
+  top: 85%;
+  width:75px;
+  height: 35px;
+  text-align: center;
+  background-color: #999999;
+  color: #f2f2f2;
+  border: 2px solid #333333;
+  font-size: 25px;
   font-family:Microsoft JhengHei; 
 }
 .done_btn {
   position: absolute;
   right: 8%;
   top: 85%;
-  width:15%;
-  height: 8%;
-  background-color: #808080;
+  width:75px;
+  height: 35px;
+  text-align: center;
+  background-color: #5D5D5D;
   color: #f2f2f2;
   border: 2px solid #333333;
-  font-size: 22px;
+  font-size: 25px;
+  font-family:Microsoft JhengHei; 
+}
+.done_btn:hover {
+  position: absolute;
+  right: 8%;
+  top: 85%;
+  width:75px;
+  height: 35px;
+  text-align: center;
+  background-color: #999999;
+  color: #f2f2f2;
+  border: 2px solid #333333;
+  font-size: 25px;
   font-family:Microsoft JhengHei; 
 }
 .modal-header {
@@ -151,7 +180,7 @@ body {
 .modal_content {
   position: absolute;
   top: 25%;
-  left: 20%;
+  left: 10%;
   border: 2px solid #333333;
   padding: 10px 20px;
   margin-left: 8%;
@@ -182,6 +211,10 @@ body {
 }
 
 /*End of setting*/
+.xbtn:hover {
+  color: #BF7600;
+  cursor: hand;
+}
 
 .menuroot {
   margin-left: 24px;

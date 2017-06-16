@@ -94,6 +94,25 @@ class tabTag {
 			position:absolute;
 		`
     );
+    var node = document.createElement("div");
+    node.setAttribute("class","xbtn");
+    node.setAttribute("style",
+    `
+			height:20px;
+			width:20px;
+            line-height: 15px;
+			position:absolute;
+			right: 3px;
+            top: 5px;
+            color:#808080;
+            font-size:18px;
+		`
+    );
+    var textnode = document.createTextNode("x");
+    node.appendChild(textnode);
+    this.content.appendChild(node);
+
+    node.onclick = function() {closetab(this)};
     this.content.addEventListener("click", () => {
       this.manager.operTb = this;
     });
@@ -130,4 +149,8 @@ class tabTag {
       document.removeEventListener("mousemove", this.moveTag);
     });
   }
+}
+
+ function closetab(tab) {
+    tabStrip.remove(tab);   //can't close tab
 }
