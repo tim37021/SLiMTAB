@@ -267,7 +267,7 @@ li:hover {
 }
 .menuroot:hover {
   margin-left: 24px;
-  margin-top: 10px;
+  margin-top: 13px;
   margin-bottom: 8px;
   width: 34px;
   height: 27px;
@@ -277,7 +277,7 @@ li:hover {
 }
 .menuroot:active {
   margin-left: 24px;
-  margin-top: 10px;
+  margin-top: 13px;
   margin-bottom: 8px;
   width: 34px;
   height: 27px;
