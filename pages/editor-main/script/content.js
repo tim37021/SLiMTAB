@@ -33,7 +33,8 @@ class TabPaper {
         };
     this.data = null;
     this.title = title;
-    this.selectedNotes = null;
+    this.selectedNotes = [];
+    this.selectedDoms = [];
     this.cursor = [0, 0, 1];
     this.playingCursor = [0, 0];
     this.check();
@@ -233,7 +234,7 @@ class TabPaper {
     }
 	this.vHTML = `<div style="overflow:hidden;padding:3px;padding-top:20px;" id='pg0'>
 		<svg width="${this.width}" height="${this.height}" 
-		style="background:#FFFFFF" id="svg_container">`+this.vHTML+`<rect id="select-area" width="0" height="0" style="fill:#F39800; fill-opacity:0.5;"></rect>`+"</svg></div>";
+		style="background:#FFFFFF" id="svg_container">`+this.vHTML+`<rect id="select-area" width="0" height="0" style="fill:#F39800; fill-opacity:0.4;"></rect>`+"</svg></div>";
     this.content.innerHTML = this.vHTML;
     this.selectAreaRect = document.getElementById('select-area');
     this.zoom();
@@ -385,6 +386,11 @@ class TabPaper {
       var width = this.selectAreaRect.getAttribute('width');
       var height = this.selectAreaRect.getAttribute('height');
       this.selectedNotes = []
+      this.selectedDoms = [];
+      var minx = 9999;
+      var maxx = -1;
+      var miny = 9999;
+      var maxy = -1;
       Array.from(document.getElementsByClassName('notetext')).forEach(node => {
         if(!node.classList.contains('fake')) {
           var x = parseInt(node.getAttribute('x'));
@@ -393,8 +399,19 @@ class TabPaper {
             if(y>=starty && y-starty<height) {
               this.selectedNotes.push([parseInt(node.getAttribute('section')), parseInt(node.getAttribute('pos')), parseInt(node.getAttribute('string')), 
               parseFloat(node.getAttribute('length')), parseInt(node.innerHTML)])
+              this.selectedDoms.push(node);
+              minx = Math.min(x, minx);
+              maxx = Math.max(x, maxx);
+              miny = Math.min(y, miny);
+              maxy = Math.max(y, maxy);
             }
           }
+        }
+        if(maxx>=minx) {
+          this.selectAreaRect.setAttribute('x', `${minx}`);
+          this.selectAreaRect.setAttribute('y', `${miny-10}`);
+          this.selectAreaRect.setAttribute('width', `${maxx-minx+10}`);
+          this.selectAreaRect.setAttribute('height', `${maxy-miny+10}`);
         }
       });
       this.dragStart = null;

@@ -16,7 +16,7 @@
   <script>
     let tabstrip;
     let defaultnote;
-    let copyeddata;
+    let copyeddata = "[]";
     window.onload = function () {
 	tab_ctxmenu.init(document.getElementById("tabpaper1"));
 	
@@ -48,11 +48,11 @@
           status.style.color = "#808080";
         },
         'copy-notes': function(paper, data) {
-          copyeddata = data;
+          copyeddata = JSON.stringify(data);
           console.log(data);
         },
         'paste-notes': function(paper) {
-          return copyeddata;
+          return JSON.parse(copyeddata);
         }
       });
 
