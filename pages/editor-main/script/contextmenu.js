@@ -11,8 +11,8 @@ let tab_ctxmenu={
 			this.content.style.left=e.clientX+'px';
 			this.content.style.top=e.clientY+'px';
 			this.content.style.clip=`rect(0px,300px,${30*this.itemNum+20}px,0px)`;
+			this.content.style.display = null;
 		});
-		document.addEventListener('click',()=>{this.close()});
 	},
 	addItem:function(name, cls){
 		this.itemNum++;
