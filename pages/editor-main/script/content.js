@@ -885,6 +885,8 @@ class TabPaper {
     this.vHTML += "<svg>";
     var is_blank = false;
     var last = 78;
+    if(data.slice(-1)=='c'||data.slice(-1)=='e')
+      data = data.slice(0, data.length-1)
     if (data.length == 1) {
       // pass
       // [x 0] is rest note
