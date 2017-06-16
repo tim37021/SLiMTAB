@@ -297,10 +297,11 @@ class TabPaper {
   }
 
   ckEvent(e) {
-    if (e.target.getAttribute("data-type") == "nt") {
+    if (e.target.classList.contains('notetext')) {
       var section = parseInt(e.target.getAttribute("section"));
       var pos = parseInt(e.target.getAttribute("pos"));
       var id = parseInt(e.target.getAttribute("i"));
+      var string = parseInt(e.target.getAttribute("string"));
       var oldsection = this.cursor[0];
       if(this.isInserting()) {
         if(this.isInsertingTab())
@@ -311,7 +312,7 @@ class TabPaper {
             pos = this.cursor[1]<pos?pos-1:pos;
         }
       }
-      this.cursor = [section, pos, this.data[section][pos][1 + 2 * id]];
+      this.cursor = [section, pos, string];
       //this.selectedNotes = [[section, pos, this.data[section][pos][1 + 2 * id], this.data[section][pos][0]], this.data[section][pos][1 + 2 * id]]
       this.partialRender(Math.floor(oldsection / 4));
       this.partialRender(Math.floor(this.cursor[0] / 4));
@@ -889,22 +890,22 @@ class TabPaper {
 	if(data[0]==0){
 		switch(length){
 			case 4:
-				this.vHTML+=note_svg.rest_quarter(x,y);
+				this.vHTML+=note_svg.rest_quarter(x,y, section, pos);
 			break;
 			case 8:
-				this.vHTML+=note_svg.rest_eighth(x,y);
+				this.vHTML+=note_svg.rest_eighth(x,y, section, pos);
 			break;
 			case 16:
-				this.vHTML+=note_svg.rest_sixteenth(x,y);
+				this.vHTML+=note_svg.rest_sixteenth(x,y, section, pos);
 			break;
 			case 32:
-				this.vHTML+=note_svg.rest_thirtysecong(x,y);
+				this.vHTML+=note_svg.rest_thirtysecong(x,y, section, pos);
 			break;
 			case 1:
-				this.vHTML+=note_svg.rest_whole(x,y);
+				this.vHTML+=note_svg.rest_whole(x,y, section, pos);
 			break;
 			case 2:
-				this.vHTML+=note_svg.rest_second(x,y);
+				this.vHTML+=note_svg.rest_second(x,y, section, pos);
 			break;
 		}
 	}else{

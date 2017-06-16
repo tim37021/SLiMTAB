@@ -23,11 +23,11 @@ let note_svg={
 	<rect id='rest_whole' x="471.3" y="276.6" width="17.4" height="6.5"/>
 	</defs>`,
 	
-	rest_eighth:function(x,y){y+=8;return `<use x="${x-477.4}" y="${y-268.5}" href="#rest_eighth" style='transform:scale(0.6);transform-origin: ${x}px ${y}px'/>`},
-	rest_quarter:function(x,y){y+=2;return `<use x="${x-478.5}" y="${y-261.7}" href="#rest_quarter" style='transform:scale(0.6);transform-origin: ${x}px ${y}px'/>` },
-	rest_sixteenth:function(x,y){y+=5;return `<use x="${x-487.2}" y="${y-265.2}" href="#rest_sixteenth" style='transform:scale(0.6);transform-origin: ${x}px ${y}px'/>` },
-	rest_thirtysecong:function(x,y){y+=27;return `<use x="${x-30}" y="${y-30}" href="#rest_thirtysecong" style='transform:scale(0.6);transform-origin: ${x}px ${y}px'/>` },
-	rest_second:function(x,y){x-=5;y+=10;return `<use x="${x-471.3}" y="${y-276.6}" href="#rest_whole" style='transform:scale(0.6);transform-origin: ${x}px ${y}px'/>` },
-	rest_whole:function(x,y){x-=5;y+=14;return `<use x="${x-471.3}" y="${y-276.6}" href="#rest_whole" style='transform:scale(0.6);transform-origin: ${x}px ${y}px'/>` },
+	rest_eighth:function(x,y, section, pos){y+=8;return `<use class="notetext" section="${section}" pos="${pos}" length="8" string="3" i="0" x="${x}" y="${y+14*3-10}" href="#rest_eighth" style='transform:scale(0.6) translate(-477.4px, -278.5px); transform-origin: ${x}px ${y}px'/>`},
+	rest_quarter:function(x,y, section, pos){y+=2;return `<use class="notetext" section="${section}" pos="${pos}" length="4" string="3" i="0" x="${x}" y="${y+14*3-10}" href="#rest_quarter" style='transform:scale(0.6) translate(-478.5px, -271.7px);transform-origin: ${x}px ${y}px'/>` },
+	rest_sixteenth:function(x,y, section, pos){y+=5;return `<use class="notetext" section="${section}" pos="${pos}" length="16" string="3" i="0" x="${x}" y="${y+14*3-10}" href="#rest_sixteenth" style='transform:scale(0.6) translate(-477px, -275.2px);transform-origin: ${x}px ${y}px'/>` },
+	rest_thirtysecong:function(x,y, section, pos){y+=27;return `<use class="notetext" section="${section}" pos="${pos}" length="32" string="3" i="0" x="${x}" y="${y}" href="#rest_thirtysecong" style='transform:scale(0.6) translate(-30px, -15px);transform-origin: ${x}px ${y}px'/>` },
+	rest_second:function(x,y, section, pos){return `<use class="notetext" section="${section}" pos="${pos}" length="2" string="3" i="0" x="${x}" y="${y+14*3-10}" href="#rest_whole" style='transform:scale(0.6) translate(-478.3px, -266.6px);transform-origin: ${x}px ${y}px'/>` },
+	rest_whole:function(x,y, section, pos){return `<use class="notetext" section="${section}" pos="${pos}" length="1" string="3" i="0" x="${x}" y="${y+14*3-10}" href="#rest_whole" style='transform:scale(0.6) translate(-479.3px, -262.6px);transform-origin: ${x}px ${y}px'/>` },
 	
 }
