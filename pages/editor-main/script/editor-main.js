@@ -107,9 +107,9 @@ function record() {
   document.getElementById('metronome').innerHTML = '';
   document.getElementById('metronome').style.display = null;
   tab_metro.setUp(parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]), document.getElementById('metronome'))
-  //python.ex`manager.setInputDevice(manager.getDefaultDevice()['input'])`;
   document.getElementById('recordbtn').style.display = "none";
   document.getElementById('stoprecordbtn').style.display = null;
+  python.ex`manager.setInputDevice(${parseInt(document.getElementById("input_device_selection").innerHTML.split(':')[1])})`;
   python`manager.record()`.then(x => {
     tab_metro.play();
   });
@@ -151,6 +151,7 @@ function stop_record() {
 
   msgbox('訊息', '正在計算...請稍後..', true);
   var bpm = parseInt(document.getElementById("bpm_selection").innerHTML.split(" ")[0]);
+  python.ex`manager.saveCurrentRecordData()`;
   python`manager.calc(bpm=${bpm})`.then(x => {
     tabstrip.operTb.paper.data = x;
     console.log(x)
@@ -197,7 +198,7 @@ ipcRenderer.on("open", function(event, args) {
 
 var checkDevices = setInterval(function() {
   if (python != null) {
-    var audio = document.getElementById("input_device_selection");
+    var audio = document.getElementById("input_device_selection").nextElementSibling;
     if (audio.style.display == "none") {
       audio.innerHTML = "";
       python.ex`import SlimTabManager`;

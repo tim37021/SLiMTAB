@@ -34,22 +34,39 @@
       defaultnote.moveTo(document.getElementById('sn4').offsetLeft+8, 0);
       
 	  tab_ctxmenu.init(document.getElementById("tabpaper1"));
-	  tab_ctxmenu.addItem("複製",(function(){
-		if(tabstrip.operTb.paper.event['copy-notes']!=null) {
-            tabstrip.operTb.paper.event['copy-notes'](tabstrip.operTb.paper, tabstrip.operTb.paper.getSelectedNotes());
-          }
-	  }));
-	  tab_ctxmenu.addItem("貼上",(function(){
-		  if(tabstrip.operTb.paper.event['paste-notes']!=null) {
-			tabstrip.operTb.paper.insertNotes(tabstrip.operTb.paper.event['paste-notes'](tabstrip.operTb.paper));
-          }
-	  }));
-	  tab_ctxmenu.addItem("加入連接記號",(function(){
+    var copy = function(){
+      if(tabstrip.operTb.paper.event['copy-notes']!=null) {
+        tabstrip.operTb.paper.event['copy-notes'](tabstrip.operTb.paper, tabstrip.operTb.paper.getSelectedNotes());
+      }
+	  };
+    var cut = function() {
+      if(tabstrip.operTb.paper.event['copy-notes']!=null) {
+        tabstrip.operTb.paper.event['copy-notes'](tabstrip.operTb.paper, tabstrip.operTb.paper.getSelectedNotes());
+      }
+      tabstrip.operTb.paper.deleteNotes();
+    }
+    var paste = function(){
+      if(tabstrip.operTb.paper.event['paste-notes']!=null) {
+        tabstrip.operTb.paper.insertNotes(tabstrip.operTb.paper.event['paste-notes'](tabstrip.operTb.paper));
+      }
+	  }
+    var connect = function() {
 			tabstrip.operTb.paper.tieSelectedNotes();
-	  }));
-	  tab_ctxmenu.addItem("刪除連接記號",(function(){
-			tabstrip.operTb.paper.breakSelectedTieNotes();
-	  }));
+	  };
+    var disconnect = function() {
+      tabstrip.operTb.paper.breakSelectedTieNotes();
+    }
+	  tab_ctxmenu.addItem("複製", 'copy');
+	  tab_ctxmenu.addItem("剪下", 'cut');
+	  tab_ctxmenu.addItem("貼上", 'paste');
+	  tab_ctxmenu.addItem("加入連接記號", 'connect');
+	  tab_ctxmenu.addItem("刪除連接記號", 'disconnect');
+
+    ['copy', 'cut', 'paste', 'connect', 'disconnect'].forEach(x => {
+      Array.from(document.getElementsByClassName(x)).forEach(y => {
+        y.addEventListener('click', eval(x));
+      });
+    });
       tabstrip.setEventListener({
         'insert': function (paper) {
           defaultnote.moveTo(document.getElementById(`sn${paper.defaultNoteLength}`).offsetLeft+8, 0);
@@ -68,6 +85,16 @@
         },
         'paste-notes': function(paper) {
           return JSON.parse(copyeddata);
+        },
+        'play': function(paper) {
+          if(document.getElementById('stoprecordbtn').style.display!="none") {
+            document.getElementById('stoprecordbtn').click();
+          } else if(document.getElementById('playbtn').style.display!="none") {
+            document.getElementById('playbtn').click();
+          } else if(document.getElementById('stopbtn').style.display!="none") {
+            document.getElementById('stopbtn').click();
+          }
+
         }
       });
 
@@ -121,10 +148,10 @@
               <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Built-in Output2</a>
             </div>
           </div>
-          <p>音訊輸入 :</p>
-          <div class="dropdown" style="width: 250px; height: 25px; position:absolute; top:65px; left:120px;">
-            <div style="width: 220px; margin-left: 8px; margin-top: 2px; font-size: 18px;" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">Steinberg UR12</div>
-            <div class="dropdown-content" style="width: 250px; display: none;" id="input_device_selection">
+          <p>音訊輸入:</p>
+          <div class="dropdown" style="width: 250px; height: 25px; margin: 13px 0px 10px 10px;">
+            <div style="width: 220px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="input_device_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">Steinberg UR12</div>
+            <div class="dropdown-content" style="width: 250px; display: none;">
             </div>
           </div>
           <p>取樣頻率 : &nbsp;&nbsp;44100HZ</p>
@@ -247,8 +274,8 @@
   <div class="header">
     <div class="title"></div>
 	
-    <div class="menuroot" id="file_menu_root" onclick="showFileMenu(this, event)">File</div>
-    <div class="menuroot" id="edit_menu_root">編輯</div>
+    <div class="menuroot" id="file_menu_root" onclick="showMenu(this, 'file', event)">File</div>
+    <div class="menuroot" id="edit_menu_root" onclick="showMenu(this, 'edit', event)">編輯</div>
     <div class="menuroot">說明</div>
     <div class="btn_setting" title="設定" onclick="setting();"></div>   
     <img src="ui/line_vertical.png" style="margin: 7px 0px 4px 4px;  position: absolute;right: 139px;">
@@ -263,7 +290,16 @@
       <li class="save">儲存</li>
       <li class="saveas">另存新檔</li>
       <li class="print">列印</li>
-      <li class="close">關閉</li>
+      <li class="close">關閉分頁</li>
+    </ul>
+  </div>
+  <div class="menu" style="left: 213px; top: 45px; display: none; z-index:999" id="edit_menu">
+    <ul>
+      <li class="copy">複製</li>
+      <li class="cut">剪下</li>
+      <li class="paste">貼上</li>
+      <li class="connect">插入連接符號</li>
+      <li class="disconnect">刪除連接符號</li>
     </ul>
   </div>
   <div class="functionbar">

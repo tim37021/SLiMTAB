@@ -430,42 +430,45 @@ class TabPaper {
   }
 
   tieSelectedNotes(no_render = false) {
+    var lst = this.getSelectedNotes(true);
     // section pos string length block
-    if(this.selectedNotes.length >= 2) {
-      var d = this.data[this.selectedNotes[0][0]][this.selectedNotes[0][1]];
+    if(lst.length >= 2) {
+      var d = this.data[lst[0][1]][lst[0][2]];
       var data;
       if(d.slice(-1)!='e' && d.slice(-1)!='c') {
         data = d.slice(1);
         d.push('c');
       }else {
-        data = d.slice(1, d.length-2);
+        data = d.slice(1, d.length-1);
         d[d.length-1] = 'c';
       }
       let i;
-      for(i=1; i<this.selectedNotes.length; i++) {
-        d = this.data[this.selectedNotes[i][0]][this.selectedNotes[i][1]];
+      for(i=1; i<lst.length; i++) {
+        d = this.data[lst[i][1]][lst[i][2]];
         var notes;
         if(d.slice(-1)!='e' && d.slice(-1)!='c') {
           notes = d.slice(1);
           d.push('')
         } else
-          notes = d.slice(1, d.length-2);
+          notes = d.slice(1, d.length-1);
         if(this.hasEqualNotes(notes, data))
           d[d.length-1] = 'c';
         else {
+          this.data[lst[i-1][1]][lst[i-1][2]][this.data[lst[i-1][1]][lst[i-1][2]].length-1] = 'e';
           break;
         }
       }
-      d[d.length-1] = 'e';
+      if(i==lst.length)
+        d[d.length-1] = 'e';
       if(!no_render)
         this.render();
     }
   }
 
-
   breakSelectedTieNotes(no_render=false) {
-    for(let i=1; i<this.selectedNotes.length; i++) {
-      var d = this.data[this.selectedNotes[i][0]][this.selectedNotes[i][1]];
+    var lst = this.getSelectedNotes(true);
+    for(let i=0; i<lst.length; i++) {
+      var d = this.data[lst[i][1]][lst[i][2]];
       if(d.slice(-1)=='e' || d.slice(-1)=='c') {
         d.splice(d.length-1, 1);
       }
@@ -518,6 +521,12 @@ class TabPaper {
           }
           this.deleteNotes();
         }
+        break;
+      case 32:
+        if(this.event['play']!=null) {
+          this.event['play'](this);
+        }
+        e.preventDefault();
         break;
       case 86:
         if(e.ctrlKey) {
@@ -778,7 +787,7 @@ class TabPaper {
       this.partialRender(Math.floor(target[0] / 4));
   }
 
-  getSelectedNotes() {
+  getSelectedNotes(with_pos=false) {
     var ret = []
     var last_section = -1;
     var last_pos = -1;
@@ -789,9 +798,17 @@ class TabPaper {
         if(last_pos!=-1) {
           ret.push(acc);
           acc = [0];
+          if(with_pos) {
+            acc.push(this.selectedNotes[i][0]);
+            acc.push(this.selectedNotes[i][1]);
+          }
         }
       }
       acc[0] = this.selectedNotes[i][3];
+      if(with_pos) {
+        acc[1] = this.selectedNotes[i][0];
+        acc[2] = this.selectedNotes[i][1];
+      }
       acc.push(this.selectedNotes[i][2]);
       acc.push(this.selectedNotes[i][4]);
       last_pos = this.selectedNotes[i][1];

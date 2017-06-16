@@ -345,6 +345,15 @@ body {
   background-color: #474747;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
+.ctxmenu {
+  position: absolute;
+  width: 170px;
+  z-index: 1px;
+  border: 1px solid black;
+  padding-top: 4px;
+  background-color: #474747;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
 ul {
   list-style-type: none; 
   padding: 0; 

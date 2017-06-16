@@ -1,12 +1,21 @@
-function showFileMenu(element, event) {
-  if (document.getElementById("file_menu").style.display == "none") document.getElementById("file_menu").style.display = null;
-  else document.getElementById("file_menu").style.display = "none";
+function showMenu(element, target, event) {
+  Array.from(document.getElementsByClassName('menu')).forEach(x => {
+    x.style.display = "none";
+  });
+  Array.from(document.getElementsByClassName('menuroot')).forEach(x => {
+    x.style.color = null;
+  });
+  document.getElementById(`${target}_menu`).style.display = null;
   element.style.color = "#F39800";
   event.stopPropagation();
 }
 function hideMenus() {
-  document.getElementById("file_menu").style.display = "none";
-  document.getElementById("file_menu_root").style.color = null;
+  Array.from(document.getElementsByClassName('menu')).forEach(x => {
+    x.style.display = "none";
+  });
+  Array.from(document.getElementsByClassName('menuroot')).forEach(x => {
+    x.style.color = null;
+  });
   Array.from(document.getElementsByClassName("dropdown-content")).forEach(function(x) {
     x.style.display = "none";
   });

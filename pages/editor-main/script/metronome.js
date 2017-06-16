@@ -14,7 +14,7 @@ let tab_metro={
 			text-align:center;
 			position:relative;
 			border-radius:8px`);
-		this.content.innerHTML=`<div style="font-size:120px;margin-top:30px;margin-left:20px;
+		this.content.innerHTML=`<div style="font-size:120px;margin-top:30px;margin-left:35px;
 			color:#DDD;display:inline-block">${this.bpm}</div>
 			<div style="font-size:18px;display:inline-block;color:#DDD;">bpm</div>
 			<img src="./img/tickbar.png" style="position:absolute;top:190px;left:13px"/>
