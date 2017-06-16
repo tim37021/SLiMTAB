@@ -84,14 +84,21 @@ class TabPaper {
       }
       var section_width = (this.lineWidth - 80) * (Math.clamp(this.data[i].length, 4, 6) / notes_four_sections);
       var beats = calc_beats(this.beatLength, this.data[i]);
-      var beat_width = Math.min(section_width / beats, (this.lineWidth - 80) / (this.beatPerSection * 4));
+      var beat_width = section_width / beats;
+
+      let tix=ix;
+      for (let j = 0; j < this.data[i].length; j++) {
+        tix += beat_width * (this.beatLength / this.data[i][j][0]);
+      }
+      beat_width = section_width/(tix-ix)*beat_width;
+
       var oix = ix;
       var actual_section_width = beat_width * beats;
 
       ix += (section_width - actual_section_width) / 2;
 
       // draw note background first
-      let tix = ix;
+      tix = ix;
       for (let j = 0; j < this.data[i].length; j++) {
         tix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
         this.drawNoteBackground.call(vobj, tix, iy, this.data[i][j].slice(1));
@@ -186,14 +193,21 @@ class TabPaper {
 
       var section_width = (this.lineWidth - 80) * (Math.clamp(this.data[i].length, 4, 6) / notes_four_sections);
       var beats = calc_beats(this.beatLength, this.data[i]);
-      var beat_width = Math.min(section_width / beats, (this.lineWidth - 80) / (this.beatPerSection * 4));
+      var beat_width = Math.min(section_width / beats);
+
+      let tix=ix;
+      for (let j = 0; j < this.data[i].length; j++) {
+        tix += beat_width * (this.beatLength / this.data[i][j][0]);
+      }
+      beat_width = section_width/(tix-ix)*beat_width;
+
       var oix = ix;
       var actual_section_width = beat_width * beats;
 
       ix += (section_width - actual_section_width) / 2;
 
       // draw note background first
-      let tix = ix;
+      tix = ix;
       for (let j = 0; j < this.data[i].length; j++) {
         tix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
         this.drawNoteBackground(tix, iy, this.data[i][j].slice(1));
