@@ -74,6 +74,16 @@
         },
         'paste-notes': function(paper) {
           return JSON.parse(copyeddata);
+        },
+        'play': function(paper) {
+          if(document.getElementById('stoprecordbtn').style.display!="none") {
+            document.getElementById('stoprecordbtn').click();
+          } else if(document.getElementById('playbtn').style.display!="none") {
+            document.getElementById('playbtn').click();
+          } else if(document.getElementById('stopbtn').style.display!="none") {
+            document.getElementById('stopbtn').click();
+          }
+
         }
       });
 

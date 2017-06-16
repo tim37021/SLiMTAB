@@ -522,6 +522,12 @@ class TabPaper {
           this.deleteNotes();
         }
         break;
+      case 32:
+        if(this.event['play']!=null) {
+          this.event['play'](this);
+        }
+        e.preventDefault();
+        break;
       case 86:
         if(e.ctrlKey) {
           if(this.event['paste-notes']!=null) {
