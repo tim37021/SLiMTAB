@@ -151,15 +151,16 @@
         <div class="modal_content" id="setting_content">   <!-- Setting content -->
           <p></p>
           音訊輸出 :
-          <div class="dropdown" style="width: 250px; height: 25px; position:absolute; top:20px; left:120px">
+          <div class="dropdown" style="width: 250px; height: 25px; position:absolute; top:20px; left:120px;">
             <div style="width: 220px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="downdown_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">Built-in Output</div>
             <div class="dropdown-content" style="width: 250px; display: none;">
               <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Built-in Output</a>
               <a href="#" onclick="this.parentElement.parentElement.children[0].innerHTML=this.innerHTML">Built-in Output2</a>
             </div>
           </div>
-          <p>音訊輸入:</p>
-          <div class="dropdown" style="width: 250px; height: 25px; margin: 13px 0px 10px 10px;">
+          <p></p>
+          音訊輸入:
+          <div class="dropdown" style="width: 250px; height: 25px; position:absolute; top:65px; left:120px;">
             <div style="width: 220px; margin-left: 8px; margin-top: 2px; font-size: 18px;" id="input_device_selection" onclick="this.nextElementSibling.style.display=null; event.stopPropagation()">Steinberg UR12</div>
             <div class="dropdown-content" style="width: 250px; display: none;">
             </div>
