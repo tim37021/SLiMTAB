@@ -385,12 +385,14 @@ class TabPaper {
       var width = this.selectAreaRect.getAttribute('width');
       var height = this.selectAreaRect.getAttribute('height');
       this.selectedNotes = []
-      Array.from(document.getElementsByClassName('notetext')).forEach(x => {
-        if(!x.classList.contains('fake')) {
-          if(x.getAttribute('x')>=startx && x.getAttribute('x')-startx<width) {
-            if(x.getAttribute('y')>=starty && x.getAttribute('y')-starty<height) {
-              this.selectedNotes.push([parseInt(x.getAttribute('section')), parseInt(x.getAttribute('pos')), parseInt(x.getAttribute('string')), 
-              parseFloat(x.getAttribute('length')), parseInt(x.innerHTML)])
+      Array.from(document.getElementsByClassName('notetext')).forEach(node => {
+        if(!node.classList.contains('fake')) {
+          var x = parseInt(node.getAttribute('x'));
+          var y = parseInt(node.getAttribute('y'));
+          if(x>=startx && x-startx<width) {
+            if(y>=starty && y-starty<height) {
+              this.selectedNotes.push([parseInt(node.getAttribute('section')), parseInt(node.getAttribute('pos')), parseInt(node.getAttribute('string')), 
+              parseFloat(node.getAttribute('length')), parseInt(node.innerHTML)])
             }
           }
         }
