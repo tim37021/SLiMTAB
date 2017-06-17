@@ -976,8 +976,10 @@ class TabPaper {
   connectNotes(lst, y) {
     if(lst.length==0)
       return;
-    // eight
-	  this.vHTML += `<path d='M${lst[0][0]} ${y + 102} l${lst[lst.length-1][0]-lst[0][0]} 0' stroke-width='2'></path>`;
+    if(lst.length>1) {
+	    this.vHTML += `<path d='M${lst[0][0]} ${y + 102} l${lst[lst.length-1][0]-lst[0][0]} 0' stroke-width='2'></path>`;
+    } else
+      this.vHTML += `<path d='M${lst[0][0]} ${y + 102} l6 1' stroke-width='2'></path>`;
     for(let i=0; i<lst.length; i++) {
       var length = lst[i][1];
       var x = lst[i][0];
