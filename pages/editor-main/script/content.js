@@ -106,13 +106,29 @@ class TabPaper {
       }
 
       var pos = vobj.vHTML.length - 1;
+      var current_beats=0;
+      var current_stack=[];
       if(this.data[i] == [[4, -1]])
         this.drawFakeElement.call(vobj, ix, iy, i);
       for (let j = 0; j < this.data[i].length; j++) {
         ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
         if (i == this.cursor[0] && j == this.cursor[1] && !this.hideCursor) this.drawCursor.call(vobj, ix, iy);
         if (i == this.playingCursor[0] && j == this.playingCursor[1] && this.hideCursor) this.drawPlayingCursor.call(vobj, ix, iy);
-        this.drawNote.call(vobj, ix, iy, i, j, this.data[i][j][0], this.data[i][j].slice(1));
+        var ret = this.drawNote.call(vobj, ix, iy, i, j, this.data[i][j][0], this.data[i][j].slice(1));
+        if(ret != null) {
+          if((this.beatLength / ret[1])+current_beats <= 1) {
+            current_stack.push(ret);
+            current_beats += this.beatLength / ret[1];
+          } else{
+            this.connectNotes.call(vobj, current_stack, iy);
+            current_stack = [ret];
+            current_beats = this.beatLength / ret[1];
+          }
+        } else {
+          this.connectNotes.call(vobj, current_stack, iy);
+          current_beats = 0;
+          current_stack = [];
+        }
         if(this.data[i][j][this.data[i][j].length-1]=='c' && tie_begin_ix==-1) {
           tie_begin_ix = ix;
         }
@@ -124,6 +140,7 @@ class TabPaper {
         }
         ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
       }
+      this.connectNotes.call(vobj, current_stack, iy);
       ix = oix + section_width;
       if (beats != this.beatPerSection && this.cursor[0] != i ) this.drawAlert.call(vobj, ix - section_width, iy, section_width, pos);
       if (i % 4 != 3) this.drawBar.call(vobj, ix, iy);
@@ -214,16 +231,29 @@ class TabPaper {
         tix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
       }
 
-
-
       var pos = this.vHTML.length - 1;
-
+      var current_beats = 0;
+      var current_stack = [];
       this.drawFakeElement(ix, iy, i);
       for (let j = 0; j < this.data[i].length; j++) {
         ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
         if (i == this.cursor[0] && j == this.cursor[1] && !this.hideCursor) this.drawCursor(ix, iy);
         if (i == this.playingCursor[0] && j == this.playingCursor[1] && this.hideCursor) this.drawPlayingCursor(ix, iy);
-        this.drawNote(ix, iy, i, j, this.data[i][j][0], this.data[i][j].slice(1));
+        var ret = this.drawNote(ix, iy, i, j, this.data[i][j][0], this.data[i][j].slice(1));
+        if(ret != null) {
+          if((this.beatLength / ret[1])+current_beats <= 1) {
+            current_stack.push(ret);
+            current_beats += this.beatLength / ret[1];
+          } else{
+            this.connectNotes(current_stack, iy);
+            current_stack = [ret];
+            current_beats = this.beatLength / ret[1];
+          }
+        } else {
+          this.connectNotes(current_stack, iy);
+          current_beats = 0;
+          current_stack = [];
+        }
         if(this.data[i][j][this.data[i][j].length-1]=='c' && tie_begin_ix==-1) {
           tie_begin_ix = ix;
         }
@@ -235,6 +265,7 @@ class TabPaper {
         }
         ix += beat_width * (this.beatLength / this.data[i][j][0]) / 2;
       }
+      this.connectNotes(current_stack, iy);
       ix = oix + section_width;
       if (beats != this.beatPerSection && this.cursor[0] != i) this.drawAlert(ix - section_width, iy, section_width, pos);
       if (i % 4 != 3) this.drawBar(ix, iy);
@@ -883,6 +914,7 @@ class TabPaper {
 
   drawNote(x, y, section, pos, length, data) {
     this.vHTML += "<svg>";
+    var ret = null;
     var is_blank = false;
     var last = 78;
     if(data.slice(-1)=='c'||data.slice(-1)=='e')
@@ -929,9 +961,26 @@ class TabPaper {
 		if (length > 1) {
 		  if (length == 2) this.vHTML += `<path d='M${x} ${y + 88} l0 15' stroke-width='1'></path>`;
 		  if (length >= 4) this.vHTML += `<path d='M${x} ${y + last} l0 ${102 - last}' stroke-width='1'></path>`;
-		  if (length > 4) {
-			this.vHTML += `<path d='M${x} ${y + 102} l6 1' stroke-width='2'></path>`;
-		  }
+  
+      if(length>=8) {
+        ret = [x, length];
+      }
+		}
+	}
+
+    //}
+    this.vHTML += "</svg>";
+    return ret;
+  }
+  // lst = [[ix, length]...]
+  connectNotes(lst, y) {
+    if(lst.length==0)
+      return;
+    // eight
+	  this.vHTML += `<path d='M${lst[0][0]} ${y + 102} l${lst[lst.length-1][0]-lst[0][0]} 0' stroke-width='2'></path>`;
+    for(let i=0; i<lst.length; i++) {
+      var length = lst[i][1];
+      var x = lst[i][0];
 		  if (length > 8) {
 			var j = 1;
 			for (let i = 8; i < length; i *= 2) {
@@ -939,10 +988,7 @@ class TabPaper {
 			  j++;
 			}
 		  }
-		}
-	}
-    //}
-    this.vHTML += "</svg>";
+    }
   }
 
   stop() {
